@@ -1,0 +1,23 @@
+{
+  "app": {
+    "name": "i18next"
+  },
+  "menu": {
+    "home": "Home",
+    "contact": "Contact",
+    "customer": "Customer"
+  },
+    "customer": {
+        "enterName": "Enter customer's name",
+        "enterAddress": "Enter customer's address",
+        "enterPhone": "Enter customer's contact phone number",
+        "name": "Customer name",
+        "address": "Address",
+        "phone": "Contact number",
+        "status": "Status"
+  },
+  "creator": {
+    "firstname": "Jan",
+    "lastname": "Mühlemann"
+  }
+}
