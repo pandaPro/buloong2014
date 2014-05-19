@@ -1,0 +1,22 @@
+extends layout
+
+block head
+    link(rel='stylesheet', href='/stylesheets/signin.css')
+    script(src='/javascripts/controllers/test.js')
+block content
+    div.container
+        div(ng-controller="aboutCtrl")
+            input.form-control(type="text" ng-model="data.message")
+            h3{{data.id}} 
+            h1{{data.message}}
+        div(ng-controller="aboutCtrl2")
+            input.form-control(type="text" ng-model="data.message")
+            h1{{(data.message|reverse)}}
+            h3{{reversedMessage(data.message)}}
+            
+            label quantity
+            input.form-control(type="text" ng-model="data.quantity")
+            label price
+            input.form-control(type="text" ng-model="data.price")
+            label total
+            h1{{multiple(data.quantity, price)}}
