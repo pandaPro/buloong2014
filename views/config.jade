@@ -1,0 +1,53 @@
+extends layout
+
+block head
+    script(src='/javascripts/controllers/config.js')
+    script(src='/javascripts/controllers/common-directives.js')
+block content
+    div.container(ng-controller="configController")
+        div.row
+            div(class="col-xs-3")=t("config.name")
+            div(class="col-xs-3")=t("config.value")
+            div(class="col-xs-3")=t("config.status")
+            div(class="col-xs-3") &nbsp;
+        div.row(ng-hide="editorEnabled" ng-repeat="config in list")
+            div(class="col-xs-3") {{config.name}}
+            div(class="col-xs-3") {{config.value}}
+            div(class="col-xs-3") {{config.status}}
+            div(class="col-xs-3")
+                p
+                    button(ng-click="edit(config._id)" type="button" class="btn btn-primary btn-lg")=t("button.edit")
+                    span &nbsp;
+                    button(type="button" class="btn btn-danger btn-lg")=t("button.delete")
+
+        div.row(ng-show="editorEnabled")
+            div(class="col-xs-3")
+                input(type="text" class="form-control input-lg text-center" required placeholder=t("config.enterName") ng-model="newconfig.name")
+            div(class="col-xs-3")
+                input(type="text" class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="newconfig.value")
+            div(class="col-xs-3")
+                input(type="checkbox" text=t("config.status") checked="{{newconfig.status}}")
+            div(class="col-xs-3")
+                p
+                    button(type="button" class="btn btn-primary" ng-click="updateconfig(newconfig)")
+                        span(class="glyphicon glyphicon-ok")
+                    span &nbsp;
+                    button(type="button" class="btn btn-default" ng-click="cancel()")
+                        span(class="glyphicon glyphicon-remove")
+        br
+        hr
+        form(name="configModel")
+            div.row
+                h2(class="form-signin-heading") Config Info
+                div(class="form-group")
+                    input(type="text" class="form-control input-lg text-center" required placeholder=t("config.enterName") ng-model="configModel.name")
+                    span(ng-show="configModel.name.$error.required")=t("validation.required")
+                div.form-group
+                    input(type="text" class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="configModel.value")
+                    span(ng-show="configModel.value.$error.required")=t("validation.required")
+                div.form-group
+                    div.controls
+                        input(type="checkbox" text=t("config.status"))
+                div.control-group
+                    input(type="submit" class="btn btn-primary btn-lg" 
+                    ng-click="createconfig(configModel)" ng-disabled="configModel.$invalid")

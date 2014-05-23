@@ -1,0 +1,63 @@
+extends layout
+
+block head
+    script(src='/javascripts/controllers/customer.js')
+    script(src='/javascripts/controllers/common-directives.js')
+block content
+    div.container(ng-controller="customerController")
+        div.row-fluid 
+            label {{ list.length }}
+            input(type="text" class="input-lg text-center")
+            table(class="table table-striped")
+                thead
+                    tr
+                        th= t("customer.name")
+                        th= t("customer.address")
+                        th= t("customer.phone")
+                        th= t("customer.status")
+                        th
+                tbody
+                    tr(ng-hide="editorEnabled" ng-repeat="customer in list")
+                        td {{customer.name}}
+                        td {{customer.address}}
+                        td {{customer.phone}}
+                        td
+                            input(type="checkbox" checked="{{customer.status}}")
+                        td
+                            p
+                                button(ng-click="editCustomer(customer._id)" type="button" class="btn btn-primary") edit
+                                span &nbsp;
+                                button(type="button" class="btn btn-danger") delete
+                    tr(ng-show="editorEnabled")
+                        td
+                            input(type="text" class="form-control input-lg text-center" required placeholder=t("customer.enterName") 
+                            ng-model="newCustomer.name" )
+                        td
+                            input(type="text" class="form-control input-lg text-center" required placeholder=t("customer.enterAddress") ng-model="newCustomer.address")
+                        td
+                            input(type="text" valid-number class="form-control input-lg text-center" required placeholder=t("customer.enterPhone") ng-model="newCustomer.phone")
+                        td
+                            input(type="checkbox" text=t("customer.status") checked="{{newCustomer.status}}")
+                        td
+                            p
+                                button(type="button" class="btn btn-primary" ng-click="updateCustomer(newCustomer)")
+                                    span(class="glyphicon glyphicon-ok")
+                                span &nbsp;
+                                button(type="button" class="btn btn-default" ng-click="cancel()")
+                                    span(class="glyphicon glyphicon-remove")
+        form(name="customerModel")
+            div.row
+                div(class="form-group")
+                    input(type="text" class="form-control input-lg text-center" required placeholder=t("customer.enterName") 
+                    ng-model="customerModel.name")
+                div.form-group
+                    input(type="text" class="form-control input-lg text-center" required placeholder=t("customer.enterAddress") ng-model="customerModel.address")
+                div.form-group
+                    input(type="text" valid-number class="form-control input-lg text-center" required placeholder=t("customer.enterPhone") ng-model="customerModel.phone")
+                div.form-group
+                    div.controls
+                        input(type="checkbox" text=t("customer.status"))
+                div.control-group
+                    input(type="submit" class="btn btn-primary btn-lg" 
+                    ng-click="createCustomer(customerModel)"
+                    ng-disabled="customerModel.$invalid")

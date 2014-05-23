@@ -1,26 +1,26 @@
 var express = require('express');
-var api = require('../controllers/customer-api.js');
+var api = require('../controllers/config-api.js');
 var router = express.Router();
 
-/* GET customers listing. */
+/* GET configs listing. */
 router.get('/', function(req, res) {
     // var db = req.db;
-    // db.collection('customers').find().toArray(function (err, items) {
+    // db.collection('configs').find().toArray(function (err, items) {
         // if (err)
             // res.send(err);
         // res.json(items);
     // });
-    res.render('customer', { title: 'Customers list'});
+    res.render('config', { title: 'configs list'});
 });
 
 router.get('/list', function(req, res) {
     // var db = req.db;
-    // db.collection('customers').find().toArray(function (err, items) {
+    // db.collection('configs').find().toArray(function (err, items) {
         // if (err)
             // res.send(err);
         // res.json(items);
     // });
-    api.customerlist(function(err, items){
+    api.configlist(function(err, items){
         if (err)
             res.send(err);
         res.json(items);
@@ -34,7 +34,7 @@ router.post('/add', function(req, res) {
 });
 
 /*
- * DELETE to delete customer.
+ * DELETE to delete config.
  */
 router.delete('/delete/:id', function(req, res) {
 

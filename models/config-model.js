@@ -25,4 +25,4 @@ var configurationSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('config', configurationSchema);
+module.exports = mongoose.model('configurations', configurationSchema);

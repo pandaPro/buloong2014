@@ -3,14 +3,16 @@ module.exports = function(app, passport) {
     // console.log("routes:" + app);
     var routes = require('../routes');
     var customers = require('../routes/customers');
+    var config = require('../routes/configs');
     var login = require('../routes/login');
     var about = require('../routes/about');
     var locale = require('../routes/locale');
 
     app.use('/', routes);
     app.use('/customer', customers);
+    app.use('/config', config);
+    
     app.get('/login', login);
-    app.get('/configuration', about);
     app.get('/product', about);
     app.get('/invoice', about);
     app.get('/logout', about);
