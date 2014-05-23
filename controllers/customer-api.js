@@ -6,21 +6,21 @@ Exports 3 methods:
 */
  
  
-var CustomerModel = require('../models/customer-model.js');
-var CustomerList = CustomerModel.listCustomers;
+var customerModel = require('../models/customer-model.js');
+var customerList = customerModel.listCustomers;
 
 exports.getCustomerObject = function (obj) {
     console.log("customerModel: "+obj);
-    return( new CustomerModel(obj) );
+    return( new customerModel(obj) );
 }
 
 exports.getCustomerList = function () {
-    return( new CustomerList);
+    return( new customerList);
 }
 
 
 exports.customerlist = function (callback){
-    CustomerModel.find({}, function (err, customers) {
+    customerModel.find({}, function (err, customers) {
         if(err){
             console.log("customerlist: " + err);
         }else{
@@ -32,7 +32,7 @@ exports.customerlist = function (callback){
 
 // first locates a thread by title, then locates the replies by thread ID.
 exports.show = (function(req, res) {
-    CustomerModel.findOne({name: req.params.name}, function(error, item) {
+    customerModel.findOne({name: req.params.name}, function(error, item) {
         res.send([{customer: item}]);
     });
 });
@@ -40,21 +40,34 @@ exports.show = (function(req, res) {
 exports.add = function(obj, callback) {
     console.log("customer.add");
     obj.save(function(error, savedItem) {
-        if(error)
+        if(error) {
             callback(error);
-        else
+        }
+        else {
+            
             callback("", savedItem);
-        // res.send();
+        }
    });
 }
 
 exports.update = function(obj, callback) {
     console.log("customer.update");
-    obj.save(function(error, savedItem) {
-        if(error)
-            callback(error);
-        else
-            callback("", savedItem);
-        // res.send();
-   });
+    console.log(obj);
+    customerModel.findById(obj._id, function(err, item){
+        if (err){
+            callback(err, null);
+        }
+        else {
+            item.name = obj.name;
+            item.address = obj.address;
+            item.phone = obj.phone;
+            item.status = obj.status;
+            item.save(function(error, savedItem) {
+                if(error)
+                    callback(error);
+                else
+                    callback("", savedItem);
+            })
+        }
+    });
 }

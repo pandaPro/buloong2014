@@ -5,13 +5,13 @@ function customerController($scope, $http) {
     $scope.editorEnabled = false;
     $scope.list = {};
     
-    $scope.init = function(list) {
+    $scope.init = function() {
         alert(list);
         $scope.list = list;
     }
     
     // when landing on the page, get all customers and show them
-    $http.get('/customer/list')
+    $http.get(url+'list')
         .success(function(data) {
             $scope.list = data;
             // alert(data);
@@ -40,9 +40,10 @@ function customerController($scope, $http) {
     
     //
     $scope.editCustomer = function (id) {
+        console.log("id:"+id);
         for (i in $scope.list) {
             if ($scope.list[i]._id == id) {
-                $scope.newCustomer = angular.copy($scope.list[i]);
+                $scope.editCustomer = angular.copy($scope.list[i]);
                 $scope.editorEnabled = true;
             }
         }
@@ -55,15 +56,16 @@ function customerController($scope, $http) {
     //
     $scope.updateCustomer = function() {
         for (i in $scope.list) {
-            if ($scope.list[i]._id == $scope.newCustomer._id) {
-                $scope.list[i] = $scope.newCustomer;
+            if ($scope.list[i]._id == $scope.editCustomer._id) {
+                $scope.list[i] = $scope.editCustomer;
             }
         }
-        $http.put(url+'update/'+$scope.newCustomer._id, { updateCustomerObject : $scope.newCustomer})
+        $http.put(url+'update/'+$scope.editCustomer._id, { updateCustomerObject : $scope.editCustomer})
             .success(function(data) {
-                $scope.newCustomer = {}; // clear the form so our user is ready to enter another
-                $scope.list = data;
-                console.log(data);
+                $scope.editCustomer = {}; // clear the form so our user is ready to enter another
+                //$scope.list = data.list;
+                console.log(data.list);
+                $scope.editorEnabled = false;
             })
             .error(function(data) {
                 console.log('Error: ' + data);

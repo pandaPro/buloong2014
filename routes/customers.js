@@ -12,20 +12,21 @@ router.get('/', function(req, res) {
     // });
     // var customerList = new api.getCustomerList();
     // console.log("customerList= " + customerList);
-    var list;
-    api.customerlist(function(err, items){
-        if (err)
-            res.send(err);
-        list = items;
-    });
-    res.render('customer', { title: 'Customers list', list : list});
+    // var list;
+    // api.customerlist(function(err, items){
+    //     if (err)
+    //         res.send(err);
+    //     list = items;
+    // });
+    // res.render('customer', { title: 'Customers list', list : list});
+    res.render('customer', { title: 'Customers list'});
 });
 
 router.get('/list', function(req, res) {
-    api.customerlist(function(err, items){
+    api.customerlist(function(err, data){
         if (err)
             res.send(err);
-        res.json(items);
+        res.json(data);
     });
 });
 
@@ -36,20 +37,25 @@ router.post('/add', function(req, res) {
         var customer = new api.getCustomerObject(req.body.customerObject);
         customer.validate(function(error) {
             if(error) {
-                res.json({ error: error });
-            } else {
-                res.render('customer', { success: 'Customer added'});
+                console.log(error);
+                res.send(error);
             }
-            //save data
-            api.add(customer, function(err, items) {
-                if (err)
-                    res.send(errs);
-                res.json(items);
-            })
+            else {
+                //save data
+                api.add(customer, function(err, items) {
+                    if (err) {
+                        console.log("response error: " + err);
+                        res.send(err);
+                    }
+                    else {
+                        console.log("response items: " + items);
+                        res.json(items);
+                    }
+                })
+            }
         });
     }
     catch(err) { console.log("post error: "+ err); }
-    res.send({ error: 'Customers add post'});
 });
 
 
@@ -65,19 +71,21 @@ router.put('/update/:id', function(req, res) {
             if(error) {
                 res.json({ error: error });
             } else {
-                res.render('customer', { success: 'Customer added'});
+                //save data
+                api.update(customer, function(err, savedItem) {
+                    if (err) {
+                        console.log(err);
+                        res.send(err);
+                    }
+                    else {
+                        console.log("saveditem="+ savedItem);
+                        res.json({success: "saved", list: savedItem});
+                    }
+                })
             }
-            //save data
-            api.update(customer, function(err, savedItem) {
-                if (err)
-                    res.send(errs);
-                res.json({success: "saved", item: savedItem});
-            })
         });
     }
     catch(err) { console.log("post error: "+ err); }
-    res.send({ error: 'Customers add post'});
-    // res.render('customer', { title: 'Customers list'});
 });
 
 /*

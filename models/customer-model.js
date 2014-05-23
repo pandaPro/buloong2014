@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var validate = require('mongoose-validator').validate;
 var Schema = mongoose.Schema;
 
 var customerSchema = new Schema({
@@ -6,22 +7,17 @@ var customerSchema = new Schema({
         type: String,
         index: true,
         unique: true,
-        validate: [
-            function(v) { return v != null || v != ""; },
-            "Required"
-        ],
+        validate: validate('len', 1, 30),
         required: true
     },
     address: {
         type: String,
-        validate: [
-            function(v) { return v != null || v != ""; },
-            "Required"
-        ],
-        required: true
+        maxlength: 100
     },
     phone: {
-        type: String
+        validate: validate('len', 8, 30),
+        type: String,
+        required: true
     },
     status: {
         type: Boolean
