@@ -39,7 +39,7 @@ function customerController($scope, $http) {
     };
     
     //
-    $scope.editCustomer = function (id) {
+    $scope.edit = function (id) {
         console.log("id:"+id);
         for (i in $scope.list) {
             if ($scope.list[i]._id == id) {
@@ -54,7 +54,7 @@ function customerController($scope, $http) {
     };
     
     //
-    $scope.updateCustomer = function() {
+    $scope.update = function() {
         for (i in $scope.list) {
             if ($scope.list[i]._id == $scope.editCustomer._id) {
                 $scope.list[i] = $scope.editCustomer;

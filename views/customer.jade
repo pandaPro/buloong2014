@@ -25,7 +25,7 @@ block content
                             input(type="checkbox" disabled checked="{{customer.status}}")
                         td
                             p
-                                button(ng-click="editCustomer(customer._id)" type="button" class="btn btn-primary")=t("button.edit")
+                                button(ng-click="edit(customer._id)" type="button" class="btn btn-primary")=t("button.edit")
                                 span &nbsp;
                                 button(type="button" class="btn btn-danger")=t("button.delete")
                     tr(ng-show="editorEnabled")
@@ -42,7 +42,7 @@ block content
                             input(type="checkbox" text=t("customer.status") checked="{{editCustomer.status}}")
                         td
                             p
-                                button(type="button" class="btn btn-primary" ng-click="updateCustomer(editCustomer)")
+                                button(type="button" class="btn btn-primary" ng-click="update(editCustomer)")
                                     span(class="glyphicon glyphicon-ok")
                                 span &nbsp;
                                 button(type="button" class="btn btn-default" ng-click="cancel()")
@@ -58,7 +58,7 @@ block content
                 div.form-group
                     input(type="text" class="form-control input-lg text-center" placeholder=t("customer.enterAddress") ng-model="address")
                 div.form-group
-                    input(type="text" name="phone" valid-number class="form-control input-lg text-center" required placeholder=t("customer.enterPhone") ng-model="phone" ng-minlength="8" ng-maxlength="30")
+                    input(type="text" name="phone" valid-number class="form-control input-lg text-center" placeholder=t("customer.enterPhone") ng-model="phone" ng-minlength="8" ng-maxlength="30")
                     span(class="error" ng-show="customerModel.phone.$dirty && customerModel.phone.$invalid")=t("validation.number")
                     span(ng-show="customerModel.phone.$error.required")=t("validation.required")
                 div.form-group
