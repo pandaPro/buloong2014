@@ -30,6 +30,15 @@ router.get('/list', function(req, res) {
     });
 });
 
+router.get('/check/:name', function(req, res) {
+    var name = req.params.name;
+    api.customerlist(function(err, data){
+        if (err)
+            res.send(err);
+        res.json(data);
+    });
+});
+
 router.post('/add', function(req, res) {
     console.log(req.body.customerObject);
     //validation data
@@ -38,18 +47,18 @@ router.post('/add', function(req, res) {
         customer.validate(function(error) {
             if(error) {
                 console.log(error);
-                res.send(error);
+                res.json({error: error});
             }
             else {
                 //save data
-                api.add(customer, function(err, items) {
+                api.add(customer, function(err, item) {
                     if (err) {
                         console.log("response error: " + err);
-                        res.send(err);
+                        res.json({error: err});
                     }
                     else {
-                        console.log("response items: " + items);
-                        res.json(items);
+                        console.log("response item: " + item);
+                        res.json({message: "added", item: item});
                     }
                 })
             }
@@ -64,7 +73,6 @@ router.post('/add', function(req, res) {
  */
 router.put('/update/:id', function(req, res) {
     var id = req.params.id;
-    console.log(id);
     try {
         var customer = new api.getCustomerObject(req.body.updateCustomerObject);
         customer.validate(function(error) {
@@ -79,7 +87,7 @@ router.put('/update/:id', function(req, res) {
                     }
                     else {
                         console.log("saveditem="+ savedItem);
-                        res.json({success: "saved", list: savedItem});
+                        res.json({message: "Updated"});
                     }
                 })
             }

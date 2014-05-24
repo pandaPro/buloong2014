@@ -9,7 +9,7 @@ Exports 3 methods:
 var ConfigModel = require('../models/config-model.js');
 // var configList = ConfigModel.listconfigs;
 
-exports.getconfigObject = function (obj) {
+exports.getConfigObject = function (obj) {
     console.log("configModel: "+obj);
     return( new ConfigModel(obj) );
 }
@@ -31,9 +31,14 @@ exports.list = function (callback){
 }// end exports.configlist
 
 // first locates a thread by title, then locates the replies by thread ID.
-exports.show = (function(req, res) {
-    ConfigModel.findOne({name: req.params.name}, function(error, item) {
-        res.send([{config: item}]);
+exports.check = (function(name, callback) {
+    ConfigModel.findOne({name: name}, function(error, item) {
+        if(err){
+            console.log("config check: " + err);
+        }else{
+            console.log(err);
+            callback("", item);
+        }
     });
 });
 

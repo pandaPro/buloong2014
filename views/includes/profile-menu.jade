@@ -1,9 +1,4 @@
 #menu
-  ul(class="nav nav-pills")
-    each val, index in {1:'Home',2:'Contact',3:'About', 4: 'Customer', 5: 'Config'}
-     li
-      a(href="/"+val)=val
-
   nav(class="navbar navbar-default" role="navigation")
     div(class="container-fluid")
       div(class="navbar-header")
@@ -14,9 +9,9 @@
         a.navbar-brand(href="#")=t("app.name")
       div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
         ul(class="nav navbar-nav")
-          each val, index in {1:'menu.home',2:'menu.contact',3:'menu.about',4: 'menu.customer',5: 'menu.config'}
+          each val, index in {1:'menu.invoice',2:'menu.customer',3: 'menu.product',5: 'menu.config'}
             li
              a(href=t(val))=t(val)
         ul(class="nav navbar-nav navbar-right")
           li
-            a(href="/login")=t("app.login")
+            a(href="/logout")=t("app.logout")

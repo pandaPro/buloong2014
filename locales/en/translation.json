@@ -1,8 +1,12 @@
 {
   "app": {
-    "name": "en-i18next"
+    "name": "Buloong A.Tỷ",
+    "login": "Login",
+    "logout": "Logout",
+    "actived": "Actived",
+    "blocked": "Blocked"
   },
-  "nav": {
+  "menu": {
     "home": "Home",
     "contact": "Contact",
     "about": "About",
@@ -80,6 +84,6 @@
 
   "creator": {
     "firstname": "Jan",
-    "lastname": "M�hlemann"
+    "lastname": "Mühlemann"
   }
 }

@@ -1,5 +1,8 @@
 extends layout
 
+block menu
+    include includes/profile-menu
+
 block head
     script(src='/javascripts/controllers/config.js')
     script(src='/javascripts/controllers/common-directives.js')
@@ -22,32 +25,33 @@ block content
 
         div.row(ng-show="editorEnabled")
             div(class="col-xs-3")
-                input(type="text" class="form-control input-lg text-center" required placeholder=t("config.enterName") ng-model="newconfig.name")
+                label {{editConfig.name}}
             div(class="col-xs-3")
-                input(type="text" class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="newconfig.value")
+                input(type="text" class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="editConfig.value")
             div(class="col-xs-3")
-                input(type="checkbox" text=t("config.status") checked="{{newconfig.status}}")
+                input(type="checkbox" text=t("config.status") checked="{{editConfig.status}}")
             div(class="col-xs-3")
                 p
-                    button(type="button" class="btn btn-primary" ng-click="updateconfig(newconfig)")
+                    button(type="button" class="btn btn-primary" ng-click="update(editConfig)")
                         span(class="glyphicon glyphicon-ok")
                     span &nbsp;
                     button(type="button" class="btn btn-default" ng-click="cancel()")
                         span(class="glyphicon glyphicon-remove")
         br
         hr
+        div( id="messages" ng-show="message") {{ message }}
         form(name="configModel")
             div.row
                 h2(class="form-signin-heading") Config Info
-                div(class="form-group")
-                    input(type="text" class="form-control input-lg text-center" required placeholder=t("config.enterName") ng-model="configModel.name")
+                div(class="form-group" ng-class="{ 'has-error' : configModel.name.$invalid && !configModel.name.$pristine }")
+                    input(type="text" name="name" class="form-control input-lg text-center" required placeholder=t("config.enterName") ng-model="newConfig.name")
                     span(ng-show="configModel.name.$error.required")=t("validation.required")
-                div.form-group
-                    input(type="text" class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="configModel.value")
+                div.form-group(ng-class="{ 'has-error' : configModel.value.$invalid && !configModel.value.$pristine }")
+                    input(type="text" name="value" class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="newConfig.value")
                     span(ng-show="configModel.value.$error.required")=t("validation.required")
                 div.form-group
                     div.controls
-                        input(type="checkbox" text=t("config.status"))
+                        input(type="checkbox" text=t("config.status") ng-model="newConfig.status")
                 div.control-group
                     input(type="submit" class="btn btn-primary btn-lg" 
-                    ng-click="createconfig(configModel)" ng-disabled="configModel.$invalid")
+                    ng-click="createConfig(configModel)" ng-disabled="configModel.$invalid")

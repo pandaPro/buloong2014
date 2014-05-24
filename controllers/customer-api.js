@@ -31,9 +31,14 @@ exports.customerlist = function (callback){
 }// end exports.customerlist
 
 // first locates a thread by title, then locates the replies by thread ID.
-exports.show = (function(req, res) {
-    customerModel.findOne({name: req.params.name}, function(error, item) {
-        res.send([{customer: item}]);
+exports.checkName = (function(name, callback) {
+    customerModel.findOne({name: name}, function(error, item) {
+        if(error) {
+            callback(error);
+        }
+        else {
+            callback("", item);
+        }
     });
 });
 

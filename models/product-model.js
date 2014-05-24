@@ -7,6 +7,7 @@ var productSchema = new Schema({
     },
     code:{
         type: String,
+        index:true,
         unique: true,
         required: true
     },

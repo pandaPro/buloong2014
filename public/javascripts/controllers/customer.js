@@ -23,18 +23,21 @@ function customerController($scope, $http) {
 
     // when submitting the add form, send the text to the node API
     $scope.createCustomer = function(objModel) {
+        console.log(objModel.$valid);
         if(objModel.$valid) {
-            $http.post(url+'add', { customerObject: objModel })
+            $http.post(url+'add', { customerObject: $scope.newCustomer })
                 .success(function(data) {
-                    $scope.customerModel = {}; // clear the form so our user is ready to enter another
-                    $scope.list = data;
+                    // $scope.customerModel = {}; // clear the form so our user is ready to enter another
+                    $scope.newCustomer = {};
+                    $scope.list.push(data.item);
+                    $scope.message = data.message;
                     console.log(data);
                 })
                 .error(function(data) {
+                    $scope.message = data.error;
                     alert(data);
                     console.log('Error: ' + data);
             });
-            // alert("validated");
         }
     };
     
