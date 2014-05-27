@@ -56,13 +56,21 @@ exports.add = function(obj, callback) {
 
 exports.update = function(obj, callback) {
     console.log("config.update");
-    obj.save(function(error, savedItem) {
-        if(error){
-            console.log("ERR: " + error);
-            callback(error);
+    console.log(obj);
+    ConfigModel.findById(obj._id, function(err, item){
+        if (err){
+            callback(err, null);
         }
-        else
-            callback("", savedItem);
-        // res.send();
-   });
+        else {
+            item.name = obj.name;
+            item.value = obj.value;
+            item.status = obj.status;
+            item.save(function(error, savedItem) {
+                if(error)
+                    callback(error);
+                else
+                    callback("", savedItem);
+            })
+        }
+    });
 }

@@ -9,14 +9,14 @@ block head
 block content
     div.container(ng-controller="configController")
         div.row
-            div(class="col-xs-3")=t("config.name")
-            div(class="col-xs-3")=t("config.value")
-            div(class="col-xs-3")=t("config.status")
+            div(class="col-xs-2")=t("config.name")
+            div(class="col-xs-6")=t("config.value")
+            div(class="col-xs-1")=t("config.status")
             div(class="col-xs-3") &nbsp;
         div.row(ng-hide="editorEnabled" ng-repeat="config in list")
-            div(class="col-xs-3") {{config.name}}
-            div(class="col-xs-3") {{config.value}}
-            div(class="col-xs-3") {{config.status}}
+            div(class="col-xs-2") {{config.name}}
+            div(class="col-xs-6") {{config.value}}
+            div(class="col-xs-1") {{config.status}}
             div(class="col-xs-3")
                 p
                     button(ng-click="edit(config._id)" type="button" class="btn btn-primary btn-lg")=t("button.edit")
@@ -24,11 +24,11 @@ block content
                     button(type="button" class="btn btn-danger btn-lg")=t("button.delete")
 
         div.row(ng-show="editorEnabled")
-            div(class="col-xs-3")
+            div(class="col-xs-2")
                 label {{editConfig.name}}
-            div(class="col-xs-3")
+            div(class="col-xs-6")
                 input(type="text" class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="editConfig.value")
-            div(class="col-xs-3")
+            div(class="col-xs-1")
                 input(type="checkbox" text=t("config.status") checked="{{editConfig.status}}")
             div(class="col-xs-3")
                 p

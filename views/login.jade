@@ -4,10 +4,15 @@ block head
     link(rel='stylesheet', href='/stylesheets/signin.css')
 block content
     div.container
-        form.form-signin(method="post", id="loginForm")
-            h2(class="form-signin-heading") Please sign in
-            label Username
-            input.form-control(id="username", type="text", name="User", placeholder="Enter your username")
-            label Password
-            input.form-control(id="password", type="password", name="Password", placeholder="Enter your password")
-            input(class="btn btn-lg btn-primary btn-block", type="submit", value="Log In")
+        form.form-signin(novalidate name="loginForm")
+            legend Please sign in
+                .form-group(ng-class="{ 'has-error' : loginForm.username.$invalid && !loginForm.username.$pristine }")
+                    label Username
+                    input.form-control.input-lg.text-center(id="username", type="text", name="username", placeholder="Enter your username" require)
+                    span(class="help-block" ng-show="loginForm.username.$error.required")=t("validation.required")
+                .form-group(ng-class="{ 'has-error' : loginForm.password.$invalid && !loginForm.password.$pristine }")
+                    label Password
+                    input.form-control.input-lg.text-center(id="password", type="password", name="password", placeholder="Enter your password" require)
+                    span(class="help-block" ng-show="loginForm.password.$error.required")=t("validation.required")
+                .form-group
+                    input(class="btn btn-lg btn-primary btn-block" ng-click="" type="submit", ng-disabled="loginForm.$invalid" value="Log In")
