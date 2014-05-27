@@ -19,6 +19,8 @@
     "bcrypt-nodejs": "0.0.3",
     "connect-flash": "^0.1.1",
     "karma": "^0.12.16",
-    "mongoose-validator": "^0.2.2"
+    "mongoose-validator": "^0.2.2",
+    "passport-local": "^1.0.0",
+    "express-session": "^1.2.0"
   }
 }

@@ -6,12 +6,12 @@ block head
 block content
     div.container(ng-controller="productController")
         div.row
-            div(class="col-xs-2")=t("product.format")
-            div(class="col-xs-2")=t("product.length")
-            div(class="col-xs-3")=t("product.type")
-            div(class="col-xs-3")=t("product.salePrice")
+            div(class="col-xs-1")=t("product.format")
+            div(class="col-xs-1")=t("product.length")
+            div(class="col-xs-2")=t("product.type")
+            div(class="col-xs-1")=t("product.salePrice")
             div(class="col-xs-2")=t("product.status")
-            div(class="col-xs-2") &nbsp;
+            div(class="col-xs-3") &nbsp;
         div.row(ng-hide="editorEnabled" ng-repeat="product in list")
             div(class="col-xs-2") {{product.format}}
             div(class="col-xs-2") {{product.length}}

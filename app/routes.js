@@ -4,6 +4,7 @@ module.exports = function(app, passport) {
     var routes = require('../routes');
     var customers = require('../routes/customers');
     var config = require('../routes/configs');
+    var product = require('../routes/products');
     var login = require('../routes/login');
     var about = require('../routes/about');
     var locale = require('../routes/locale');
@@ -11,9 +12,9 @@ module.exports = function(app, passport) {
     app.use('/', routes);
     app.use('/customer', customers);
     app.use('/config', config);
-    
+    app.use('/product', product);
+
     app.get('/login', login);
-    app.get('/product', about);
     app.get('/invoice', about);
     app.get('/logout', about);
     app.get('/about', about);

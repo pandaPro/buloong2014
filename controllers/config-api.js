@@ -9,15 +9,10 @@ Exports 3 methods:
 var ConfigModel = require('../models/config-model.js');
 // var configList = ConfigModel.listconfigs;
 
-exports.getConfigObject = function (obj) {
+exports.getconfigObject = function (obj) {
     console.log("configModel: "+obj);
     return( new ConfigModel(obj) );
 }
-
-// exports.getconfigList = function () {
-//     return( new configList);
-// }
-
 
 exports.list = function (callback){
     ConfigModel.find({}, function (err, configs) {
@@ -30,15 +25,12 @@ exports.list = function (callback){
     })// end config.find
 }// end exports.configlist
 
-// first locates a thread by title, then locates the replies by thread ID.
-exports.check = (function(name, callback) {
+exports.findConfigByName = (function(name, callback) {
     ConfigModel.findOne({name: name}, function(error, item) {
-        if(err){
-            console.log("config check: " + err);
-        }else{
-            console.log(err);
-            callback("", item);
-        }
+        if(error)
+            callback(error);
+        else
+            callback("",item);
     });
 });
 
@@ -63,6 +55,5 @@ exports.update = function(obj, callback) {
         }
         else
             callback("", savedItem);
-        // res.send();
    });
 }
