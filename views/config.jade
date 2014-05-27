@@ -2,56 +2,73 @@ extends layout
 
 block menu
     include includes/profile-menu
-
+    +menu('menu.config')
 block head
     script(src='/javascripts/controllers/config.js')
     script(src='/javascripts/controllers/common-directives.js')
 block content
     div.container(ng-controller="configController")
-        div.row
-            div(class="col-xs-2")=t("config.name")
-            div(class="col-xs-6")=t("config.value")
-            div(class="col-xs-1")=t("config.status")
-            div(class="col-xs-3") &nbsp;
-        div.row(ng-hide="editorEnabled" ng-repeat="config in list")
-            div(class="col-xs-2") {{config.name}}
-            div(class="col-xs-6") {{config.value}}
-            div(class="col-xs-1") {{config.status}}
-            div(class="col-xs-3")
+      //- .input-append
+      //-   input.input-large.search-query(type='text', ng-model='query', ng-change='search()', placeholder='Search')
+      //-   span.add-on
+      //-     i.icon-search
+      table.table.table-striped.table-condensed.table-hover
+        thead
+          tr.input-lg.text-center
+            th=t("config.name")
+              a(ng-click='sort_by(\'name\')')
+                i(class="glyphicon glyphicon-sort")
+            th=t("config.value")
+              a(ng-click='sort_by(\'description\')')
+                i(class="glyphicon glyphicon-sort")
+            th=t("config.status")
+              a(ng-click='sort_by(\'field3\')')
+            th
+        tbody
+          //- tr(ng-repeat='item in pagedItems[currentPage] | orderBy:sortingOrder:reverse')
+          tr.input-lg.text-left(ng-hide="editorEnabled" ng-repeat='item in list | orderBy:sortingOrder:reverse')
+            td.col-xs-2 {{item.name}}
+            td.col-xs-6 {{item.value}}
+            td.col-xs-1 
+                -if(true)
+                    div.alert.alert-success=t("actived")
+                -else
+                    div.alert.alert-danger=t("inactive")
+            td
                 p
-                    button(ng-click="edit(config._id)" type="button" class="btn btn-primary btn-lg")=t("button.edit")
+                    button(ng-click="edit(item._id)" type="button" class="btn btn-primary btn-lg")=t("button.edit")
                     span &nbsp;
                     button(type="button" class="btn btn-danger btn-lg")=t("button.delete")
 
-        div.row(ng-show="editorEnabled")
-            div(class="col-xs-2")
+          tr.input-lg.text-center(ng-show="editorEnabled")
+            td(class="col-xs-2")
                 label {{editConfig.name}}
-            div(class="col-xs-6")
-                input(type="text" class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="editConfig.value")
-            div(class="col-xs-1")
+            td(class="col-xs-6")
+                textarea(class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="editConfig.value")
+            td(class="col-xs-1")
                 input(type="checkbox" text=t("config.status") checked="{{editConfig.status}}")
-            div(class="col-xs-3")
+            td(class="col-xs-3")
                 p
                     button(type="button" class="btn btn-primary" ng-click="update(editConfig)")
                         span(class="glyphicon glyphicon-ok")
                     span &nbsp;
                     button(type="button" class="btn btn-default" ng-click="cancel()")
                         span(class="glyphicon glyphicon-remove")
-        br
-        hr
-        div( id="messages" ng-show="message") {{ message }}
-        form(name="configModel")
-            div.row
-                h2(class="form-signin-heading") Config Info
-                div(class="form-group" ng-class="{ 'has-error' : configModel.name.$invalid && !configModel.name.$pristine }")
-                    input(type="text" name="name" class="form-control input-lg text-center" required placeholder=t("config.enterName") ng-model="newConfig.name")
-                    span(ng-show="configModel.name.$error.required")=t("validation.required")
-                div.form-group(ng-class="{ 'has-error' : configModel.value.$invalid && !configModel.value.$pristine }")
-                    input(type="text" name="value" class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="newConfig.value")
-                    span(ng-show="configModel.value.$error.required")=t("validation.required")
-                div.form-group
-                    div.controls
-                        input(type="checkbox" text=t("config.status") ng-model="newConfig.status")
-                div.control-group
-                    input(type="submit" class="btn btn-primary btn-lg" 
-                    ng-click="createConfig(configModel)" ng-disabled="configModel.$invalid")
+      br
+      hr
+      div( id="messages" ng-show="message") {{ message }}
+      form(name="configModel")
+        div.row
+            h2(class="form-signin-heading")=t("config.configInfo")
+            div(class="form-group" ng-class="{ 'has-error' : configModel.name.$invalid && !configModel.name.$pristine }")
+                input(type="text" name="name" class="form-control input-lg text-center" required placeholder=t("config.enterName") ng-model="newConfig.name")
+                span(ng-show="configModel.name.$error.required")=t("validation.required")
+            div.form-group(ng-class="{ 'has-error' : configModel.value.$invalid && !configModel.value.$pristine }")
+                input(type="text" name="value" class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="newConfig.value")
+                span(ng-show="configModel.value.$error.required")=t("validation.required")
+            div.form-group
+                div.controls
+                    input(type="checkbox" text=t("config.status") ng-model="newConfig.status")
+            div.control-group
+                input(type="submit" class="btn btn-primary btn-lg" 
+                ng-click="createConfig(configModel)" ng-disabled="configModel.$invalid")

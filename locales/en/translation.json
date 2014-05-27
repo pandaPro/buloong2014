@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "Buloong A.Tỷ",
-    "login": "Login",
+    "login": "Log in",
     "logout": "Logout",
     "actived": "Actived",
     "inactived": "Inactived",
@@ -16,7 +16,10 @@
     "product": "Product",
     "invoice": "Invoice"
   },
-
+  "user": {
+    "enterUsername": "Enter username",
+    "enterPassword": "Enter password"
+  },
   "customer": {
         "customerInfo": "Customer Info",
         "enterName": "Enter customer's name",

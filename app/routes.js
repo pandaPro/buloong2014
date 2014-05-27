@@ -13,8 +13,8 @@ module.exports = function(app, passport) {
     app.use('/customer', customers);
     app.use('/config', config);
     app.use('/product', product);
-
-    app.get('/login', login);
+    app.use('/login', login);
+    
     app.get('/invoice', about);
     app.get('/logout', about);
     app.get('/about', about);

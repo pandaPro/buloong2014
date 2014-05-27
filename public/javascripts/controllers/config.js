@@ -11,15 +11,15 @@ function configController($scope, $http) {
     }
     
     // when landing on the page, get all configs and show them
-    // $http.get(url+'list')
-    //     .success(function(data) {
-    //         $scope.list = data;
-    //         // alert(data);
-    //         console.log(data);
-    //     })
-    //     .error(function(data) {
-    //         console.log('Error: ' + data);
-    //     });
+    $http.get(url+'list')
+        .success(function(data) {
+            $scope.list = data;
+            // alert(data);
+            console.log(data);
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+    });
 
     // when submitting the add form, send the text to the node API
     $scope.createConfig = function(objModel) {
