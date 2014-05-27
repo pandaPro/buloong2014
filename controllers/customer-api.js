@@ -5,7 +5,6 @@ Exports 3 methods:
 * show - Displays a thread and its posts
 */
  
- 
 var customerModel = require('../models/customer-model.js');
 var customerList = customerModel.listCustomers;
 
@@ -18,14 +17,26 @@ exports.getCustomerList = function () {
     return( new customerList);
 }
 
-
 exports.customerlist = function (callback){
     customerModel.find({}, function (err, customers) {
         if(err){
             console.log("customerlist: " + err);
+            callback(err);
         }else{
             console.log(customers);
             callback("", customers);
+        }
+    })// end Customer.find
+}// end exports.customerlist
+
+exports.findCustomer = function (name, callback){
+    customerModel.findOne({name: name}, function (err, customer) {
+        if(err){
+            console.log("customer: " + err);
+            callback(err);
+        }else{
+            console.log(customer);
+            callback("", customer);
         }
     })// end Customer.find
 }// end exports.customerlist
@@ -49,7 +60,7 @@ exports.add = function(obj, callback) {
             callback(error);
         }
         else {
-            
+
             callback("", savedItem);
         }
    });

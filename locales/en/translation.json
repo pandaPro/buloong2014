@@ -4,6 +4,7 @@
     "login": "Login",
     "logout": "Logout",
     "actived": "Actived",
+    "inactived": "Inactived",
     "blocked": "Blocked"
   },
   "menu": {

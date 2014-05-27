@@ -2,9 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var productSchema = new Schema({
-    id:{
-        type: ObjectId,
-    },
     code:{
         type: String,
         index:true,
@@ -38,13 +35,13 @@ var productSchema = new Schema({
         required: true
     },
     salePrice:{
-        type: number,
+        type: Number,
         validate: [
             function(v) { return v != null || v != ""; },
             "Required sale price"
         ],
         min: 30,
-        max: 1000,
+        max: 5000,
         required: true
     },
     status: {
