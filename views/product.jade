@@ -3,7 +3,7 @@ extends layout
 block menu
     include includes/profile-menu
     +menu('menu.product')
-block head
+block js
     script(src='/javascripts/controllers/product.js')
     script(src='/javascripts/controllers/common-directives.js')
 block content
@@ -24,8 +24,7 @@ block content
                         td {{product.length}}
                         td {{product.type}}
                         td {{product.salePrice}}
-                        td
-                            {{product.status}} 
+                        td {{product.status}} 
                             -if('#{product.status}' == 'true') 
                                 div.alert.alert-success=t("actived")
                             -else

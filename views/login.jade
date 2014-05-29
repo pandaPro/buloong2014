@@ -1,19 +1,24 @@
 extends layout
 
-block head
+block css
     link(rel='stylesheet', href='/stylesheets/signin.css')
+    script(src='/javascripts/controllers/login.js')
 block content
     div.container
-
-        form.form-signin(novalidate name="loginForm")
-            legend Please sign in
-                .form-group(ng-class="{ 'has-error' : loginForm.username.$invalid && !loginForm.username.$pristine }")
-                    label Username
-                    input.form-control.input-lg.text-center(id="username", type="text", name="username", placeholder="Enter your username" require)
-                    span(class="help-block" ng-show="loginForm.username.$error.required")=t("validation.required")
-                .form-group(ng-class="{ 'has-error' : loginForm.password.$invalid && !loginForm.password.$pristine }")
-                    label Password
-                    input.form-control.input-lg.text-center(id="password", type="password", name="password", placeholder="Enter your password" require)
-                    span(class="help-block" ng-show="loginForm.password.$error.required")=t("validation.required")
-                .form-group
-                    input(class="btn btn-lg btn-primary btn-block" ng-click="" type="submit", ng-disabled="loginForm.$invalid" value="Log In")
+        .form-group
+            form.form-signin(method="post" action="/login" novalidate name="loginForm"  accept-charset="UTF-8")
+              .input-group
+                span.input-group-addon
+                  i.glyphicon.glyphicon-user
+                input.form-control.input-lg(type='text', name='username', placeholder=t("user.enterUsername"))
+              span(class="help-block" ng-show="loginForm.username.$error.required")=t("validation.required")
+              .input-group
+                span.input-group-addon
+                  i.glyphicon.glyphicon-lock
+                input.form-control.input-lg(type='password', name='password', placeholder=t("user.enterPassword"))
+              span(class="help-block" ng-show="loginForm.password.$error.required")=t("validation.required")
+              button.btn.btn-lg.btn-primary.btn-block(type='submit')=t("app.login")
+              .col-xs-12.col-sm-6
+                label.checkbox
+                  input(type='checkbox', value='remember-me')
+                  | Remember Me
