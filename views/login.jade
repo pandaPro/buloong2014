@@ -7,6 +7,7 @@ block content
     div.container
         .form-group
             form.form-signin(method="post" action="/login" novalidate name="loginForm"  accept-charset="UTF-8")
+              legend=t("user.loginTitle")
               .input-group
                 span.input-group-addon
                   i.glyphicon.glyphicon-user
@@ -18,7 +19,6 @@ block content
                 input.form-control.input-lg(type='password', name='password', placeholder=t("user.enterPassword"))
               span(class="help-block" ng-show="loginForm.password.$error.required")=t("validation.required")
               .col-xs-12.col-sm-6
-                label.checkbox
+                label.checkbox=t("user.rememberMe")
                   input(type='checkbox', value='remember-me')
-                  | Remember Me
               button.btn.btn-lg.btn-primary.btn-block(type='submit')=t("app.login")
