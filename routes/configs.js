@@ -32,7 +32,7 @@ router.get('/list', function(req, res) {
 
 router.get('/check/:name', function(req, res) {
     var name = req.params.name;
-    api.configlist(function(err, data){
+    api.findConfigByName(name, function(err, data){
         if (err)
             res.send(err);
         res.json(data);

@@ -4,6 +4,7 @@ block head
     link(rel='stylesheet', href='/stylesheets/signin.css')
 block content
     div.container
+
         form.form-signin(novalidate name="loginForm")
             legend Please sign in
                 .form-group(ng-class="{ 'has-error' : loginForm.username.$invalid && !loginForm.username.$pristine }")

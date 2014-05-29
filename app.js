@@ -5,9 +5,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var i18n = require("i18next");
-var passport = require('passport');
 var flash = require('connect-flash');
 var db = require('./models/db');
+var passport = require('passport');
+var localStrategy = require('passport-local').Strategy;
+var session = require('express-session');
 
 var app = express();
 
@@ -53,62 +55,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(i18n.handle); // have i18n before app.router
 
 // required for passport
-// app.use(express.session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
+app.use(session({ secret: 'iloveyouKatherineRuan' })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
-// Make our db accessible to our router
-// app.use(function(req, res, next){
-    // req.db = db;
-    // next();
-    // console.log("Make our db accessible to our router");
-// });
-
-var routes = require('./app/routes')(app, passport);
-// var routes = require('./routes');
-// var customers = require('./routes/customers');
-// var login = require('./routes/login');
-// var about = require('./routes/about');
-// var locale = require('./routes/locale');
-
-// app.use('/', routes);
-// app.use('/customer', customers);
-// app.get('/login', login);
-// app.get('/locale', locale);
-// app.get('/about', about);
-
+var routes = require('./app/routes')(app, passport, localStrategy);
 i18n.registerAppHelper(app);
-
-/// catch 404 and forwarding to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
-
-/// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
-});
 
 module.exports = app;

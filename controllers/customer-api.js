@@ -17,8 +17,8 @@ exports.getCustomerList = function () {
     return( new customerList);
 }
 
-exports.customerlist = function (callback){
-    customerModel.find({}, function (err, customers) {
+exports.customerlist = function (query, callback){
+    customerModel.find("{"+ query +"}", function (err, customers) {
         if(err){
             console.log("customerlist: " + err);
             callback(err);

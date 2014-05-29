@@ -20,7 +20,7 @@ exports.getConfigObject = function (obj) {
 
 
 exports.list = function (callback){
-    ConfigModel.find({}, function (err, configs) {
+    ConfigModel.find("{}", function (err, configs) {
         if(err){
             console.log("configlist: " + err);
         }else{

@@ -2,7 +2,7 @@ extends layout
 
 block menu
     include includes/profile-menu
-
+    +menu('menu.customer')
 block head
     script(src='/javascripts/controllers/customer.js')
     script(src='/javascripts/controllers/common-directives.js')
@@ -26,11 +26,11 @@ block content
                         td {{customer.address}}
                         td {{customer.phone}}
                         td
-                            //- input(type="checkbox" disabled checked="{{customer.status}}")
-                            if true
-                                div.alert.alert-success actived
-                            else
-                                div.alert.alert-danger=t("Blocked")
+                            {{customer.status}}
+                            -if('#{customer.status}' == 'true')
+                                div.alert.alert-success=t("actived")
+                            -else
+                                div.alert.alert-danger=t("blocked")
                         td
                             p
                                 button(ng-click="edit(customer._id)" type="button" class="btn btn-primary")=t("button.edit")
@@ -60,7 +60,7 @@ block content
         div( id="messages" ng-show="message") {{ message }}
         form(name="customerModel" novalidate )
             div.row
-                h2(class="form-signin-heading") Customer Info
+                h2=t("customer.customerInfo")
                 div(class="form-group" ng-class="{ 'has-error' : customerModel.name.$invalid && !customerModel.name.$pristine }")
                     input(type="text" name="name" class="form-control input-lg text-center" required placeholder=t("customer.enterName") ng-model="newCustomer.name")
                     span(class="help-block" ng-show="customerModel.name.$error.required")=t("validation.required")
@@ -70,10 +70,11 @@ block content
                     input(type="text" name="phone" valid-number class="form-control input-lg text-center" placeholder=t("customer.enterPhone") ng-model="newCustomer.phone" ng-minlength="8" ng-maxlength="30")
                     span(class="help-block" ng-show="customerModel.phone.$dirty && customerModel.phone.$invalid")=t("validation.number")
                     span(class="help-block" ng-show="customerModel.phone.$error.required")=t("validation.required")
-                div.form-group
-                    div.controls
-                        span=t("customer.status")
-                            input(type="checkbox" ng-model="newCustomer.status")
+                .form-group
+                    label.control-label(for='checkboxes')=t("customer.status")
+                      .col-md-4
+                        label.checkbox-inline(for='checkboxe-status')
+                            input#checkboxe-status(type="checkbox" ng-model="newCustomer.status")
                 div.control-group
                     input(type="submit" class="btn btn-primary btn-lg" 
                     ng-click="createCustomer(customerModel)" ng-disabled="customerModel.$invalid")=t("button.add")

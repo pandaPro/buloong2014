@@ -17,8 +17,10 @@
     "invoice": "Invoice"
   },
   "user": {
-    "enterUsername": "Enter username",
-    "enterPassword": "Enter password"
+    "loginTitle": "Please log in",
+    "rememberMe": "Remember me",
+    "enterUsername": "Enter your username",
+    "enterPassword": "Enter your password"
   },
   "customer": {
         "customerInfo": "Customer Info",
