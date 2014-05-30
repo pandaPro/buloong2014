@@ -9,11 +9,10 @@ router.get('/', function(req, res) {
 });
 
 router.post('/', function(req, res, passport){
-        console.log("passport=" + passport);
-        passport.authenticate('local', { successRedirect: '/',
-                                   failureRedirect: '/login',
-                                   failureFlash: true });
-        
+    console.log("passport=" + passport);
+    passport.authenticate('local', { successRedirect: '/',
+                               failureRedirect: '/',
+                               failureFlash: true });
 });
 
 module.exports = router;

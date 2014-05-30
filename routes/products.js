@@ -23,7 +23,7 @@ router.get('/', function(req, res) {
 });
 
 router.get('/list', function(req, res) {
-    api.productlist(function(err, data){
+    api.productlist("", function(err, data){
         if (err)
             res.send(err);
         res.json(data);
