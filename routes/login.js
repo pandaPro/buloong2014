@@ -1,19 +1,23 @@
 var express = require('express');
 var LocalStrategy = require('passport-local').Strategy;
 var router = express.Router();
+var api = require('../controllers/user-api.js');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-    // passport.authenticate('local', { successRedirect: '/profile', failureRedirect: '/login' });
     res.render('login', { title: 'Log me in' });
 });
 
 router.post('/', function(req, res, passport){
-        console.log("passport=" + passport);
-        passport.authenticate('local', { successRedirect: '/',
-                                   failureRedirect: '/login',
-                                   failureFlash: true });
-        
+    // api.login(req.username, req.password);
+    console.log("req.body.password=" + req.body.username);
+    console.log("req.username=" + req.username);
+    console.log("req.password=" + req.password);
+    // console.log("passport=" + passport);
+    // passport.authenticate('local', { successRedirect: '/',
+    //                            failureRedirect: '/login',
+    //                            failureFlash: true });
+    res.render('login', { title: 'Log me in' });
 });
 
 module.exports = router;

@@ -1,5 +1,10 @@
-var express = require('express');
+var assert = require('assert');
 var api = require('../controllers/customer-api.js');
-var router = express.Router();
 
+//bdd test
+describe("A suite", function() {
+  it("contains spec with an expectation", function() {
+    expect(true).toBe(true);
+  });
+});
 

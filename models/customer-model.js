@@ -7,6 +7,7 @@ var customerSchema = new Schema({
         type: String,
         index: true,
         unique: true,
+        trim: true,
         validate: validate('len', 1, 30),
         required: true
     },

@@ -1,5 +1,5 @@
 // // app/routes.js
-module.exports = function(app, passport) {
+module.exports = function(app, passport, localStrategy) {
     // console.log("routes:" + app);
     var routes = require('../routes');
     var customers = require('../routes/customers');
