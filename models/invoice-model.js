@@ -11,10 +11,6 @@ var invoiceSchema = new Schema({
     customer:{
         type: Schema.ObjectId,
         index: true,
-        validate: [
-            function(v) { return v != null || v != ""; },
-            "Required type"
-        ],
         required: true
     },
     orders:[{
