@@ -5,7 +5,8 @@
     "logout": "Logout",
     "actived": "Actived",
     "inactived": "Inactived",
-    "blocked": "Blocked"
+    "blocked": "Blocked",
+    "selectOption": "-- Select an option --"
   },
   "menu": {
     "home": "Home",
@@ -85,7 +86,9 @@
         "edit": "Edit",
         "delete": "Delete",
         "remove": "Remove",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "save": "Save",
+        "close": "Close"
     },
 
   "creator": {

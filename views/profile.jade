@@ -1,76 +1,21 @@
 extends layout
 
-block menu
-    include includes/menu
-
 block footer
     include includes/footer
 
-block content  
-  span(class="glyphicon glyphicon-volume-off")= t("app.name")
-  div.jumbotron
-    h1 Hello, world!  
-      small Subtext for header
-    p
-      a(class="btn btn-primary btn-lg" role="button") Learn more
-
-  div.row
-    div(class="col-xs-6 col-md-3")
-      a.thumbnail(href="#")
-        img(alt="100%x180" data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2…I+MTcxeDE4MDwvdGV4dD48L3N2Zz4=")
-    div(class="col-xs-6 col-md-3")
-      a.thumbnail(href="#")
-        img(alt="100%x180" data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2…I+MTcxeDE4MDwvdGV4dD48L3N2Zz4=")
-    div(class="col-xs-6 col-md-3")
-      a.thumbnail(href="#")
-        img(alt="100%x180" data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2…I+MTcxeDE4MDwvdGV4dD48L3N2Zz4=")
-    div(class="col-xs-6 col-md-3")
-      a.thumbnail(href="#")
-        img(alt="100%x180" data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2…I+MTcxeDE4MDwvdGV4dD48L3N2Zz4=")
-
-  div.row
-    div(class="col-sm-6 col-md-4")
-      div.thumbnail
-        img(data-src="holder.js/300x200" alt="...")
-        div.caption
-          h3 Thumbnail label
-          p Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-          p
-            a(href="#" class="btn btn-primary" role="button") Button
-            a(href="#" class="btn btn-default" role="button") Button
-    div(class="col-sm-6 col-md-4")
-      div.thumbnail
-        img(data-src="holder.js/300x200" alt="...")
-        div.caption
-          h3 Thumbnail label
-          p Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-          p
-            a(href="#" class="btn btn-primary" role="button") Button
-            a(href="#" class="btn btn-default" role="button") Button
-    div(class="col-sm-6 col-md-4")
-      div.thumbnail
-        img(data-src="holder.js/300x200" alt="...")
-        div.caption
-          h3 Thumbnail label
-          p Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-          p
-            a(href="#" class="btn btn-primary" role="button") Button
-            a(href="#" class="btn btn-default" role="button") Button
-
-  div.container
-    div.content
-      table.table.table-striped
-        thead
-          tr
-            th Table
-            th Heading
-        tbody
-          tr
-            td Blah
-            td Test
-          tr
-            td Hello
-            td World
-          tr
-            td Adam
-            td Smith
+block content
+  br/
+  .container
+    div.row
+      div(class="col-xs-6 col-md-3")
+        a.thumbnail(href="/invoice")
+          img(alt=t("menu.invoice") data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="")
+      div(class="col-xs-6 col-md-3")
+        a.thumbnail(href="/customer")
+          img(alt=t("menu.customer") data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="")
+      div(class="col-xs-6 col-md-3")
+        a.thumbnail(href="/product")
+          img(alt=t("menu.product") data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="")
+      div(class="col-xs-6 col-md-3")
+        a.thumbnail(href="/config")
+          img(alt=t("menu.config") data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="")

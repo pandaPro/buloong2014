@@ -8,12 +8,15 @@ block js
     script(src='/javascripts/controllers/common-directives.js')
 block content
     div.container(ng-controller="configController")
-      //- .input-append
-      //-   input.input-large.search-query(type='text', ng-model='query', ng-change='search()', placeholder='Search')
-      //-   span.add-on
-      //-     i.icon-search
+      button.btn.btn-primary.btn-lg(data-toggle='modal', data-target='#myModal')
+        span(class="glyphicon glyphicon-plus")      
       table.table.table-striped.table-condensed.table-hover
         thead
+          tr
+            .input-append
+              input(type="text" class="input-lg text-center" placeholder=t("customer.enterName"))
+              span.add-on
+                i.icon-search
           tr.input-lg.text-center
             th=t("config.name")
               a(ng-click='sort_by(\'name\')')
@@ -27,18 +30,19 @@ block content
         tbody
           //- tr(ng-repeat='item in pagedItems[currentPage] | orderBy:sortingOrder:reverse')
           tr.input-lg.text-left(ng-hide="editorEnabled" ng-repeat='item in list | orderBy:sortingOrder:reverse')
-            td.col-xs-2 {{item.name}}
-            td.col-xs-6 {{item.value}}
+            td {{item.name}}
+            td {{item.value}}
             td.col-xs-1 
                 -if(true)
-                    div.alert.alert-success=t("actived")
+                    span.label.label-success=t("actived")
                 -else
-                    div.alert.alert-danger=t("inactive")
+                    span.label.label-danger=t("blocked")
             td
                 p
-                    button(ng-click="edit(item._id)" type="button" class="btn btn-primary btn-lg")=t("button.edit")
+                    button(ng-click="edit(item._id)" type="button" class="btn btn-primary")
+                        span(class="glyphicon glyphicon-edit")=t("button.edit")
                     span &nbsp;
-                    button(type="button" class="btn btn-danger btn-lg")=t("button.delete")
+                    //- button(type="button" class="btn btn-danger")=t("button.delete")
 
           tr.input-lg.text-center(ng-show="editorEnabled")
             td(class="col-xs-2")
@@ -56,19 +60,24 @@ block content
                         span(class="glyphicon glyphicon-remove")
       br
       hr
-      div( id="messages" ng-show="message") {{ message }}
-      form(name="configModel")
-        div.row
-            h2(class="form-signin-heading")=t("config.configInfo")
-            div(class="form-group" ng-class="{ 'has-error' : configModel.name.$invalid && !configModel.name.$pristine }")
-                input(type="text" name="name" class="form-control input-lg text-center" required placeholder=t("config.enterName") ng-model="newConfig.name")
-                span(ng-show="configModel.name.$error.required")=t("validation.required")
-            div.form-group(ng-class="{ 'has-error' : configModel.value.$invalid && !configModel.value.$pristine }")
-                input(type="text" name="value" class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="newConfig.value")
-                span(ng-show="configModel.value.$error.required")=t("validation.required")
-            div.form-group
-                div.controls
-                    input(type="checkbox" text=t("config.status") ng-model="newConfig.status")
-            div.control-group
-                input(type="submit" class="btn btn-primary btn-lg" 
-                ng-click="createConfig(configModel)" ng-disabled="configModel.$invalid")
+      form(name="configModel" novalidate)
+        #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+              .modal-dialog
+                .modal-content
+                  .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                    h4#myModalLabel.modal-title=t("config.configInfo")
+                  .modal-body
+                    div( id="messages" ng-show="message") {{ message }}
+                    div(class="form-group" ng-class="{ 'has-error' : configModel.name.$invalid && !configModel.name.$pristine }")
+                        input(type="text" name="name" class="form-control input-lg text-center" required placeholder=t("config.enterName") ng-model="newConfig.name")
+                        span(ng-show="configModel.name.$error.required")=t("validation.required")
+                    div.form-group(ng-class="{ 'has-error' : configModel.value.$invalid && !configModel.value.$pristine }")
+                        input(type="text" name="value" class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="newConfig.value")
+                        span(ng-show="configModel.value.$error.required")=t("validation.required")
+                    div.form-group
+                        div.controls
+                            input(type="checkbox" text=t("config.status") ng-model="newConfig.status")
+                  .modal-footer
+                    button.btn.btn-default(type='button' class="btn btn-default btn-lg" data-dismiss='modal')=t("button.close")
+                    input(type="submit" class="btn btn-primary btn-lg" ng-click="createConfig(configModel)" ng-disabled="configModel.$invalid" value=t("button.add"))

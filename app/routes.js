@@ -1,23 +1,24 @@
 // // app/routes.js
-module.exports = function(app, passport) {
+module.exports = function(app, passport, localStrategy) {
     // console.log("routes:" + app);
     var routes = require('../routes');
     var customers = require('../routes/customers');
     var config = require('../routes/configs');
     var product = require('../routes/products');
-    var login = require('../routes/login');
-    var about = require('../routes/about');
-    var locale = require('../routes/locale');
+    var invoice = require('../routes/invoices');
+    var user = require('../routes/user');
+    var profile = require('../routes/profile');
+
 
     app.use('/', routes);
     app.use('/customer', customers);
     app.use('/config', config);
     app.use('/product', product);
-    app.use('/login', login);
-    
-    app.get('/invoice', about);
-    app.get('/logout', about);
-    app.get('/about', about);
+    app.use('/login', user);
+    app.use('/profile', profile);
+    app.use('/invoice', invoice);
+    // app.get('/logout', about);
+    // app.get('/about', about);
     
 	// // =====================================
 	// // HOME PAGE (with login links) ========

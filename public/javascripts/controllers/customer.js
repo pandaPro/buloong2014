@@ -1,15 +1,10 @@
-var app = angular.module('myApp', []);
+'use strict';
 var url = "/customer/";
 
 function customerController($scope, $http) {
     $scope.editorEnabled = false;
     $scope.list = {};
-    
-    $scope.init = function() {
-        alert(list);
-        $scope.list = list;
-    }
-    
+
     // when landing on the page, get all customers and show them
     $http.get(url+'list')
         .success(function(data) {

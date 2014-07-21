@@ -5,17 +5,20 @@ block menu
     +menu('menu.product')
 block js
     script(src='/javascripts/controllers/product.js')
-    script(src='/javascripts/controllers/common-directives.js')
+    script(src='/javascripts/common-directives.js')
 block content
     div.container(ng-controller="productController")
+        button.btn.btn-primary.btn-lg(data-toggle='modal', data-target='#myModal')
+            span(class="glyphicon glyphicon-plus")
+
         div.row.table-responsive
-            table(class="table table-striped")
+            table.input-lg(class="table table-striped")
                 thead
                     tr
                         th=t("product.format")
                         th=t("product.length")
                         th=t("product.type")
-                        th=t("product.salePrice")
+                        th=t("product.saleprice")
                         th=t("product.status")
                         th
                 tbody
@@ -25,10 +28,10 @@ block content
                         td {{product.type}}
                         td {{product.salePrice}}
                         td {{product.status}} 
-                            -if('#{product.status}' == 'true') 
-                                div.alert.alert-success=t("actived")
+                            -if ('#{product.status}' == 'true')
+                                span.label.label-success=t("actived")
                             -else
-                                div.alert.alert-danger=t("blocked")
+                                span.label.label-danger=t("blocked")
                         td
                             p
                                 button(ng-click="edit(product._id)" type="button" class="btn btn-primary")=t("button.edit")
@@ -36,16 +39,19 @@ block content
                                 button(type="button" class="btn btn-danger")=t("button.delete")
                     tr(ng-show="editorEnabled")
                         td
-                            select(data-ng-options="o.name for o in options" data-ng-model="selectedOption" class="form-control input-lg text-center")
-                            span(ng-show="editProduct.name.$error.required")=t("validation.required")
+                            select(ng-model="editProduct.format" name="format" class="form-control input-lg text-center" required)
+                                    option(ng-repeat="format in formats track by format.value" value="{{format.value}}") {{format.name}}
+                            span(ng-show="editProduct.format.$error.required")=t("validation.required")
                         td
-                            select(data-ng-options="o.name for o in options" data-ng-model="selectedOption" class="form-control input-lg text-center")
+                            select(name="length" ng-model="editProduct.length" class="form-control input-lg text-center" required)
+                                    option(ng-repeat="length in lengths track by length.value" value="{{length.value}}"){{length.name}}
+                            span(ng-show="editProduct.length.$error.required")=t("validation.required")
                         td
-                            select(data-ng-options="o.name for o in options" data-ng-model="selectedOption" class="form-control input-lg text-center")
-                            span(class="error" ng-show="editProduct.phone.$dirty && editProduct.phone.$invalid")=t("validation.number")
-                            span(ng-show="editProduct.phone.$error.required")=t("validation.required")
+                            select(name="type" ng-model="editProduct.type" class="form-control input-lg text-center")
+                                    option(ng-repeat="type in types track by type.value" value="{{type.value}}"){{type.name}}
+                            span(ng-show="editProduct.type.$error.required")=t("validation.required")
                         td
-                            input(type="text" text=t("product.salePrice") checked="{{editProduct.salePrice}}")
+                            input(type="text" valid-number class="form-control input-lg text-center" placeholder=t("product.enterSalePrice") ng-model="editProduct.salePrice")
                         td
                             input(type="checkbox" text=t("product.status") checked="{{editProduct.status}}")
                         td
@@ -56,24 +62,42 @@ block content
                                 button(type="button" class="btn btn-default" ng-click="cancel()")
                                     span(class="glyphicon glyphicon-remove")
         hr
-        form(name="productModel")
-            fieldset
-                legend=t("product.productInfo")
-                    div(class="form-group")
-                        select(data-ng-options="o.name for o in options" data-ng-model="selectedOption" class="form-control input-lg text-center")
-                        span(ng-show="productModel.name.$error.required")=t("validation.required")
-                    div(class="form-group")
-                        select(data-ng-options="o.name for o in options" data-ng-model="selectedOption" class="form-control input-lg text-center")
-                        span(ng-show="productModel.name.$error.required")=t("validation.required")
-                    div.form-group
-                        select(data-ng-options="o.name for o in options" data-ng-model="selectedOption" class="form-control input-lg text-center")
-                    div.form-group(ng-class="{ 'has-error' : productModel.salePrice.$invalid && !productModel.phone.$pristine }")
-                        input(type="text" name="salePrice" valid-number class="form-control input-lg text-center" placeholder=t("product.enterSalePrice") ng-model="newProduct.salePrice")
-                    .form-group
-                        label.control-label(for='checkboxes')=t("product.status")
-                          .col-md-4
-                            label.checkbox-inline(for='checkboxes-0')
-                              input#checkboxes-0(name='checkboxes', value='1', type='checkbox' ng-model="newProduct.status")
-                    .form-group
-                        input(type="submit" class="btn btn-primary btn-lg" 
-                        ng-click="create(productModel)" ng-disabled="productModel.$invalid")
+        form(name="productModel" novalidate)
+        #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                h4=t("product.productInfo")
+              .modal-body
+                    fieldset
+                        legend
+                            div(class="form-group")
+                                {{newProductCode()}}
+                                {{multiple(newProduct.salePrice,newProduct.length) | number:0}}
+                            div(class="form-group")
+                                select(ng-model="newProduct.format" name="format" class="form-control input-lg text-center" required)
+                                    option(value="")=t("app.selectOption")
+                                    option(ng-repeat="format in formats" value="{{format.value}}"){{format.name}}
+                                span(class="help-block" ng-show="productModel.format.$error.required")=t("validation.required")
+                            div(class="form-group")
+                                select(name="length" ng-model="newProduct.length" class="form-control input-lg text-center" required)
+                                    option(value="")=t("app.selectOption")
+                                    option(ng-repeat="length in lengths" value="{{length.value}}"){{length.name}}
+                                span(class="help-block" ng-show="productModel.length.$error.required")=t("validation.required")
+                            div.form-group(ng-class="{ 'has-error' : productModel.type.$invalid && !productModel.type.$pristine }")
+                                select(name="type" ng-model="newProduct.type" class="form-control input-lg text-center")
+                                    option(value="")=t("app.selectOption")
+                                    option(ng-repeat="type in types" value="{{type.value}}"){{type.name}}
+                                span(class="help-block" ng-show="productModel.type.$error.required")=t("validation.required")
+                            div.form-group
+                                input(type="number" min="1" max="5000" name="salePrice" required class="form-control input-lg text-center" placeholder=t("product.enterSalePrice") ng-model="newProduct.salePrice")
+                                span(class="help-block" ng-show="productModel.salePrice.$error.required")=t("validation.required")
+                            .form-group
+                                label.col-md-4.control-label(for='checkboxes')=t("product.status")
+                                        label.checkbox-inline(for='checkboxes-0')
+                                          input#checkboxes-0(name='checkboxes', value='1', type='checkbox' ng-model="newProduct.status")
+
+              .modal-footer
+                button.btn.btn-default(type='button' class="btn btn-default btn-lg" data-dismiss='modal')=t("button.close")
+                input(type="submit" class="btn btn-primary btn-lg" text=t("button.add") ng-click="create(productModel)" ng-disabled="productModel.$invalid" value=t("button.add"))

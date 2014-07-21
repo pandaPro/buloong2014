@@ -1,4 +1,3 @@
-var app = angular.module('myApp', []);
 
 app.$inject = ['$scope'];
 
@@ -71,4 +70,33 @@ app.directive('numberOnlyInput', function () {
             });
         }
     };
+});
+
+//<select-box name="demo" ng-model="myValue" options="myOptions" 
+//optExp="t.name for t in options | orderBy:'name'" defaultLabel="Select One"></select-box>
+
+app.directive('selectBox', function () {
+    return {
+        replace: true,
+        restrict: 'E',
+        scope: false,
+        template: function (element, attrs) {
+            if (!angular.isDefined(attrs.defaultLabel))
+                attrs.defaultLabel = "";
+
+            return '<div class="form-group">'+
+                        '<select class="'+ attrs.class +'" name="' + attrs.name + '" ng-model="' + attrs.ngModel 
+                        + '" ng-options="' + attrs.optexp + '"' + ((attrs.required) ? ' required' : '') + '></select>'+
+                   '</div>';
+        },
+        link: function (scope, el, attrs) {
+            scope.$watch(attrs.ngModel, function () {
+                var model = scope.$eval(attrs.ngModel);
+                //when value changes, update the selectBox text
+                if (angular.isDefined(model) && angular.isDefined(model.name)) {
+                    el[0].firstChild.innerText = model.name;
+                }
+            });
+        }
+    }
 });

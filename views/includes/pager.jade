@@ -1,0 +1,11 @@
+//- mixin customSelection(attrs)
+//-     select-box(attrs)
+
+  .pagination.pull-right
+      ul
+        li(ng-class='{disabled: currentPage == 0}')
+          a(href='href', ng-click='prevPage()') « Prev
+        li(ng-repeat='n in range(pagedItems.length)', ng-class='{active: n == currentPage}', ng-click='setPage()')
+          a(href='href', ng-bind='n + 1') 1
+        li(ng-class='{disabled: currentPage == pagedItems.length - 1}')
+          a(href='href', ng-click='nextPage()') Next »

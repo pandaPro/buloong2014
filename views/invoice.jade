@@ -1,63 +1,116 @@
 extends layout
 
-block head
-    script(src='/javascripts/controllers/customer.js')
-    script(src='/javascripts/controllers/common-directives.js')
+block menu
+    include includes/profile-menu
+    +menu('menu.invoice')
+    link(rel='stylesheet', href='/stylesheets/datetimepicker.css')
+block js
+    script(src='/javascripts/controllers/invoice.js')
+    script(src='/javascripts/common-directives.js')
+    script(src='/javascripts/datetimepicker.js')
 block content
-    div.container(ng-controller="customerController")
-        div.row-fluid 
-            label {{ list.length }}
-            input(type="text" class="input-lg text-center")
-            table(class="table table-striped")
+    div.container(ng-controller="invoiceController")
+        button.btn.btn-primary.btn-lg(data-toggle='modal', data-target='#myModal')
+            span(class="glyphicon glyphicon-plus")
+
+        div.row.table-responsive
+            table.input-lg(class="table table-striped")
                 thead
                     tr
-                        th= t("customer.name")
-                        th= t("customer.address")
-                        th= t("customer.phone")
-                        th= t("customer.status")
+                        th=t("product.format")
+                        th=t("product.length")
+                        th=t("product.type")
+                        th=t("product.saleprice")
+                        th=t("product.status")
                         th
                 tbody
-                    tr(ng-hide="editorEnabled" ng-repeat="customer in list")
-                        td {{customer.name}}
-                        td {{customer.address}}
-                        td {{customer.phone}}
-                        td
-                            input(type="checkbox" checked="{{customer.status}}")
+                    tr(ng-hide="editorEnabled" ng-repeat="product in list")
+                        td {{product.format}}
+                        td {{product.length}}
+                        td {{product.type}}
+                        td {{product.salePrice}}
+                        td {{product.status}} 
+                            -if('#{product.status}' == 'true') 
+                                span.label.label-success=t("actived")
+                            -else
+                                span.label.label-danger=t("blocked")
                         td
                             p
-                                button(ng-click="editCustomer(customer._id)" type="button" class="btn btn-primary") edit
+                                button(ng-click="edit(product._id)" type="button" class="btn btn-primary")=t("button.edit")
                                 span &nbsp;
-                                button(type="button" class="btn btn-danger") delete
+                                button(type="button" class="btn btn-danger")=t("button.delete")
                     tr(ng-show="editorEnabled")
                         td
-                            input(type="text" class="form-control input-lg text-center" required placeholder=t("customer.enterName") 
-                            ng-model="newCustomer.name" )
+                            select(data-ng-options="o.name for o in options" data-ng-model="selectedOption" class="form-control input-lg text-center")
+                            span(ng-show="editProduct.format.$error.required")=t("validation.required")
                         td
-                            input(type="text" class="form-control input-lg text-center" required placeholder=t("customer.enterAddress") ng-model="newCustomer.address")
+                            select(data-ng-options="o.name for o in options" data-ng-model="selectedOption" class="form-control input-lg text-center")
+                            span(ng-show="editProduct.length.$error.required")=t("validation.required")
                         td
-                            input(type="text" valid-number class="form-control input-lg text-center" required placeholder=t("customer.enterPhone") ng-model="newCustomer.phone")
+                            select(data-ng-options="o.name for o in options" data-ng-model="selectedOption" class="form-control input-lg text-center")
+                            span(ng-show="editProduct.type.$error.required")=t("validation.required")
                         td
-                            input(type="checkbox" text=t("customer.status") checked="{{newCustomer.status}}")
+                            input(type="text" valid-number class="form-control input-lg text-center" placeholder=t("product.enterSalePrice") ng-model="editProduct.salePrice")
+                        td
+                            input(type="checkbox" text=t("product.status") checked="{{editProduct.status}}")
                         td
                             p
-                                button(type="button" class="btn btn-primary" ng-click="updateCustomer(newCustomer)")
-                                    span(class="glyphicon glyphicon-ok")
+                                button(type="button" class="btn btn-primary" ng-click="update(editProduct)")
+                                    span(class="glyphicon glyphicon-edit")
                                 span &nbsp;
                                 button(type="button" class="btn btn-default" ng-click="cancel()")
                                     span(class="glyphicon glyphicon-remove")
-        form(name="customerModel")
-            div.row
-                div(class="form-group")
-                    input(type="text" class="form-control input-lg text-center" required placeholder=t("customer.enterName") 
-                    ng-model="customerModel.name")
-                div.form-group
-                    input(type="text" class="form-control input-lg text-center" required placeholder=t("customer.enterAddress") ng-model="customerModel.address")
-                div.form-group
-                    input(type="text" valid-number class="form-control input-lg text-center" required placeholder=t("customer.enterPhone") ng-model="customerModel.phone")
-                div.form-group
-                    div.controls
-                        input(type="checkbox" text=t("customer.status"))
-                div.control-group
-                    input(type="submit" class="btn btn-primary btn-lg" 
-                    ng-click="createCustomer(customerModel)"
-                    ng-disabled="customerModel.$invalid")
+        hr
+        form(name="invoiceModel" novalidate)
+        #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                h4=t("invoice.invoiceInfo")
+              .modal-body
+                    fieldset
+                        legend
+                            div(class="form-group")
+                                //- input(type="date" ng-model="createdDate" required class="form-control input-lg text-center")=t("invoice.date")
+                                {{createdDate | date:'dd-MM-yyyy HH:mm:ss'}}
+                                .dropdown
+                                    a#dropdown2.dropdown-toggle(role='button', data-toggle='dropdown', data-target='#', href='#')
+                                        .input-group
+                                            input.form-control(type='text', data-ng-model='data.dateDropDownInput')
+                                            span.input-group-addon
+                                                i.glyphicon.glyphicon-calendar
+                                    ul.dropdown-menu(role='menu', aria-labelledby='dLabel')
+                                        <datetimepicker data-ng-model="createdDate" data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"/>
+                                //- 'datetimepicker data-ng-model=data.embeddedYear", data-datetimepicker-config="{ startView: \'year\', minView: \'year\'}")'
+                            div.form-group
+                                select(ng-model="newInvoice.customer" name="customer" class="form-control input-lg text-center" required)
+                                    option(value="")=t("app.selectOption")
+                                    option(ng-repeat="c in customers" value="{{c.Id}}"){{c.name}}
+                            div(class="form-group")
+                                select(ng-model="newInvoice.format" name="format" class="form-control input-lg text-center" required)
+                                    option(value="")=t("app.selectOption")
+                                    option(ng-repeat="format in formats" value="{{format.value}}"){{format.name}}
+                                {{newInvoice.format}}
+                                span(class="help-block" ng-show="invoiceModel.format.$error.required")=t("validation.required")
+                            div(class="form-group")
+                                select(name="length" ng-model="newInvoice.length" class="form-control input-lg text-center" required)
+                                    option(value="")=t("app.selectOption")
+                                    option(ng-repeat="length in lengths" value="{{length.value}}"){{length.name}}
+                                span(class="help-block" ng-show="invoiceModel.length.$error.required")=t("validation.required")
+                            div.form-group(ng-class="{ 'has-error' : invoiceModel.type.$invalid && !invoiceModel.type.$pristine }")
+                                select(name="type" ng-model="newInvoice.type" class="form-control input-lg text-center")
+                                    option(value="")=t("app.selectOption")
+                                    option(ng-repeat="type in types" value="{{type.value}}"){{type.name}}
+                                span(class="help-block" ng-show="invoiceModel.type.$error.required")=t("validation.required")
+                            div.form-group
+                                input(type="number" min="1" max="5000" name="salePrice" required class="form-control input-lg text-center" placeholder=t("product.enterSalePrice") ng-model="newInvoice.salePrice")
+                                span(class="help-block" ng-show="invoiceModel.salePrice.$error.required")=t("validation.required")
+                            .form-group
+                                label.col-md-4.control-label(for='checkboxes')=t("product.status")
+                                        label.checkbox-inline(for='checkboxes-0')
+                                          input#checkboxes-0(name='checkboxes', value='1', type='checkbox' ng-model="newInvoice.status")
+
+              .modal-footer
+                button.btn.btn-default(type='button' class="btn btn-default btn-lg" data-dismiss='modal')=t("button.close")
+                input(type="submit" class="btn btn-primary btn-lg" text=t("button.add") ng-click="create(invoiceModel)" ng-disabled="invoiceModel.$invalid" value=t("button.add"))
