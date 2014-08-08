@@ -79,24 +79,77 @@ app.directive('selectBox', function () {
     return {
         replace: true,
         restrict: 'E',
-        scope: false,
+        scope: true,
+        // link: function (scope, el, attrs) {
+        //     scope.$watch(attrs.ngModel, function () {
+        //         var model = scope.$eval(attrs.ngModel);
+        //         //when value changes, update the selectBox text
+        //         if (angular.isDefined(model) && angular.isDefined(model.name)) {
+        //             el[0].firstChild.innerText = model.name;
+        //         }
+        //     });
+        // },
         template: function (element, attrs) {
             if (!angular.isDefined(attrs.defaultLabel))
                 attrs.defaultLabel = "";
 
-            return '<div class="form-group">'+
-                        '<select class="'+ attrs.class +'" name="' + attrs.name + '" ng-model="' + attrs.ngModel 
-                        + '" ng-options="' + attrs.optexp + '"' + ((attrs.required) ? ' required' : '') + '></select>'+
+            return '<div class="selectBox selector">'+
+                        '<select class="' + attrs.class +'" name="' + attrs.name + '" ng-model="' + attrs.ngModel + '" ng-options="' + attrs.optexp + '"' + ((attrs.required) ? ' required' : '') + '></select>'+
                    '</div>';
-        },
-        link: function (scope, el, attrs) {
-            scope.$watch(attrs.ngModel, function () {
-                var model = scope.$eval(attrs.ngModel);
-                //when value changes, update the selectBox text
-                if (angular.isDefined(model) && angular.isDefined(model.name)) {
-                    el[0].firstChild.innerText = model.name;
-                }
-            });
         }
+        
     }
-});
+  });
+
+// ex: <button confirmed-click="sayHi()" 
+// ng-confirm-click="Would you like to say hi?">Say hi to {{ name }}</button>
+app.directive('ngConfirmClick', [function(){
+  return {
+      link: function (scope, element, attr) {
+          var msg = attr.ngConfirmClick || "Are you sure?";
+          var clickAction = attr.confirmedClick;
+          element.bind('click',function (event) {
+              if ( window.confirm(msg) ) {
+                  scope.$eval(clickAction)
+              }
+          });
+      }
+  };
+}])
+
+
+app.directive('ensureUnique', ['$http', function($http) {
+  return {
+    require: 'ngModel',
+    link: function(scope, ele, attrs, c) {
+      scope.$watch(attrs.ngModel, function() {
+        $http({
+          method: 'POST',
+          url: '/customer/name/' + attrs.ensureUnique,
+          data: {'field': attrs.ensureUnique}
+        }).success(function(data, status, headers, cfg) {
+          c.$setValidity('unique', data.isUnique);
+        }).error(function(data, status, headers, cfg) {
+          c.$setValidity('unique', false);
+        });
+      });
+    }
+  }
+}]);
+
+// ex: <product-select selected-model="selected.item" options="axleTypes"></name-value-select>
+app.directive('productSelect', ['$http', function($http) {
+  return {
+    replace: true,
+    restrict: "E",
+    scope: true,
+    template: function(ele, attrs) {
+      return '<span><select class="' + attrs.class +'" ng-model="' +
+       attrs.ngModel + '" ng-options="' + attrs.optexp + '"' + ((attrs.required) ? ' required' : '') + '></select></span>';
+    }
+    // template: '<select ng-model="selectedModel" class="form-control text-center">'+
+    //     '<option value="">defaultText</option>'+
+    //     '<option ng-repeat="repeat" value="value">name</option>'+
+    //   '</select>'
+  };
+}]);

@@ -17,8 +17,8 @@ exports.getCustomerList = function () {
     return( new customerList);
 }
 
-exports.customerlist = function (query, callback){
-    customerModel.find("{"+ query +"}", function (err, customers) {
+exports.customerlist = function (query, returnFields, callback){
+    customerModel.find(query, returnFields, function (err, customers) {
         if(err){
             console.log("customerlist: " + err);
             callback(err);
@@ -28,6 +28,18 @@ exports.customerlist = function (query, callback){
         }
     })// end Customer.find
 }// end exports.customerlist
+
+// exports.activeCustomerList = function (query, returnFields, callback){
+//     customerModel.find(query, returnFields, function (err, customers) {
+//         if(err){
+//             console.log("customerlist: " + err);
+//             callback(err);
+//         }else{
+//             console.log(customers);
+//             callback("", customers);
+//         }
+//     })// end Customer.find
+// }// end exports.customerlist
 
 exports.findCustomer = function (name, callback){
     customerModel.findOne({name: name}, function (err, customer) {

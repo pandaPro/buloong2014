@@ -4,12 +4,14 @@ block menu
     include includes/profile-menu
     +menu('menu.config')
 block js
+    script(src='/javascripts/ui-bootstrap-tpls-0.11.0.min.js')
+    script(src='/javascripts/app.js')
     script(src='/javascripts/controllers/config.js')
-    script(src='/javascripts/controllers/common-directives.js')
+    script(src='/javascripts/common-directives.js')
 block content
     div.container(ng-controller="configController")
       button.btn.btn-primary.btn-lg(data-toggle='modal', data-target='#myModal')
-        span(class="glyphicon glyphicon-plus")      
+        span(class="glyphicon glyphicon-plus")
       table.table.table-striped.table-condensed.table-hover
         thead
           tr
@@ -40,7 +42,7 @@ block content
             td
                 p
                     button(ng-click="edit(item._id)" type="button" class="btn btn-primary")
-                        span(class="glyphicon glyphicon-edit")=t("button.edit")
+                        span(class="glyphicon glyphicon-edit")
                     span &nbsp;
                     //- button(type="button" class="btn btn-danger")=t("button.delete")
 
@@ -53,14 +55,14 @@ block content
                 input(type="checkbox" text=t("config.status") checked="{{editConfig.status}}")
             td(class="col-xs-3")
                 p
-                    button(type="button" class="btn btn-primary" ng-click="update(editConfig)")
+                    button(type="button" class="btn btn-primary" ng-click="updateConfig(editConfig)")
                         span(class="glyphicon glyphicon-ok")
                     span &nbsp;
                     button(type="button" class="btn btn-default" ng-click="cancel()")
                         span(class="glyphicon glyphicon-remove")
       br
       hr
-      form(name="configModel" novalidate)
+      form(name="configModelForm" novalidate)
         #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
               .modal-dialog
                 .modal-content
@@ -69,15 +71,15 @@ block content
                     h4#myModalLabel.modal-title=t("config.configInfo")
                   .modal-body
                     div( id="messages" ng-show="message") {{ message }}
-                    div(class="form-group" ng-class="{ 'has-error' : configModel.name.$invalid && !configModel.name.$pristine }")
+                    div(class="form-group" ng-class="{ 'has-error' : newConfig.name.$invalid && !newConfig.name.$pristine }")
                         input(type="text" name="name" class="form-control input-lg text-center" required placeholder=t("config.enterName") ng-model="newConfig.name")
-                        span(ng-show="configModel.name.$error.required")=t("validation.required")
-                    div.form-group(ng-class="{ 'has-error' : configModel.value.$invalid && !configModel.value.$pristine }")
+                        span(ng-show="newConfig.name.$error.required")=t("validation.required")
+                    div.form-group(ng-class="{ 'has-error' : newConfig.value.$invalid && !newConfig.value.$pristine }")
                         input(type="text" name="value" class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="newConfig.value")
-                        span(ng-show="configModel.value.$error.required")=t("validation.required")
+                        span(ng-show="newConfig.value.$error.required")=t("validation.required")
                     div.form-group
                         div.controls
                             input(type="checkbox" text=t("config.status") ng-model="newConfig.status")
                   .modal-footer
                     button.btn.btn-default(type='button' class="btn btn-default btn-lg" data-dismiss='modal')=t("button.close")
-                    input(type="submit" class="btn btn-primary btn-lg" ng-click="createConfig(configModel)" ng-disabled="configModel.$invalid" value=t("button.add"))
+                    input(type="submit" class="btn btn-primary btn-lg" ng-click="createConfig(newConfig, configModelForm)" ng-disabled="configModelForm.$invalid" value=t("button.add"))

@@ -1,4 +1,3 @@
-var app = angular.module('myApp', []);
 var url = "/config/";
 
 function configController($scope, $http) {
@@ -22,12 +21,13 @@ function configController($scope, $http) {
     });
 
     // when submitting the add form, send the text to the node API
-    $scope.createConfig = function(objModel) {
-        if(objModel.$valid) {
+    $scope.createConfig = function(objModel, configModelForm) {
+        if(configModelForm.$valid) {
             $http.post(url+'add', { configObject: objModel })
                 .success(function(data) {
                     $scope.configModel = {}; // clear the form so our user is ready to enter another
-                    // $scope.list = data;
+                    $scope.list.push(data.item);
+                    $scope.message = data.message;
                     console.log(data);
                 })
                 .error(function(data) {
@@ -40,7 +40,7 @@ function configController($scope, $http) {
     
     //
     $scope.edit = function (id) {
-        console.log("id:"+id);
+        // console.log("id:"+id);
         for (i in $scope.list) {
             if ($scope.list[i]._id == id) {
                 $scope.editConfig = angular.copy($scope.list[i]);
@@ -55,16 +55,15 @@ function configController($scope, $http) {
     
     //
     $scope.updateConfig = function() {
-        for (i in $scope.list) {
-            if ($scope.list[i]._id == $scope.editConfig._id) {
-                $scope.list[i] = $scope.editConfig;
-            }
-        }
-        $http.put(url+'update/'+$scope.editConfig._id, { updateconfigObject : $scope.editConfig})
+        
+        $http.put(url+'update/'+$scope.editConfig._id, { updateConfigObject : $scope.editConfig})
             .success(function(data) {
+                for (i in $scope.list) {
+                    if ($scope.list[i]._id == $scope.editConfig._id) {
+                        $scope.list[i] = $scope.editConfig;
+                    }
+                }
                 $scope.editConfig = {}; // clear the form so our user is ready to enter another
-                //$scope.list = data.list;
-                console.log(data.list);
                 $scope.editorEnabled = false;
             })
             .error(function(data) {

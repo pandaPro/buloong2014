@@ -1,4 +1,4 @@
-var url = "";
+var url = "/user/";
 app.controller("userController",
     function userController($scope, $http)
     {

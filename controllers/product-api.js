@@ -18,7 +18,7 @@ exports.getProductList = function () {
 }
 
 exports.list = function (query, callback){
-    productModel.find("{"+ query +"}", function (err, products) {
+    productModel.find(query, function (err, products) {
         if(err){
             console.log("productlist: " + err);
             callback(err);
@@ -30,16 +30,18 @@ exports.list = function (query, callback){
 }// end exports.productlist
 
 // first locates a thread by title, then locates the replies by thread ID.
-exports.checkName = (function(name, callback) {
-    productModel.findOne({name: name}, function(error, item) {
+exports.checkCode = function(query, callback) {
+    productModel.findOne(query, function(error, item) {
         if(error) {
+            console.log("error: " + error);
             callback(error);
         }
         else {
+            console.log(item);
             callback("", item);
         }
     });
-});
+}
 
 exports.add = function(obj, callback) {
     console.log("product.add");

@@ -6,7 +6,8 @@
     "actived": "Actived",
     "inactived": "Inactived",
     "blocked": "Blocked",
-    "selectOption": "-- Select an option --"
+    "selectOption": "-- Select an option --",
+    "all": "All"
   },
   "menu": {
     "home": "Home",
@@ -71,6 +72,9 @@
         "length": "Length",
         "type": "Type",
         "saleprice": "Sale price",
+        "quantity": "Quantity",
+        "amount": "Amount",
+        "total": "Total",
         "status": "Status"
   },
   "validation": {
@@ -89,10 +93,5 @@
         "cancel": "Cancel",
         "save": "Save",
         "close": "Close"
-    },
-
-  "creator": {
-    "firstname": "Jan",
-    "lastname": "Mühlemann"
-  }
+    }
 }

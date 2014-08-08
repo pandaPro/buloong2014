@@ -1,5 +1,9 @@
 var mongoose = require('mongoose');
+// var autoIncrement = require('mongoose-auto-increment');
 var Schema = mongoose.Schema;
+var moment = require('moment');
+
+// autoIncrement.initialize(db);
 
 var invoiceSchema = new Schema({
     createdDate:{
@@ -9,13 +13,24 @@ var invoiceSchema = new Schema({
         required: true
     },
     customer:{
-        type: Schema.ObjectId,
-        index: true,
-        required: true
+        id: {
+            type: Schema.ObjectId,
+            ref: 'customers',
+            index: true,
+            required: true
+        }
     },
     orders:[{
-        product: [{type: Schema.ObjectId, ref: 'products'}],
-        price: {
+        _id: false,
+        id: {
+            type: Schema.ObjectId,
+            default: function () { return new mongoose.Types.ObjectId() }
+        },
+        code: {
+            type: String,
+            required: true
+        },
+        salePrice: {
             type: Number,
             min: 30,
             max: 5000,
@@ -24,7 +39,7 @@ var invoiceSchema = new Schema({
         quantity: {
             type: Number,
             min: 1,
-            max: 500000,
+            max: 1000000,
             required: true
         }
     }],
@@ -33,4 +48,37 @@ var invoiceSchema = new Schema({
     }
 });
 
+invoiceSchema.pre('save', function (next) {
+    // verify has had this customer existed invoice on createdDate yet
+    // if existed ==> add new order
+    // else ==> add new invoice
+    var self = this;
+    console.log("=====pre save invoice begin=======");
+    var onDate = moment(self.createdDate).format('YYYY-MM-DD');
+    console.log("onQueryDate=%s, customerId=%s", onDate, self.customer.id);
+    mongoose.models['invoices'].find({"customer.id": self.customer.id}, '_id createdDate').limit(80).sort({createdDate: -1}).exec(function(err, invoices) {
+        if(err) {
+            console.log(err);
+        } else if(invoices) {
+            // console.log("invoice=" + invoices);
+            for(i=0; i< invoices.length; i++){
+                var invoiceId = invoices[i]._id;
+                var createdDate = moment(invoices[i].createdDate).format('YYYY-MM-DD');
+                // console.log("selected invoice date =%s", createdDate);
+                if(createdDate == onDate){
+                    console.log("===== got existed invoice pre save return _id =======");
+                    self.invalidate("_id", invoiceId);
+                    next({_id: invoiceId});
+                    break;
+                }
+            }
+        }
+        else{
+            console.log("=====pre save invoice end======");
+            next();
+        }
+    });
+});
+
+// invoiceSchema.plugin(autoIncrement.plugin, {model: 'invoices', field: 'orders.id', startAt: 1, incrementBy: 1});
 module.exports = mongoose.model('invoices', invoiceSchema);

@@ -37,7 +37,8 @@ router.get('/format', function(req, res){
 router.put('/types', function(req, res){
     var selectedFormat = req.params.selectedFormat;
     var selectedLength = req.params.selectedLength;
-    var queryString = 'format:' + selectedFormat + ' length:' + selectedLength;
+    var queryString = { 'format': + selectedFormat, 
+                        ' length': + selectedLength};
     api.productlist(queryString, function(err, data) {
         if (err)
             res.send(err);
@@ -47,7 +48,7 @@ router.put('/types', function(req, res){
 
 router.put('/length', function(req, res){
     var selectedFormat = req.params.selectedFormat;
-    var queryString = 'format:' + selectedFormat;
+    var queryString = {'format': + selectedFormat };
     api.productlist(queryString, function(err, data){
         if (err)
             res.send(err);
@@ -55,11 +56,35 @@ router.put('/length', function(req, res){
     });
 });
 
-router.get('/list', function(req, res) {
-    api.productlist("", function(err, data){
+router.put('/checkCode/:code', function(req, res){
+    var newCode = req.params.code;
+    var queryString = {'code': newCode};
+    api.checkCode(queryString, function(err, data){
+        if (err)
+            res.send(err);
+        else{
+            // console.log("data :"+ data);
+            var result = (data) ? true : false;
+            console.log("checkCode result=" + result);
+            res.json({ "result" : result, "item": data});
+        }
+    });
+});
+
+router.get('/all', function(req, res) {
+    api.list({}, function(err, data){
         if (err)
             res.send(err);
         res.json(data);
+    });
+});
+
+/// get all active products
+router.get('/activeProducts', function(req, res) {
+    api.list({"status": "true"}, function(err, data){
+        if (err)
+            res.send(err);
+        res.json({items: data});
     });
 });
 
@@ -67,7 +92,7 @@ router.post('/add', function(req, res) {
     console.log(req.body.productObject);
     //validation data
     try {
-        var product = new api.getproductObject(req.body.productObject);
+        var product = new api.getProductObject(req.body.productObject);
         product.validate(function(err) {
             if(err) {
                 console.log(err);
@@ -75,14 +100,14 @@ router.post('/add', function(req, res) {
             }
             else {
                 //save data
-                api.add(product, function(err, items) {
+                api.add(product, function(err, item) {
                     if (err) {
                         console.log("response err: " + err);
                         res.send(err);
                     }
                     else {
-                        console.log("response items: " + items);
-                        res.json(items);
+                        console.log("response items: " + item);
+                        res.json({message: "added", item: item});
                     }
                 })
             }

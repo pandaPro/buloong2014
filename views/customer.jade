@@ -4,7 +4,10 @@ block menu
     include includes/profile-menu
     +menu('menu.customer')
 block js
+    script(src='/javascripts/ui-bootstrap-tpls-0.11.0.min.js')
+    script(src='/javascripts/app.js')
     script(src='/javascripts/controllers/customer.js')
+    script(src='/javascripts/services/baseService.js')
 block content
     div.container(ng-controller="customerController" )
         button.btn.btn-primary.btn-lg(data-toggle='modal', data-target='#myModal')
@@ -30,20 +33,21 @@ block content
                         td {{customer.address}}
                         td {{customer.phone}}
                         td
-                            {{customer.status}}
+                            span {{customer.status}}
                             -if('#{customer.status}' == 'true')
                                 span.label.label-success=t("actived")
                             -else
                                 span.label.label-danger=t("blocked")
                         td
                             p
-                                button(ng-click="edit(customer._id)" type="button" class="btn btn-primary")=t("button.edit")
+                                button(ng-click="edit(customer._id)" type="button" class="btn btn-primary")
+                                    span(class="glyphicon glyphicon-edit")
                                 span &nbsp;
-                                button(type="button" class="btn btn-danger")=t("button.delete")
+                                button(type="button" class="btn btn-danger")
+                                    span(class="glyphicon glyphicon-trash")
                     tr(ng-show="editorEnabled")
                         td
-                            input(type="text" class="form-control input-lg text-center" required placeholder=t("customer.enterName") ng-model="editCustomer.name" )
-                            span(ng-show="editCustomer.name.$error.required")=t("validation.required")
+                            label(class="form-control disabled input-lg text-center" ng-model="editCustomer.name") {{editCustomer.name}}
                         td
                             input(type="text" name="editCustomer.address" class="form-control input-lg text-center" placeholder=t("customer.enterAddress") ng-model="editCustomer.address")
                         td
@@ -71,7 +75,7 @@ block content
                   .modal-body
                         div( id="messages" ng-show="message") {{ message }}
                         div(class="form-group" ng-class="{ 'has-error' : customerModel.name.$invalid && !customerModel.name.$pristine }")
-                            input(type="text" name="name" class="form-control input-lg text-center" required placeholder=t("customer.enterName") ng-model="newCustomer.name")
+                            input(type="text" name="name" ensureUnique class="form-control input-lg text-center" required placeholder=t("customer.enterName") ng-model="newCustomer.name")
                             span(class="help-block" ng-show="customerModel.name.$error.required")=t("validation.required")
                         div.form-group
                             input(type="text" class="form-control input-lg text-center" placeholder=t("customer.enterAddress") ng-model="newCustomer.address")

@@ -8,32 +8,32 @@ var productSchema = new Schema({
         unique: true,
         required: true
     },
-    type:{
-        type: String,
-        index: true,
-        validate: [
-            function(v) { return v != null || v != ""; },
-            "Required type"
-        ],
-        required: true
-    },
-    format:{
-        type: String,
-        validate: [
-            function(v) { return v != null || v != ""; },
-            "Required format"
-        ],
-        required: true
-    },
-    length: {
-        type: String,
-        index: true,
-        validate: [
-            function(v) { return v != null || v != ""; },
-            "Required length"
-        ],
-        required: true
-    },
+    // type:{
+    //     type: String,
+    //     index: true,
+    //     validate: [
+    //         function(v) { return v != null || v != ""; },
+    //         "Required type"
+    //     ],
+    //     required: true
+    // },
+    // format:{
+    //     type: String,
+    //     validate: [
+    //         function(v) { return v != null || v != ""; },
+    //         "Required format"
+    //     ],
+    //     required: true
+    // },
+    // length: {
+    //     type: String,
+    //     index: true,
+    //     validate: [
+    //         function(v) { return v != null || v != ""; },
+    //         "Required length"
+    //     ],
+    //     required: true
+    // },
     salePrice:{
         type: Number,
         validate: [

@@ -13,12 +13,12 @@ var customerSchema = new Schema({
     },
     address: {
         type: String,
-        maxlength: 100
+        maxlength: 150
     },
     phone: {
         validate: validate('len', 8, 30),
         type: String,
-        required: true
+        required: false
     },
     status: {
         type: Boolean

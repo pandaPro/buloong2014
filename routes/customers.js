@@ -23,7 +23,15 @@ router.get('/', function(req, res) {
 });
 
 router.get('/list', function(req, res) {
-    api.customerlist("", function(err, data){
+    api.customerlist("", null, function(err, data){
+        if (err)
+            res.send(err);
+        res.json(data);
+    });
+});
+
+router.get('/activeList', function(req, res) {
+    api.customerlist({status: "true"}, '_id name', function(err, data){
         if (err)
             res.send(err);
         res.json(data);
@@ -32,7 +40,7 @@ router.get('/list', function(req, res) {
 
 router.get('/check/:name', function(req, res) {
     var name = req.params.name;
-    api.customerlist(function(err, data){
+    api.findCustomer(name, function(err, data){
         if (err)
             res.send(err);
         res.json(data);
