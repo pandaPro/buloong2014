@@ -9,7 +9,7 @@ var customerModel = require('../models/customer-model.js');
 var customerList = customerModel.listCustomers;
 
 exports.getCustomerObject = function (obj) {
-    console.log("customerModel: "+obj);
+    console.log(obj);
     return( new customerModel(obj) );
 }
 
@@ -23,26 +23,14 @@ exports.customerlist = function (query, returnFields, callback){
             console.log("customerlist: " + err);
             callback(err);
         }else{
-            console.log(customers);
+            // console.log(customers);
             callback("", customers);
         }
     })// end Customer.find
 }// end exports.customerlist
 
-// exports.activeCustomerList = function (query, returnFields, callback){
-//     customerModel.find(query, returnFields, function (err, customers) {
-//         if(err){
-//             console.log("customerlist: " + err);
-//             callback(err);
-//         }else{
-//             console.log(customers);
-//             callback("", customers);
-//         }
-//     })// end Customer.find
-// }// end exports.customerlist
-
-exports.findCustomer = function (name, callback){
-    customerModel.findOne({name: name}, function (err, customer) {
+exports.findCustomer = function (query, callback){
+    customerModel.findOne(query, function (err, customer) {
         if(err){
             console.log("customer: " + err);
             callback(err);
@@ -52,18 +40,6 @@ exports.findCustomer = function (name, callback){
         }
     })// end Customer.find
 }// end exports.customerlist
-
-// first locates a thread by title, then locates the replies by thread ID.
-exports.checkName = (function(name, callback) {
-    customerModel.findOne({name: name}, function(error, item) {
-        if(error) {
-            callback(error);
-        }
-        else {
-            callback("", item);
-        }
-    });
-});
 
 exports.add = function(obj, callback) {
     console.log("customer.add");
@@ -78,24 +54,27 @@ exports.add = function(obj, callback) {
    });
 }
 
-exports.update = function(obj, callback) {
+exports.update = function(setJson, callback) {
     console.log("customer.update");
-    console.log(obj);
-    customerModel.findById(obj._id, function(err, item){
-        if (err){
-            callback(err, null);
+    console.log(setJson);
+    var query = {"_id": setJson._id};
+    var address = (!setJson.address) ? "" : setJson.address;
+    var phone = (!setJson.phone) ? "" : setJson.phone;
+    var discount = (!setJson.discount) ? 0 : setJson.discount;
+    var status = (!setJson.status) ? 0 : setJson.status;
+    var setData = { $set: {"name": setJson.name,
+            "address": address, 
+            "phone": phone, 
+            "discount": discount,
+            "status": status
+        }
+    };
+    customerModel.update(query, setData, function(error, saved){
+        if(error) {
+            callback(error);
         }
         else {
-            item.name = obj.name;
-            item.address = obj.address;
-            item.phone = obj.phone;
-            item.status = obj.status;
-            item.save(function(error, savedItem) {
-                if(error)
-                    callback(error);
-                else
-                    callback("", savedItem);
-            })
+            callback("", saved);
         }
     });
 }

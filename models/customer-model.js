@@ -16,9 +16,13 @@ var customerSchema = new Schema({
         maxlength: 150
     },
     phone: {
-        validate: validate('len', 8, 30),
         type: String,
         required: false
+    },
+    discount:{
+        type: Number,
+        min: 0,
+        max: 5
     },
     status: {
         type: Boolean
@@ -26,6 +30,5 @@ var customerSchema = new Schema({
 });
 
 var customerListSchema = new Schema({ list : [customerSchema] });
-var listCustomers = mongoose.model('customerList', customerListSchema);
 
 module.exports = mongoose.model('customers', customerSchema);

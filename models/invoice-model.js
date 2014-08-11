@@ -73,10 +73,7 @@ invoiceSchema.pre('save', function (next) {
                 }
             }
         }
-        else{
-            console.log("=====pre save invoice end======");
-            next();
-        }
+        next();
     });
 });
 

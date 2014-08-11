@@ -4,26 +4,11 @@ var router = express.Router();
 
 /* GET customers listing. */
 router.get('/', function(req, res) {
-    // var db = req.db;
-    // db.collection('customers').find().toArray(function (err, items) {
-        // if (err)
-            // res.send(err);
-        // res.json(items);
-    // });
-    // var customerList = new api.getCustomerList();
-    // console.log("customerList= " + customerList);
-    // var list;
-    // api.customerlist(function(err, items){
-    //     if (err)
-    //         res.send(err);
-    //     list = items;
-    // });
-    // res.render('customer', { title: 'Customers list', list : list});
     res.render('customer', { title: 'Customers list'});
 });
 
 router.get('/list', function(req, res) {
-    api.customerlist("", null, function(err, data){
+    api.customerlist({}, null, function(err, data){
         if (err)
             res.send(err);
         res.json(data);
@@ -40,7 +25,7 @@ router.get('/activeList', function(req, res) {
 
 router.get('/check/:name', function(req, res) {
     var name = req.params.name;
-    api.findCustomer(name, function(err, data){
+    api.findCustomer({"name": name}, function(err, data){
         if (err)
             res.send(err);
         res.json(data);
@@ -88,14 +73,14 @@ router.put('/update/:id', function(req, res) {
                 res.json({ error: error });
             } else {
                 //save data
-                api.update(customer, function(err, savedItem) {
+                api.update(customer, function(err, result) {
                     if (err) {
                         console.log(err);
                         res.send(err);
                     }
                     else {
-                        console.log("saveditem="+ savedItem);
-                        res.json({message: "Updated"});
+                        console.log("saveditem="+ result);
+                        res.json({message: "Updated", result: result});
                     }
                 })
             }

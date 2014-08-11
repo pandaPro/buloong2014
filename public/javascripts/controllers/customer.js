@@ -1,42 +1,55 @@
 'use strict';
 
-function customerController($scope, $http, baseService) {
+function customerController($scope, $http, customerService) {
     var url = "/customer/";
     $scope.editorEnabled = false;
     $scope.list = [];
     console.log('begin');
-    // $scope.init = function(){
-    //     console.log('init');
-    //     $scope.list = baseService.getAll(url + 'list');
-    // };
-    // when landing on the page, get all customers and show them
-    $http.get(url+'list')
-        .success(function(data) {
-            $scope.list = data;
-            // alert(data);
-            console.log('got list');
-        })
-        .error(function(data) {
-            console.log('Error: ' + data);
+
+    $scope.init = function(){
+        console.log('init');
+        var promise = customerService.getAll();
+        promise.then(function(res){
+            if(res.data) {
+                $scope.list = res.data;
+            }
         });
+    };
 
     // when submitting the add form, send the text to the node API
-    $scope.createCustomer = function(objModel) {
-        console.log(objModel.$valid);
-        if(objModel.$valid) {
-            $http.post(url+'add', { customerObject: $scope.newCustomer })
-                .success(function(data) {
-                    // $scope.customerModel = {}; // clear the form so our user is ready to enter another
-                    $scope.newCustomer = {};
-                    $scope.list.push(data.item);
-                    $scope.message = data.message;
-                    console.log(data);
-                })
-                .error(function(data) {
-                    $scope.message = data.error;
-                    alert(data);
-                    console.log('Error: ' + data);
-            });
+    $scope.createCustomer = function(objModel, customerModelForm) {
+        console.log(customerModelForm.$valid);
+        if(customerModelForm.$valid) {
+            var promise = customerService.add({customerObject: $scope.newCustomer });
+            promise.then(function(res){
+                if(res.data){
+                    var data = res.data;
+                    if(data.error){
+                        $scope.message = data.error;
+                        // alert(data);
+                        console.log('Error: ' + data);
+                    }
+                    else{
+                        $scope.newCustomer = {};
+                        $scope.list.push(data.item);
+                        $scope.message = data.message;
+                        console.log(data);
+                    }
+                }
+            })
+            // $http.post(url+'add', { customerObject: $scope.newCustomer })
+            //     .success(function(data) {
+            //         // $scope.customerModel = {}; // clear the form so our user is ready to enter another
+            //         $scope.newCustomer = {};
+            //         $scope.list.push(data.item);
+            //         $scope.message = data.message;
+            //         console.log(data);
+            //     })
+            //     .error(function(data) {
+            //         $scope.message = data.error;
+            //         alert(data);
+            //         console.log('Error: ' + data);
+            // });
         }
     };
     
@@ -56,22 +69,25 @@ function customerController($scope, $http, baseService) {
     };
     
     //
-    $scope.update = function() {
-        for (var i in $scope.list) {
-            if ($scope.list[i]._id == $scope.editCustomer._id) {
-                $scope.list[i] = $scope.editCustomer;
+    $scope.update = function(editCustomer) {
+        console.log(editCustomer);
+        var promise = customerService.update(editCustomer._id, { updateCustomerObject : editCustomer});
+        promise.then(function(res){
+            if(res.data){
+                console.log(res.data);
+                var data = res.data;
+                if(data.error){
+                    $scope.message = data.error;
+                    console.log('Error: ' + data);
+                }
+                else if(data.result === 1){
+                    $scope.editCustomer = {}; // clear the form so our user is ready to enter another
+                    setObjectDataToList(editCustomer, $scope.list)
+                    console.log(data.item);
+                    $scope.editorEnabled = false;
+                }
             }
-        }
-        $http.put(url+'update/'+$scope.editCustomer._id, { updateCustomerObject : $scope.editCustomer})
-            .success(function(data) {
-                $scope.editCustomer = {}; // clear the form so our user is ready to enter another
-                //$scope.list = data.list;
-                console.log(data.list);
-                $scope.editorEnabled = false;
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            });
+        })
     };
 
 	// delete a todo after checking it

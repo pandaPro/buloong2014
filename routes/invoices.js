@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var api = require('../controllers/invoice-api.js');
+var customerAPI = require('../controllers/customer-api.js');
 var _ = require('underscore');
 var exportXsl = require('../controllers/excel-builder.js');
 
@@ -118,7 +119,7 @@ router.delete('/:id/remove', function(req, res) {
 });
 
 /// update order
-router.put('/:id/updateOrder', function(req, res) {
+router.put('/:id/order/update', function(req, res) {
     console.log(req.body.orderObject);
     try {
         var invoiceId = req.params.id;
@@ -131,7 +132,7 @@ router.put('/:id/updateOrder', function(req, res) {
                 }
                 else {
                     console.log("response items: " + item);
-                    res.json(200, {message: "Updated", item: item});
+                    res.json(200, {message: "Updated", result: item});
                 }
             })
         }
@@ -202,30 +203,66 @@ router.put('/export', function(req, res) {
         var createdDateJson = {createdDate: {$gte: filter.fromDate , $lte: filter.toDate}};
         if(filter.customer.id){
             customerJson = {"customer.id": filter.customer.id};
+            _.extend(queryString, customerJson, createdDateJson);
+            console.log("=== export queryString ===");
+            console.log(queryString);
+            api.report(queryString, sort, function(err, items) {
+                if (err) {
+                    console.log("response err: " + err);
+                    res.send(err);
+                }
+                else {
+                    // get customer data
+                    customerAPI.findCustomer({_id: filter.customer.id}, function(err, customer){
+                        if (err) {
+                            console.log("response err: " + err);
+                            res.send(err);
+                        }
+                        else{
+
+                        }
+                    });
+                    // console.log("export items: " + items);
+                    // compose report data format
+                    // exporting excel report
+                    var customerName = (filter.customer.name) ? filter.customer.name : "";
+                    var discount = 0;
+                    var exportData = {header: customerName, data: items, footer: {discount: discount}};
+                    exportXsl.reportInvoices(exportData, customerName, function(error, callback){
+                        if(error){
+                            res.send(error);
+                        }
+                        else{
+                            var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl + 'export/excel/';
+                            console.log("===export callback===");
+                            var redirectUrl = fullUrl + callback.fname;
+                            console.log(redirectUrl);
+                            res.writeHead(301,
+                                {Location: redirectUrl}
+                            );
+                            res.end();
+                            
+                            //call back url
+                            //redirect to exported file
+                        }
+                    });
+                }
+            });
         }
-        _.extend(queryString, customerJson, createdDateJson);
-        console.log(queryString);
-        api.list(queryString, sort, function(err, items) {
-            if (err) {
-                console.log("response err: " + err);
-                res.send(err);
-            }
-            else {
-                console.log("export items: " + items);
-                // exporting excel report
-                var customerName = (filter.customer.name) ? filter.customer.name : "";
-                var exportData = items;
-                exportXsl.reportInvoices(exportData, customerName, function(error, callback){
-                    if(error){}
-                    else{
-                        //call back url
-                        //redirect to exported file
-                    }
-                });
-            }
-        });
+        else{
+            //response selection message
+            res.send({message: "Please select a customer !!!"});
+        }
+
     }
-    catch(err) { console.log("filter err: "+ err); }
+    catch(err) {
+        console.log("export err: "+ err);
+        res.json(err);
+    }
+});
+
+router.get('/export/excel', function(req, res){
+    res.render('export', { title: 'export report'});
 });
 
 module.exports = router;

@@ -42,9 +42,8 @@ function removeJsonInList(object, list) {
     }
 }
 
-function extractProductPartValueByCode(code, position, list) {
+function extractProductByCode(code, position) {
     var value;
-    var name = "";
     switch(position){
         case 0:
             value = code.substring(0, 1);
@@ -56,6 +55,12 @@ function extractProductPartValueByCode(code, position, list) {
             value = code.substring(code.length - 2, code.length);
             break;
     }
+    return value;
+}
+
+function extractProductPartValueByCode(code, position, list) {
+    var name = "";
+    var value = extractProductByCode(code, position);
     name = getNameByList(value, list);
     return name;
 }

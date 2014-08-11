@@ -76,7 +76,7 @@ function invoiceController($scope, $http, $locale, productData, customerService,
         {
             var promise = productData.checkExistedCode(orderProductCode);
             promise.then(function(res){
-                console.log(res);
+                // console.log(res);
                 if(res.status === 200 && res.data.item)
                 {
                     newInvoiceOrderDetail.salePrice = res.data.item.salePrice;
@@ -174,6 +174,9 @@ function invoiceController($scope, $http, $locale, productData, customerService,
             console.log("selectedOrder=" + selectedOrder);
             if (selectedOrder) {
                 $scope.editOrder = angular.copy(selectedOrder);
+                $scope.product.format = extractProductByCode($scope.editOrder.code, $scope.productCodePosition.format);
+                $scope.product.length = extractProductByCode($scope.editOrder.code, $scope.productCodePosition.length);
+                $scope.product.type = extractProductByCode($scope.editOrder.code, $scope.productCodePosition.type);
                 $scope.editorEnabled = true;
             }
         }
@@ -206,14 +209,17 @@ function invoiceController($scope, $http, $locale, productData, customerService,
     }
 
     $scope.updateOrder = function(invoice, order) {
+        order.code = $scope.newInvoiceCode($scope.product);
+        console.log("======update order======");
+        console.log(order);
         var updateData = {orderObject: order};
         var promise = invoiceService.updateOrder(invoice._id, updateData);
-        console.log("============");
         promise.then(function(res) {
             console.log(res.data);
             if(res.data && res.data.result === 1)
             {
                 // setObjectDataToList(order, invoice.orders);
+                $scope.editorEnabled = false;
             }
         });
     }
@@ -239,20 +245,26 @@ function invoiceController($scope, $http, $locale, productData, customerService,
     };
 
     $scope.export = function() {
-        alert("EXPORT");
-        //get filter scope data
-        //call api service update invoice list
-        $scope.filter.fromDate = new Date(new Date($scope.filter.fromDate).setHours(0));
-        var paramsJson = {filterObject: $scope.filter};
-        var promise = invoiceService.getInvoicesByFilter(paramsJson);
-        // console.log(paramsJson);
-        // console.log("============");
-        promise.then(function(res) {
-            console.log(res.data);
-            if(res.data)
-            {
-                // redirect a new window to exported file 
-            }
-        });
+        // alert("EXPORT");
+        var selectedCustomer = $scope.filter.customer;
+        if(selectedCustomer){
+            $scope.filter.fromDate = new Date(new Date($scope.filter.fromDate).setHours(0));
+            $scope.filter.toDate = new Date(new Date($scope.filter.toDate).setHours(11));
+            var paramsJson = {filterObject: $scope.filter};
+            var promise = invoiceService.exportData(paramsJson);
+            // console.log(paramsJson);
+            // console.log("============");
+            promise.then(function(res) {
+                console.log(res.data);
+                if(res.data)
+                {
+                    // redirect a new window to exported file 
+                    var popupWindow = window.open(res.data);
+                }
+            });
+        }
+        else{
+
+        }
     };
 }
