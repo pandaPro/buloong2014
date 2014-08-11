@@ -6,15 +6,10 @@ Exports 3 methods:
 */
  
 var productModel = require('../models/product-model.js');
-var productList = productModel.listProducts;
 
 exports.getProductObject = function (obj) {
     console.log("productModel: "+obj);
-    return( new productModel(obj) );
-}
-
-exports.getProductList = function () {
-    return( new productList);
+    return(new productModel(obj));
 }
 
 exports.list = function (query, callback){
@@ -23,13 +18,12 @@ exports.list = function (query, callback){
             console.log("productlist: " + err);
             callback(err);
         }else{
-            console.log(products);
+            // console.log(products);
             callback("", products);
         }
     })// end product.find
-}// end exports.productlist
+}
 
-// first locates a thread by title, then locates the replies by thread ID.
 exports.checkCode = function(query, callback) {
     productModel.findOne(query, function(error, item) {
         if(error) {
@@ -37,7 +31,7 @@ exports.checkCode = function(query, callback) {
             callback(error);
         }
         else {
-            console.log(item);
+            // console.log(item);
             callback("", item);
         }
     });
@@ -45,38 +39,43 @@ exports.checkCode = function(query, callback) {
 
 exports.add = function(obj, callback) {
     console.log("product.add");
-    obj.save(function(error, savedItem) {
-        if(error) {
-            callback(error);
-        }
-        else {
+    try{
+        obj.save(function(error, savedItem) {
+            if(error) {
+                callback(error);
+            }
+            else {
 
-            callback("", savedItem);
-        }
-   });
+                callback("", savedItem);
+            }
+       });
+    }
+    catch(err){
+        console.log("add exception");
+        callback(err);
+    }
 }
 
-exports.update = function(obj, callback) {
+exports.update = function(setJson, callback) {
     console.log("product.update");
-    console.log(obj);
-    productModel.findById(obj._id, function(err, item){
-        if (err){
-            callback(err, null);
-        }
-        else {
-            item.code = obj.code;
-            item.format = obj.format;
-            item.length = obj.length;
-            item.type = obj.type;
-            item.salePrice = obj.salePrice;
-            item.status = obj.status;
-            
-            item.save(function(error, savedItem) {
-                if(error)
-                    callback(error);
-                else
-                    callback("", savedItem);
-            })
-        }
-    });
+    try{
+        var query = {"_id": setJson._id};
+        var setData = { $set: {"code": setJson.code,
+                "salePrice": setJson.salePrice, 
+                "status": setJson.status
+            }
+        };
+        productModel.update(query, setData, function(err, saved){
+            if (err){
+                callback(err);
+            }
+            else {
+                callback("", saved);
+            }
+        });
+    }
+    catch(err){
+        console.log("update exception");
+        callback(err);
+    }
 }

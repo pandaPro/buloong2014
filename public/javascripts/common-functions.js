@@ -53,6 +53,7 @@ function extractProductByCode(code, position) {
             break;
         case 2:
             value = code.substring(code.length - 2, code.length);
+            if(value == '08')   value = '8';
             break;
     }
     return value;

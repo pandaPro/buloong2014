@@ -17,6 +17,7 @@ block content
             i(class="glyphicon glyphicon-plus")
 
         div.row.table-responsive
+          form(name="editProductForm")
             table.input-lg(class="table table-striped")
                 thead
                     tr
@@ -47,24 +48,24 @@ block content
                                     span(class="glyphicon glyphicon-trash")
                     tr(ng-show="editorEnabled")
                         td
-                            select(ng-model="editProduct.format" name="format" class="form-control input-lg text-center" required)
+                            select(ng-model="product.format" name="format" class="form-control input-lg text-center" required)
                                     option(ng-repeat="format in formats track by format.value" value="{{format.value}}") {{format.name}}
-                            span(ng-show="editProduct.format.$error.required")=t("validation.required")
+                            span(ng-show="product.format.$error.required")=t("validation.required")
                         td
-                            select(name="length" ng-model="editProduct.length" class="form-control input-lg text-center" required)
+                            select(name="length" ng-model="product.length" class="form-control input-lg text-center" required)
                                     option(ng-repeat="length in lengths track by length.value" value="{{length.value}}") {{length.name}}
-                            span(ng-show="editProduct.length.$error.required")=t("validation.required")
+                            span(ng-show="product.length.$error.required")=t("validation.required")
                         td
-                            select(name="type" ng-model="editProduct.type" class="form-control input-lg text-center")
+                            select(name="type" ng-model="product.type" class="form-control input-lg text-center")
                                     option(ng-repeat="type in types track by type.value" value="{{type.value}}") {{type.name}}
-                            span(ng-show="editProduct.type.$error.required")=t("validation.required")
+                            span(ng-show="product.type.$error.required")=t("validation.required")
                         td
                             input(type="text" valid-number class="form-control input-lg text-center" placeholder=t("product.enterSalePrice") ng-model="editProduct.salePrice")
                         td
-                            input(type="checkbox" text=t("product.status") checked="{{editProduct.status}}")
+                            input(type="checkbox" text=t("product.status") ng-model="editProduct.status" checked="{{editProduct.status}}")
                         td
                             p
-                                button(type="button" class="btn btn-primary" ng-click="update(editProduct)")
+                                button(type="button" class="btn btn-primary" ng-click="update(editProduct, editProductForm)" ng-disabled="editProductForm.$invalid")
                                     span(class="glyphicon glyphicon-edit")
                                 span &nbsp;
                                 button(type="button" class="btn btn-default" ng-click="cancel()")

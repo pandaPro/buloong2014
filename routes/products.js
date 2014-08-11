@@ -5,21 +5,6 @@ var router = express.Router();
 
 /* GET products listing. */
 router.get('/', function(req, res) {
-    // var db = req.db;
-    // db.collection('products').find().toArray(function (err, items) {
-        // if (err)
-            // res.send(err);
-        // res.json(items);
-    // });
-    // var productList = new api.getproductList();
-    // console.log("productList= " + productList);
-    // var list;
-    // api.productlist(function(err, items){
-    //     if (err)
-    //         res.send(err);
-    //     list = items;
-    // });
-    // res.render('product', { title: 'products list', list : list});
     res.render('product', { title: 'products list'});
 });
 
@@ -57,18 +42,24 @@ router.put('/length', function(req, res){
 });
 
 router.put('/checkCode/:code', function(req, res){
-    var newCode = req.params.code;
-    var queryString = {'code': newCode};
-    api.checkCode(queryString, function(err, data){
-        if (err)
-            res.send(err);
-        else{
-            // console.log("data :"+ data);
-            var result = (data) ? true : false;
-            console.log("checkCode result=" + result);
-            res.json({ "result" : result, "item": data});
-        }
-    });
+    try {
+        var newCode = req.params.code;
+        var queryString = {'code': newCode};
+        api.checkCode(queryString, function(err, data){
+            if (err)
+                res.send(err);
+            else{
+                // console.log("data :"+ data);
+                var result = (data) ? true : false;
+                // console.log("checkCode result=" + result);
+                res.json({ "result" : result, "item": data});
+            }
+        });
+    }
+    catch(err) {
+        console.log("check code err: "+ err);
+        res.send(err);
+    }
 });
 
 router.get('/all', function(req, res) {
@@ -89,9 +80,8 @@ router.get('/activeProducts', function(req, res) {
 });
 
 router.post('/add', function(req, res) {
-    console.log(req.body.productObject);
-    //validation data
     try {
+        console.log(req.body.productObject);
         var product = new api.getProductObject(req.body.productObject);
         product.validate(function(err) {
             if(err) {
@@ -115,35 +105,34 @@ router.post('/add', function(req, res) {
     }
     catch(err) { console.log("post err: "+ err); }
 });
-
-
 /*
  * PUT to update product.
  */
-router.put('/update/:id', function(req, res) {
-    var id = req.params.id;
-    console.log(id);
+router.put('/update', function(req, res) {
     try {
-        var product = new api.getproductObject(req.body.updateproductObject);
+        console.log(req.body.productObject);
+        var product = new api.getProductObject(req.body.productObject);
         product.validate(function(err) {
             if(err) {
                 res.json({ err: err });
             } else {
-                //save data
-                api.update(product, function(err, savedItem) {
+                api.update(product, function(err, saved) {
                     if (err) {
                         console.log(err);
                         res.send(err);
                     }
                     else {
-                        console.log("saveditem="+ savedItem);
-                        res.json({success: "saved", list: savedItem});
+                        console.log("saveditem="+ saved);
+                        res.json({message: "updated", result: saved});
                     }
                 })
             }
         });
     }
-    catch(err) { console.log("post err: "+ err); }
+    catch(err) {
+        console.log("update err: "+ err);
+        res.send(err);
+    }
 });
 
 /*

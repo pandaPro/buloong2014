@@ -26,7 +26,7 @@ app.factory('productData', function($http, baseService) {
     };
 
     var update = function(data) {
-        var requestURI = url + 'update/' + data._id;
+        var requestURI = url + 'update';
         var promise = baseService.syncRequest(baseService.methods.PUT, requestURI, data);
         return promise;
     };

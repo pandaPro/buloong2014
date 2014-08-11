@@ -33,9 +33,9 @@ function productController($scope, $http, $locale, productData, baseService)
         };
     };
 
-    $scope.newProductCode = function() {
-        $scope.newProduct.code = $scope.product.type + $scope.product.format + pad($scope.product.length, 2);
-        return $scope.newProduct.code;
+    $scope.newProductCode = function(productObject) {
+        productObject.code = $scope.product.type + $scope.product.format + pad($scope.product.length, 2);
+        return productObject.code;
     };
 
     $scope.getNameFromList = function(value, list) {
@@ -47,9 +47,9 @@ function productController($scope, $http, $locale, productData, baseService)
         return extractProductPartValueByCode(code, position, list);
     }
 
-    $scope.checkProduct = function(productModelForm) {
+    $scope.checkProduct = function(productObject, productModelForm) {
         var result = "false";
-        var newCode = $scope.newProductCode();
+        var newCode = $scope.newProductCode(productObject);
         if(newCode.length >= 4 && /[A-Z]/.test(newCode))
         {
             // console.log("new code: " + $scope.newProduct.code);
@@ -57,7 +57,8 @@ function productController($scope, $http, $locale, productData, baseService)
             var promise = productData.checkExistedCode(newCode);
             promise.then(function(res){
                 // console.log(res.data);
-                if(res.data.result && res.data.result == true)
+                if(res.data.result && res.data.result == true 
+                    && (!productObject._id || productObject._id != res.data.item._id))
                 {
                     console.log("existed code");
                     $scope.message = "Existed product! Please select a new one.";
@@ -80,62 +81,64 @@ function productController($scope, $http, $locale, productData, baseService)
     $scope.create = function(objModel, productModelForm) {
         // console.log(productModelForm);
         if(productModelForm.$valid) {
-            if($scope.checkProduct(productModelForm) == "false") {
+            if($scope.checkProduct(objModel, productModelForm) == "false") {
                 console.log("valid data");
                 var promise = productData.add({ productObject: objModel});
-                // $http.post(url+'add', { productObject: objModel})
-                //     .success(function(data) {
-                //         if(data.error) {
-                //             $scope.message = data.error;
-                //         }
-                //         else {
-                //             $scope.newProduct = {};
-                //             $scope.product= {};
-                //             $scope.list.push(data.item);
-                //             $scope.messageEnabled = true;
-                //             $scope.message = data.message;
-                //             console.log(data);
-                //         }
-                //     })
-                //     .error(function(data) {
-                //         $scope.message = data.error;
-                //         console.log('Error: ' + data);
-                // });
+                promise.then(function(res){
+                    console.log(res.data);
+                    if(res.data){
+                        var data = res.data;
+                        if(data.error) {
+                            $scope.message = data.error;
+                        }
+                        else {
+                            $scope.newProduct = {};
+                            $scope.product= {};
+                            $scope.list.push(data.item);
+                            $scope.messageEnabled = true;
+                            $scope.message = data.message;
+                            console.log(data);
+                        }
+                    }
+                })
             }
         }
     };
 
-    $scope.update = function(id, objModel, productModelForm) {
-        console.log(productModelForm);
-        if(productModelForm.$valid) {
-            if($scope.checkProduct(productModelForm) == "true") {
-                var result = productData.update({_id: id, productObject: objModel});
-                // $http.put(url+'update', { productObject: objModel})
-                //     .success(function(data) {
-                //         if(data.error) {
-                //             $scope.message = data.error;
-                //         }
-                //         else {
-                //             $scope.message = data.message;
-                //             console.log("added result = "+data);
-
-                //             $scope.editorEnabled = false;
-                //         }
-                //     })
-                //     .error(function(data) {
-                //         $scope.message = data.error;
-                //         console.log('Error: ' + data);
-                // });
+    $scope.update = function(objModel, editProductForm) {
+        console.log(objModel);
+        if(editProductForm.$valid) {
+            console.log($scope.checkProduct(objModel, editProductForm));
+            if($scope.checkProduct(objModel, editProductForm) == "false") {
+                var promise = productData.update({productObject: objModel});
+                promise.then(function(res){
+                    if(res.data){
+                        var data = res.data;
+                        if(data.error) {
+                            $scope.message = data.error;
+                        }
+                        else if(data.result === 1){
+                            // $scope.message = data.message;
+                            // console.log("=========");
+                            // console.log(data);
+                            setObjectDataToList(objModel, $scope.list)
+                            $scope.editorEnabled = false;
+                        }
+                    }
+                })
             }
         }
     };
 
     //
     $scope.edit = function (value) {
-        // console.log("value:"+value);
         var selectedObject = getObjectDataById(value, $scope.list);
         if(selectedObject) {
             $scope.editProduct = angular.copy(selectedObject);
+            $scope.product.format = extractProductByCode($scope.editProduct.code, $scope.productCodePosition.format);
+            $scope.product.length = extractProductByCode($scope.editProduct.code, $scope.productCodePosition.length);
+            $scope.product.type = extractProductByCode($scope.editProduct.code, $scope.productCodePosition.type);
+            console.log($scope.product);
             $scope.editorEnabled = true;
         }
     }

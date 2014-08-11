@@ -49,4 +49,27 @@ var productSchema = new Schema({
     }
 });
 
+
+productSchema.pre('update', function (next) {
+    // verify has had this customer existed invoice on createdDate yet
+    // if existed ==> add new order
+    // else ==> add new invoice
+    console.log("=====pre save product begin=======");
+    console.log("code=%s", this.code);
+    mongoose.models['products'].findOne({"code": this.code}, '_id').exec(function(err, product) {
+        if(err) {
+            console.log(err);
+        } 
+        else {
+            if(this._id != product._id){
+                console.log("===== got existed product pre update return _id =======");
+                self.invalidate("_id", product._id);
+                next({_id: product._id});
+            }
+        }
+        next();
+    });
+});
+
+
 module.exports = mongoose.model('products', productSchema);
