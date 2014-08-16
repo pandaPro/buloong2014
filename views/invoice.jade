@@ -27,13 +27,13 @@ block content
                 select(ng-model="filter.customer.id" name="filterCustomer" class="form-control input-lg text-center")
                     option(value="")=t("app.all")
                     option(ng-repeat="c in customers" value="{{c._id}}") {{c.name}}
-            .col-xs-4.col-md-2.text-center
+            .col-xs-3.col-md-2.text-center
                 p.input-group
                     input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.fromDate', is-open='opened', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
                     span.input-group-btn
                         button.btn.btn-lg(type='button', ng-click='open($event)')
                             i.glyphicon.glyphicon-calendar
-            .col-xs-4.col-md-2.text-center
+            .col-xs-3.col-md-2.text-center
                 p.input-group
                     input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.toDate', is-open='opened', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
                     span.input-group-btn
@@ -113,16 +113,16 @@ block content
                                     input(type="number" min="1" max="1000000" name="quantity" required class="form-control text-center input-lg" ng-model="newOrder.quantity" typeahead="quantity for quantity in quantitySuggestionList | filter:$viewValue | limitTo:10")
                                     span(class="help-block" ng-show="orderModel.quantity.$error.required")=t("validation.required")
                                 td.col-xs-1.col-md-1
-                                    input(type="number" min="1" max="5000" name="salePrice" required class="form-control text-center input-lg" ng-model="newOrder.salePrice")
+                                    input(style="width:90px" type="number" min="1" max="5000" name="salePrice" required class="form-control text-center input-lg" ng-model="newOrder.salePrice")
                                     span(class="help-block" ng-show="orderModel.salePrice.$error.required")=t("validation.required")
                                 td.col-xs-2.col-md-1.text-right
                                     label {{newOrder.quantity * newOrder.salePrice | number}}
                                 td.col-xs-2.col-md-1
                                     input(type="button" class="btn btn-primary" text=t("button.add") ng-click="createOrder(invoice._id, newOrder, product)" ng-disabled="orderModelForm.$invalid" value=t("button.add"))
-                    table.input-lg(class="table table-striped table-bordered" ng-show="editorEnabled")
+                table.input-lg(class="table table-striped table-bordered" ng-show="editorEnabled")
                         tbody
                             tr
-                                td.col-xs-5.col-sm-1
+                                td.col-xs-3.col-md-1
                                     p.input-group
                                         select(ng-model="product.format" name="format" class="form-control  text-center input-lg" required style="width:80px" ng-change="verifyProductCode(product, newOrder)")
                                             option(value="")
@@ -144,7 +144,7 @@ block content
                                         span(class="help-block" ng-show="orderModel.quantity.$error.required")=t("validation.required")
                                 td.col-xs-1.col-md-1
                                     .form-group(ng-class="{ 'has-error' : product.format.$invalid && !product.format.$pristine }")
-                                        input(type="number" min="1" max="5000" name="salePrice" required class="form-control text-center input-lg" ng-model="editOrder.salePrice")
+                                        input(style="width:90px" type="number" min="1" max="5000" name="salePrice" required class="form-control text-center input-lg" ng-model="editOrder.salePrice")
                                         span(class="help-block" ng-show="orderModel.salePrice.$error.required")=t("validation.required")
                                 td.col-xs-2.col-md-1.text-right
                                     label {{editOrder.quantity * editOrder.salePrice | number}}

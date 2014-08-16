@@ -206,44 +206,41 @@ router.put('/export', function(req, res) {
             _.extend(queryString, customerJson, createdDateJson);
             console.log("=== export queryString ===");
             console.log(queryString);
-            api.report(queryString, sort, function(err, items) {
+            
+            customerAPI.findCustomer({_id: filter.customer.id}, function(err, customer){
                 if (err) {
                     console.log("response err: " + err);
                     res.send(err);
                 }
-                else {
-                    // get customer data
-                    customerAPI.findCustomer({_id: filter.customer.id}, function(err, customer){
+                else{
+                    var customerName = (customer) ? customer.name : "";
+                    var discount = (customer.discount) ? customer.discount : 0;
+                    api.report(queryString, sort, function(err, items) {
                         if (err) {
                             console.log("response err: " + err);
                             res.send(err);
                         }
-                        else{
-
-                        }
-                    });
-                    // console.log("export items: " + items);
-                    // compose report data format
-                    // exporting excel report
-                    var customerName = (filter.customer.name) ? filter.customer.name : "";
-                    var discount = 0;
-                    var exportData = {header: customerName, data: items, footer: {discount: discount}};
-                    exportXsl.reportInvoices(exportData, customerName, function(error, callback){
-                        if(error){
-                            res.send(error);
-                        }
-                        else{
-                            var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl + 'export/excel/';
-                            console.log("===export callback===");
-                            var redirectUrl = fullUrl + callback.fname;
-                            console.log(redirectUrl);
-                            res.writeHead(301,
-                                {Location: redirectUrl}
-                            );
-                            res.end();
-                            
-                            //call back url
-                            //redirect to exported file
+                        else {
+                            console.log("export items: " + items);
+                            var exportData = {header: customerName, data: items, footer: {discount: discount}};
+                            exportXsl.reportInvoices(exportData, customerName, function(error, callback){
+                                if(error){
+                                    res.send(error);
+                                }
+                                else{
+                                    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl + '/excel/';
+                                    console.log("===export callback===");
+                                    var redirectUrl = fullUrl + callback.fname;
+                                    console.log(redirectUrl);
+                                    res.writeHead(301,
+                                        {Location: redirectUrl}
+                                    );
+                                    res.end();
+                                    
+                                    //call back url
+                                    //redirect to exported file
+                                }
+                            });
                         }
                     });
                 }
@@ -261,7 +258,7 @@ router.put('/export', function(req, res) {
     }
 });
 
-router.get('/export/excel', function(req, res){
+router.put('/export/excel/', function(req, res){
     res.render('export', { title: 'export report'});
 });
 

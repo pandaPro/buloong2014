@@ -23,8 +23,31 @@ exports.list = function (query, sort, callback){
     })
 }
 
+exports.testReport = function (query, sort, callback){
+    // invoiceModel.aggregate([
+    //     {$match: query},
+    //     {$project: {_id:0, orders:1, customer:1, createdDate: 1}},
+    //     {$unwind: "$orders"},
+    //     {
+    //         $group: {
+    //             _id: {customer: "$customer.id"},
+    //             orders: {$push: "$orders"}
+    //         }
+    //     }
+    //     ,{$sort: {_id: 1}}
+    // ])
+    // .exec(function (err, invoices) {
+    //     if(err){
+    //         console.log("sales report error: " + err);
+    //         callback(err);
+    //     }else{
+    //         callback("", invoices);
+    //     }
+    // })
+}
+
 exports.report = function (query, sort, callback){
-    invoiceModel.find(query).sort(sort).select('createdData orders').exec(function (err, invoices) {
+    invoiceModel.find(query).sort(sort).select('createdDate orders').exec(function (err, invoices) {
         if(err){
             console.log("report error: " + err);
             callback(err);
@@ -34,15 +57,33 @@ exports.report = function (query, sort, callback){
     })
 }
 
-exports.businessReportData = function (query, sort, callback){
-    invoiceModel.find(query).sort(sort).exec(function (err, invoices) {
-        if(err){
-            console.log("report error: " + err);
-            callback(err);
-        }else{
-            callback("", invoices);
-        }
-    })
+exports.salesReportData = function (query, callback){
+    try{
+        invoiceModel.aggregate([
+            {$match: query},
+            {$project: {_id:0, orders:1}},
+            {$unwind: "$orders"},
+            {
+                $group: {
+                    _id: "$orders.code",
+                    quantity : { $sum: "$orders.quantity"}
+                    ,amount : { $sum: { $multiply: ["$orders.quantity", "$orders.salePrice"]}}
+                }
+            }
+            ,{$sort: {_id: 1}}
+        ])
+        .exec(function (err, invoices) {
+            if(err){
+                console.log("sales report error: " + err);
+                callback(err);
+            }else{
+                callback("", invoices);
+            }
+        })
+    }
+    catch(err){
+
+    }
 }
 
 exports.addInvoice = function(obj, callback) {
@@ -96,7 +137,7 @@ exports.updateOrder = function(invoiceId, setJson, callback) {
 
 function addOrUpdateOrder(id, setData, callback) {
     try{
-        invoiceModel.findByIdAndUpdate(id, setData, function(error, savedItem) {
+        invoiceModel.findByIdAndUpdate(id, setData, {safe: true, upsert: true}, function(error, savedItem) {
             if(error) {
                 callback(error);
             }

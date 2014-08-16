@@ -28,6 +28,7 @@ var invoiceSchema = new Schema({
         },
         code: {
             type: String,
+            index: true,
             required: true
         },
         salePrice: {
