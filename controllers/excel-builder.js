@@ -6,15 +6,17 @@
 	var moment = require("moment");
 
 	var FONT_FAMILY = '3';
-	var FONT_FAMILY_NAME = 'arial';
-	var FONT_SIZE = '12';
-	var MAX_ROWS = 1000;
+	var FONT_FAMILY_NAME = 'Arial';
+	var FONT_SIZE = '13';
+	var MAX_ROWS = 300;
 	var MAX_COLS = 14;
-	var ROW_HEIGHT = 24;
+	var ROW_HEIGHT = 23;
 	var ALIGN_LEFT = 'left';
 	var ALIGN_RIGHT = 'right';
 	var ALIGN_CENTER = 'center';
-	
+	var BORDER_BOTTOM = 'bottom';
+	var BORDER_STYLE = 'thin';
+
 	//------- header table -------//
 	var COL_HEADER_TEXT = 1;
 	var COL_HEADER_VALUE = 4;
@@ -96,20 +98,12 @@
         top - (String) style: 'thin'/'medium'/'thick'/'double'
         right - (String) style: 'thin'/'medium'/'thick'/'double'
         bottom - (String) style: 'thin'/'medium'/'thick'/'double'
-	*/
-		// configController.list(function(error, items){
-		// 	if(items){
-		// 		productFormatJsonConfig = commonFunctions.getValueFromNameInJson("buloongFormat", items);
-		// 		productLengthJsonConfig = commonFunctions.getValueFromNameInJson("buloongLength", items);
-		// 		productTypeJsonConfig = commonFunctions.getValueFromNameInJson("buloongType", items);
 
-		// 			console.log("==== configs ====");
-		// 			console.log(productFormatJsonConfig);
-		// 			console.log(productLengthJsonConfig);
-		// 			console.log(productTypeJsonConfig);
-		// 			console.log("==== END configs ====");
-		// 	}
-		// });
+    sheet1.font(2, 1, {name:'黑体',sz:'24',family:'3',scheme:'-',bold:'true',iter:'true'});
+	sheet1.fill(3, 3, {type:'solid',fgColor:'8',bgColor:'64'});
+	sheet1.border(1, 1, {left:'medium',top:'medium',right:'thin',bottom:'medium'});
+	*/
+
 exports.reportInvoices = function(exportData, customerName, callback) {
 	try{
 		var currentRow = 2;
@@ -155,19 +149,14 @@ exports.reportInvoices = function(exportData, customerName, callback) {
 				*/
 				case 'data':
 					console.log("===BEGIN setting data===");
-					setSheetItemStyle(sheet1, MAX_ROWS, MAX_COLS);
-					console.log("set sheet");
+					setSheetItemStyle(sheet1, MAX_ROWS);
 					setSheetItemTitleStyle(sheet1, currentRow);
-					console.log("item title");
 					currentRow++;
-					console.log("row=" + currentRow);
-
 					/*data list
 					//	1	2		3		4			5		6
 					// date	type	format	quantity	price	amount
 					// 01/12 LD 	6 x 10 	10,000 		88		880,000
 					*/
-
 					var data = jsonData[attr];
 					var logItem = '';
 					for(var item in data) {
@@ -196,9 +185,7 @@ exports.reportInvoices = function(exportData, customerName, callback) {
 								sheet1.set(COL_TYPE, currentRow, type);
 							}
 							format = commonFunctions.getNameFromValueInJson(format, productFormatJsonConfig);
-							// console.log("get format=", format);
 							length = commonFunctions.getNameFromValueInJson(length, productLengthJsonConfig);
-							// console.log("get length=", length);
 							// logItem = logItem + ' format=' + format;
 							// logItem = logItem + ' x ' + length;
 							// logItem = logItem + ' quantity=' + quantity;
@@ -207,15 +194,10 @@ exports.reportInvoices = function(exportData, customerName, callback) {
 							// console.log(currentRow+ ' ' + logItem);
 							// logItem = '';
 							format = util.format('%s x %s', format, length);
-							// console.log("rowNo %s before set format= %s", currentRow, format);
 							sheet1.set(COL_FORMAT, currentRow, format);
-							// console.log("set format");
 							sheet1.set(COL_QUANTITY, currentRow, commonFunctions.formatNumber(quantity));
-							// console.log("quantity =%s", commonFunctions.formatNumber(quantity));
 							sheet1.set(COL_SALEPRICE, currentRow, commonFunctions.formatNumber(saleprice));
-							// console.log("sale price =%s", commonFunctions.formatNumber(saleprice));
 							sheet1.set(COL_AMOUNT, currentRow, commonFunctions.formatNumber(amount));
-							// console.log("set amount =%s", commonFunctions.formatNumber(amount));
 							console.log("END row number=" + currentRow);
 							currentRow++;
 
@@ -234,6 +216,7 @@ exports.reportInvoices = function(exportData, customerName, callback) {
 					var footer = jsonData[attr];
 					// set total row 
 					setFooterItemStyle(sheet1, currentRow);
+					// setFooterItemBorderStyle(sheet1, currentRow);
 					sheet1.set(COL_FOOTER_TEXT, currentRow, COL_FOOTER_TOTALAMOUNT_TEXT);
 					sheet1.set(COL_FOOTER_VALUE, currentRow, commonFunctions.formatNumber(invoiceTotal));
 
@@ -244,6 +227,7 @@ exports.reportInvoices = function(exportData, customerName, callback) {
 						var sumTotal = invoiceTotal - discountAmount;
 
 						setFooterItemStyle(sheet1, discountRowNumber);
+						// setFooterItemBorderStyle(sheet1, discountRowNumber);
 						sheet1.set(COL_FOOTER_TEXT, discountRowNumber, COL_FOOTER_DISCOUNT_TEXT);
 						sheet1.set(COL_FOOTER_VALUE, discountRowNumber, commonFunctions.formatNumber(discountAmount));
 						setFooterItemStyle(sheet1, sumTotalRowNumber);
@@ -301,6 +285,13 @@ function setSheetItemTitleStyle(sheet, titleRow)	{
 	sheet.valign(COL_QUANTITY, titleRow, ALIGN_CENTER);
 	sheet.valign(COL_SALEPRICE, titleRow, ALIGN_CENTER);
 	sheet.valign(COL_AMOUNT, titleRow, ALIGN_CENTER);
+
+	// sheet.border(COL_DATE, titleRow, {BORDER_BOTTOM: BORDER_STYLE});
+	// sheet.border(COL_TYPE, titleRow, {BORDER_BOTTOM: BORDER_STYLE});
+	// sheet.border(COL_FORMAT, titleRow, {BORDER_BOTTOM: BORDER_STYLE});
+	// sheet.border(COL_QUANTITY, titleRow, {BORDER_BOTTOM: BORDER_STYLE});
+	// sheet.border(COL_SALEPRICE, titleRow, {BORDER_BOTTOM: BORDER_STYLE});
+	// sheet.border(COL_AMOUNT, titleRow, {BORDER_BOTTOM: BORDER_STYLE});
 }
 
 function setSheetHeaderStyle(sheet, firstRow)	{
@@ -315,14 +306,14 @@ function setSheetHeaderStyle(sheet, firstRow)	{
 	sheet.font(COL_HEADER_VALUE, firstRow, {name: FONT_FAMILY_NAME, sz: FONT_SIZE, family: FONT_FAMILY, bold: 'true'});
 }
 
-function setSheetItemStyle(sheet, rowSize, colSize)	{
+function setSheetItemStyle(sheet, rowSize)	{
 	//------- data columns width -------//
 	var COL_DATE_WIDTH = 8;
 	var COL_TYPE_WIDTH = 10;
-	var COL_FORMAT_WIDTH = 16;
-	var COL_QUANTITY_WIDTH = 16;
+	var COL_FORMAT_WIDTH = 14;
+	var COL_QUANTITY_WIDTH = 14;
 	var COL_SALEPRICE_WIDTH = 12;
-	var COL_AMOUNT_WIDTH = 18;
+	var COL_AMOUNT_WIDTH = 16;
 	for(var i=2; i <= rowSize; i++) {
 		sheet.font(COL_DATE, i, {name: FONT_FAMILY_NAME, sz: FONT_SIZE, family: FONT_FAMILY});
 		sheet.font(COL_TYPE, i, {name: FONT_FAMILY_NAME, sz: FONT_SIZE, family: FONT_FAMILY});
@@ -352,5 +343,17 @@ function setSheetItemStyle(sheet, rowSize, colSize)	{
 		sheet.width(COL_SALEPRICE, COL_SALEPRICE_WIDTH);
 		sheet.width(COL_AMOUNT, COL_AMOUNT_WIDTH);
 		sheet.height(i, ROW_HEIGHT);
+
+		// sheet.border(COL_DATE, i, {BORDER_BOTTOM: BORDER_STYLE});
+		// sheet.border(COL_TYPE, i, {BORDER_BOTTOM: BORDER_STYLE});
+		// sheet.border(COL_FORMAT, i, {BORDER_BOTTOM: BORDER_STYLE});
+		// sheet.border(COL_QUANTITY, i, {BORDER_BOTTOM: BORDER_STYLE});
+		// sheet.border(COL_SALEPRICE, i, {BORDER_BOTTOM: BORDER_STYLE});
+		// sheet.border(COL_AMOUNT, i, {BORDER_BOTTOM: BORDER_STYLE});
 	}
+}
+
+function setFooterItemBorderStyle(sheet, rowNumber){
+	sheet.border(COL_FOOTER_TEXT, rowNumber, {bottom: 'dot'});
+	sheet.border(COL_FOOTER_VALUE, rowNumber, {bottom: 'dot'});
 }
