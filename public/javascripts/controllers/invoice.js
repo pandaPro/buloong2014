@@ -131,7 +131,7 @@ function invoiceController($scope, $http, $locale, productData, customerService,
                     // reset control
                     $scope.newInvoiceOrder = {};
                     $scope.product = {};
-                    $scope.newInvoice = { orders: [], customer: {}, createdDate: new Date()};
+                    $scope.newInvoice = { orders: []};
                     // close modal
 
                 }
@@ -157,7 +157,7 @@ function invoiceController($scope, $http, $locale, productData, customerService,
                         console.log(res);
                         selectedInvoice.orders.push(angular.copy(res.data.item));
                         // reset order model and product
-                        orderModel = [];
+                        orderModel.quantity = "";
                     }
                 });
                 productScope = {};
@@ -218,7 +218,7 @@ function invoiceController($scope, $http, $locale, productData, customerService,
             console.log(res.data);
             if(res.data && res.data.result === 1)
             {
-                // setObjectDataToList(order, invoice.orders);
+                setObjectDataToList(order, invoice.orders);
                 $scope.editorEnabled = false;
             }
         });

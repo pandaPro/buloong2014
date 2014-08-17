@@ -13,7 +13,7 @@ exports.getProductObject = function (obj) {
 }
 
 exports.list = function (query, callback){
-    productModel.find(query, function (err, products) {
+    productModel.find(query).sort({code: 1}).exec(function (err, products) {
         if(err){
             console.log("productlist: " + err);
             callback(err);

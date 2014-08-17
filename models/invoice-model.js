@@ -50,16 +50,14 @@ var invoiceSchema = new Schema({
 });
 
 invoiceSchema.pre('save', function (next) {
-    // verify has had this customer existed invoice on createdDate yet
-    // if existed ==> add new order
-    // else ==> add new invoice
     var self = this;
     console.log("=====pre save invoice begin=======");
     var onDate = moment(self.createdDate).format('YYYY-MM-DD');
     console.log("onQueryDate=%s, customerId=%s", onDate, self.customer.id);
-    mongoose.models['invoices'].find({"customer.id": self.customer.id}, '_id createdDate').limit(80).sort({createdDate: -1}).exec(function(err, invoices) {
+    mongoose.models['invoices'].find({"customer.id": self.customer.id}, '_id createdDate').limit(30).sort({createdDate: -1}).exec(function(err, invoices) {
         if(err) {
             console.log(err);
+            next(err);
         } else if(invoices) {
             // console.log("invoice=" + invoices);
             for(i=0; i< invoices.length; i++){
@@ -69,7 +67,9 @@ invoiceSchema.pre('save', function (next) {
                 if(createdDate == onDate){
                     console.log("===== got existed invoice pre save return _id =======");
                     self.invalidate("_id", invoiceId);
-                    next({_id: invoiceId});
+                    var error = new Error();
+                    error.id = invoiceId;
+                    next(error);
                     break;
                 }
             }

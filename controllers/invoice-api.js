@@ -130,7 +130,7 @@ exports.updateOrder = function(invoiceId, setJson, callback) {
     console.log("Update order");
     var query = {"_id": invoiceId, "orders.id": setJson.id};
     var setData = { $set: {
-        "orders": setJson
+        "orders.$": setJson
     }};
     updateOrder(query, setData, callback);
 }

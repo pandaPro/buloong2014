@@ -4,6 +4,7 @@ var api = require('../controllers/invoice-api.js');
 var customerAPI = require('../controllers/customer-api.js');
 var _ = require('underscore');
 var exportXsl = require('../controllers/excel-builder.js');
+var mongoose = require('mongoose');
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -17,24 +18,35 @@ router.post('/add', function(req, res) {
         var invoice = new api.getInvoiceObject(req.body.invoiceObject);
         invoice.validate(function(err) {
             if(err) {
-                console.log(err);
+                console.log("err" + err);
                 res.send(err);
             }
             else {
                 //save data
                 api.addInvoice(invoice, function(err, item) {
                     if (err) {
+                        res.json(200, {error: "existed invoice"});
                         // console.log("===response error===");
-                        // console.log(err.errors);
-                        // if(err.errors._id) {
+                        // console.log("invoice id="+err.id);
+                        // if(err.id != undefined && mongoose.Types.ObjectId(err.id)) {
                         //     // add new order instead of new invoice
-                        //     var invoiceId = err.errors._id;
+                        //     var invoiceId = err.id;
                         //     var orderJson = invoice.orders;
                         //     addNewOrder(invoiceId, orderJson, res);
+                            // api.addOrder(invoiceId, orderJson, function(err, item) {
+                            //     if (err) {
+                            //         console.log("response err: " + err);
+                            //         res.send(err);
+                            //     }
+                            //     else {
+                            //         console.log("response item: " + item);
+                            //         res.json(200, {message: "new order added", item: item});
+                            //     }
+                            // })
                         // }
                         // else{ 
-                            console.log("put add order err: "+ err);
-                            res.send({"error": "existed invoice!"});
+                        //     console.log("put add order err: "+ err);
+                        //     res.send({"error": "existed invoice!"});
                         // }
                         // res.send(err);
                     }

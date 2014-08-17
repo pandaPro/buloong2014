@@ -35,10 +35,10 @@ block content
                         td
                             span(format="number") {{product.salePrice}}
                         td {{product.status}}
-                            -if ('#{product.status}' == 'true')
-                                span.label.label-success=t("actived")
-                            -else
-                                span.label.label-danger=t("blocked")
+                            //- -if ('#{product.status}' == 'true')
+                            //-     span.label.label-success=t("actived")
+                            //- -else
+                            //-     span.label.label-danger=t("blocked")
                         td
                             p
                                 button(ng-click="edit(product._id)" type="button" class="btn btn-primary")

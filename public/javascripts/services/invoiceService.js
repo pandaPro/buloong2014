@@ -33,7 +33,7 @@ app.factory('invoiceService', function ($http, baseService) {
     };
 
     var exportData = function(filterData){
-        var requestURI = url+ baseService.actions.EXPORT +"/excel/";
+        var requestURI = url+ baseService.actions.EXPORT;
         return baseService.syncRequest(baseService.methods.PUT, requestURI, filterData);
     }
 
