@@ -124,17 +124,17 @@ block content
                             tr
                                 td.col-xs-3.col-md-1
                                     p.input-group
-                                        select(ng-model="product.format" name="format" class="form-control  text-center input-lg" required style="width:80px" ng-change="verifyProductCode(product, newOrder)")
+                                        select(ng-model="product.format" name="format" class="form-control  text-center input-lg" required style="width:80px" ng-change="verifyProductCode(product, editOrder)")
                                             option(value="")
                                             option(ng-repeat="format in formats" value="{{format.value}}") {{format.name}}
                                         span(class="help-block" ng-show="orderModel.format.$error.required")=t("validation.required")
                                         span x
-                                        select(name="length" ng-model="product.length" class="form-control text-center pull-right input-lg" required style="width:80px" ng-change="verifyProductCode(product, newOrder)")
+                                        select(name="length" ng-model="product.length" class="form-control text-center pull-right input-lg" required style="width:80px" ng-change="verifyProductCode(product, editOrder)")
                                             option(value="")
                                             option(ng-repeat="length in lengths" value="{{length.value}}") {{length.name}}
                                         span(class="help-block" ng-show="orderModel.length.$error.required")=t("validation.required")
                                 td.col-xs-2.col-md-1
-                                    select(name="type" ng-model="product.type" class="form-control text-center input-lg" required ng-change="verifyProductCode(product, newOrder)")
+                                    select(name="type" ng-model="product.type" class="form-control text-center input-lg" required ng-change="verifyProductCode(product, editOrder)")
                                         option(value="")
                                         option(ng-repeat="type in types" value="{{type.value}}") {{type.name}}
                                     span(class="help-block" ng-show="orderModel.type.$error.required")=t("validation.required")
@@ -156,6 +156,11 @@ block content
                                         button(type="button" class="btn btn-default" ng-click="cancel()")
                                             span(class="glyphicon glyphicon-remove")
 
+        //- hr
+        //- //- .row
+        //- //-     .col-xs-8.col-md-8.text-right
+        //- //-     .col-xs-4.col-md-2.text-left
+        //- //-         strong {{ invoiceTotal | number}}
         hr
         form(name="invoiceModelForm" novalidate)
          #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
