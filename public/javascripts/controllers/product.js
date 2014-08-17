@@ -47,7 +47,7 @@ function productController($scope, $http, $locale, productData, baseService)
         return extractProductPartValueByCode(code, position, list);
     }
 
-    $scope.checkProduct = function(productObject, productModelForm) {
+    $scope.checkProduct = function(productObject, productForm) {
         var result = "false";
         var newCode = $scope.newProductCode(productObject);
         if(newCode.length >= 4 && /[A-Z]/.test(newCode))
@@ -63,8 +63,8 @@ function productController($scope, $http, $locale, productData, baseService)
                     console.log("existed code");
                     $scope.message = "Existed product! Please select a new one.";
                     $scope.messageEnabled = true;
-                    productModelForm.$valid = false;
-                    productModelForm.$invalid = true;
+                    productForm.$valid = false;
+                    productForm.$invalid = true;
                     result = "true";
                 }
                 else

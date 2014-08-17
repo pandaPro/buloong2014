@@ -16,7 +16,7 @@ block content
             span(class="glyphicon glyphicon-plus")
         div.row-fluid.table-responsive
             .input-append
-                input(type="text" class="input-lg text-center" placeholder=t("customer.enterName"))
+                input(type="text" class="input-lg text-center" ng-model="searchText" placeholder=t("customer.enterName"))
                 span.add-on
                     i.icon-search
             .pull-right.badge {{ list.length }}
@@ -31,7 +31,7 @@ block content
                         th= t("customer.status")
                         th
                 tbody
-                    tr(ng-hide="editorEnabled" ng-repeat="customer in list")
+                    tr(ng-hide="editorEnabled" ng-repeat="customer in list | filter:searchText")
                         td {{customer.name}}
                         td {{customer.address}}
                         td {{customer.phone}}

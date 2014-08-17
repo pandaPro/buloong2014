@@ -7,10 +7,10 @@
 
 	var FONT_FAMILY = '3';
 	var FONT_FAMILY_NAME = 'Arial';
-	var FONT_SIZE = '13';
+	var FONT_SIZE = '12';
 	var MAX_ROWS = 300;
 	var MAX_COLS = 14;
-	var ROW_HEIGHT = 23;
+	var ROW_HEIGHT = 21;
 	var ALIGN_LEFT = 'left';
 	var ALIGN_RIGHT = 'right';
 	var ALIGN_CENTER = 'center';
@@ -308,12 +308,12 @@ function setSheetHeaderStyle(sheet, firstRow)	{
 
 function setSheetItemStyle(sheet, rowSize)	{
 	//------- data columns width -------//
-	var COL_DATE_WIDTH = 8;
-	var COL_TYPE_WIDTH = 10;
-	var COL_FORMAT_WIDTH = 14;
-	var COL_QUANTITY_WIDTH = 14;
-	var COL_SALEPRICE_WIDTH = 12;
-	var COL_AMOUNT_WIDTH = 16;
+	var COL_DATE_WIDTH = 7;
+	var COL_TYPE_WIDTH = 8;
+	var COL_FORMAT_WIDTH = 10;
+	var COL_QUANTITY_WIDTH = 11;
+	var COL_SALEPRICE_WIDTH = 9;
+	var COL_AMOUNT_WIDTH = 14;
 	for(var i=2; i <= rowSize; i++) {
 		sheet.font(COL_DATE, i, {name: FONT_FAMILY_NAME, sz: FONT_SIZE, family: FONT_FAMILY});
 		sheet.font(COL_TYPE, i, {name: FONT_FAMILY_NAME, sz: FONT_SIZE, family: FONT_FAMILY});

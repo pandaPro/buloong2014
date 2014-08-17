@@ -16,7 +16,7 @@ block content
         thead
           tr
             .input-append
-              input(type="text" class="input-lg text-center" placeholder=t("customer.enterName"))
+              input(type="text" class="input-lg text-center" ng-model="sortingOrder" placeholder=t("customer.enterName"))
               span.add-on
                 i.icon-search
           tr.input-lg.text-center
@@ -31,7 +31,7 @@ block content
             th
         tbody
           //- tr(ng-repeat='item in pagedItems[currentPage] | orderBy:sortingOrder:reverse')
-          tr.input-lg.text-left(ng-hide="editorEnabled" ng-repeat='item in list | orderBy:sortingOrder:reverse')
+          tr.input-lg.text-left(ng-hide="editorEnabled" ng-repeat='item in list | filter:sortingOrder:reverse')
             td {{item.name}}
             td {{item.value}}
             td.col-xs-1 
