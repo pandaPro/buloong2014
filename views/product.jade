@@ -15,6 +15,9 @@ block content
     div.container(ng-controller="productController" ng-init="init()")
         button.btn.btn-primary.btn-lg(data-toggle='modal', data-target='#myModal')
             i(class="glyphicon glyphicon-plus")
+        .row
+            .col-xs-2.col-md-2
+                input(type='text', ng-model='searchString', class="form-control input-lg text-center", placeholder=t("product.search"))
 
         div.row.table-responsive
           form(name="editProductForm")
@@ -28,7 +31,7 @@ block content
                         th=t("product.status")
                         th
                 tbody
-                    tr(ng-hide="editorEnabled" ng-repeat="product in list")
+                    tr(ng-hide="editorEnabled" ng-repeat="product in list | filter: searchString")
                         td {{getProductExtractPart(product.code, productCodePosition.format, formats)}}
                         td {{getProductExtractPart(product.code, productCodePosition.length, lengths)}}
                         td {{getProductExtractPart(product.code, productCodePosition.type, types)}}

@@ -9,7 +9,6 @@ var invoiceSchema = new Schema({
     createdDate:{
         type: Date,
         index:true,
-        unique: true,
         required: true
     },
     customer:{

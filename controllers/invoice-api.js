@@ -95,12 +95,15 @@ exports.addInvoice = function(obj, callback) {
                 callback(error);
             }
             else {
+                console.log("added");
                 callback("", savedItem);
             }
        });
     }
     catch(err){
+        console.log("exception");
         console.log(err);
+        callback(err);
     }
 }
 
@@ -122,7 +125,7 @@ exports.addOrder = function(invoiceId, addJson, callback) {
     var setData = { $push: {
         "orders": addJson
     }};
-    console.log(setData);
+    // console.log(setData);
     addOrUpdateOrder(query, setData, callback);
 }
 

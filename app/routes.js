@@ -8,7 +8,7 @@ module.exports = function(app, passport, localStrategy) {
     var invoice = require('../routes/invoices');
     var user = require('../routes/user');
     var profile = require('../routes/profile');
-
+	var salesSummary = require('../routes/sales-summary');
 
     app.use('/', routes);
     app.use('/customer', customers);
@@ -17,6 +17,7 @@ module.exports = function(app, passport, localStrategy) {
     app.use('/login', user);
     app.use('/profile', profile);
     app.use('/invoice', invoice);
+    app.use('/sales-summary', salesSummary);
     // app.get('/logout', about);
     // app.get('/about', about);
     

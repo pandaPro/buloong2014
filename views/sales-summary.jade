@@ -1,0 +1,62 @@
+extends layout
+
+block menu
+    include includes/profile-menu
+    +menu('menu.sales-summary')
+block css
+
+block js
+    script(src='/javascripts/ui-bootstrap-tpls-0.11.0.min.js')
+    script(src='/javascripts/ng-google-chart.js')
+    script(src='/javascripts/controllers/sales-summary.js')
+    
+    script(src='/javascripts/services/baseService.js')
+    script(src='/javascripts/services/customerService.js')
+    script(src='/javascripts/services/invoiceService.js')
+    script(src='/javascripts/services/productData.js')
+    script(src='/javascripts/common-functions.js')
+
+
+block content
+    div.wrapper(ng-controller="summaryController" ng-init="init()")
+        form(name="filterForm")
+          .row
+            .col-xs-1.col-md-1
+            .col-xs-2.col-md-1.text-center
+                select(ng-model="filter.customer.id" name="filterCustomer" class="form-control input-lg text-center")
+                    option(ng-repeat="c in dataTypes" value="{{c.value}}") {{c.name}}
+            .col-xs-3.col-md-2.text-center
+                p.input-group
+                    input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.fromDate', is-open='opened', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
+                    span.input-group-btn
+                        button.btn.btn-lg(type='button', ng-click='open($event)')
+                            i.glyphicon.glyphicon-calendar
+            .col-xs-3.col-md-2.text-center
+                p.input-group
+                    input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.toDate', is-open='opened', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
+                    span.input-group-btn
+                        button.btn.btn-lg(type='button', ng-click='open($event)')
+                            i.glyphicon.glyphicon-calendar
+            .col-xs-1.col-md-2
+                p.input-group
+                    button.btn.btn-primary.btn-lg(ng-click='filterMethod()' ng-disabled='filterForm.$valid && filterForm.$pristine')
+                        span(class="glyphicon glyphicon-search")
+        hr
+        .row
+            .col-xs-1.col-md-1
+            .col-xs-2.col-md-2
+                select#chartType.form-control.ng-valid.ng-dirty(ng-model='type', ng-change='chartSelectionChange()')
+                  option(value='AreaChart') AreaChart
+                  option(value='PieChart') PieChart
+                  option(value='ColumnChart') ColumnChart
+                  option(value='LineChart') LineChart
+                  option(value='Table') Table
+                  option(value='BarChart') BarChart
+        br
+        .row
+            .col-xs-1.col-md-1
+            .col-xs-2.col-md-10
+                div(google-chart='google-chart', chart='chart1', style='border: 1px inset black; padding: 0;')
+            .col-xs-1.col-md-1
+
+
