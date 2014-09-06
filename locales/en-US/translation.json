@@ -16,7 +16,8 @@
     "customer": "Customer",
     "config": "Config",
     "product": "Product",
-    "invoice": "Invoice"
+    "invoice": "Invoice",
+    "sales-summary": "Sales-Summary"
   },
   "user": {
     "logintitle": "Please log in",

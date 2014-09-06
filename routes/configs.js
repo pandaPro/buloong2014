@@ -58,7 +58,7 @@ router.post('/add', function(req, res) {
                     }
                     else {
                         console.log("response item: " + item);
-                        res.json({message: "added", item: item});
+                        res.json({result: 1, message: "added", item: item});
                     }
                 })
             }
@@ -71,29 +71,37 @@ router.post('/add', function(req, res) {
 /*
  * PUT to update config.
  */
-router.put('/update/:id', function(req, res) {
-    var id = req.params.id;
+router.put('/update', function(req, res) {
     try {
         var config = new api.getConfigObject(req.body.updateConfigObject);
-        config.validate(function(error) {
-            if(error) {
-                res.json({ error: error });
-            } else {
-                //save data
-                api.update(config, function(err, savedItem) {
-                    if (err) {
-                        console.log(err);
-                        res.send(err);
-                    }
-                    else {
-                        console.log("saveditem="+ savedItem);
-                        res.json({message: "Updated"});
-                    }
-                })
-            }
-        });
+        if(!config._id){
+            console.log("invalid id");
+            res.send("invalid id");
+        }
+        else{
+            config.validate(function(error) {
+                if(error) {
+                    res.json({ error: error });
+                } else {
+                    //save data
+                    api.update(config, function(err, savedItem) {
+                        if (err) {
+                            console.log(err);
+                            res.send(err);
+                        }
+                        else {
+                            console.log("saveditem="+ savedItem);
+                            res.json({result: 1, message: "Updated"});
+                        }
+                    })
+                }
+            });
+        }
     }
-    catch(err) { console.log("post error: "+ err); }
+    catch(err) { 
+        console.log("post error: "+ err);
+        res.json({message: err});
+    }
 });
 
 /*

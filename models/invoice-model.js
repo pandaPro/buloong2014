@@ -8,8 +8,6 @@ var moment = require('moment');
 var invoiceSchema = new Schema({
     createdDate:{
         type: Date,
-        index:true,
-        unique: true,
         required: true
     },
     customer:{
@@ -34,7 +32,7 @@ var invoiceSchema = new Schema({
         salePrice: {
             type: Number,
             min: 30,
-            max: 5000,
+            max: 50000,
             required: true
         },
         quantity: {
