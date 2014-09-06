@@ -6,60 +6,64 @@ block menu
 block js
     script(src='/javascripts/ui-bootstrap-tpls-0.11.0.min.js')
     script(src='/javascripts/app.js')
+    script(src='/javascripts/services/baseService.js')
+    script(src='/javascripts/services/configService.js')
     script(src='/javascripts/controllers/config.js')
     script(src='/javascripts/common-directives.js')
+    script(src='/javascripts/common-functions.js')
 block content
-    div.container(ng-controller="configController")
+    div.container(ng-controller="configController" ng-init="init()")
       button.btn.btn-primary.btn-lg(data-toggle='modal', data-target='#myModal')
         span(class="glyphicon glyphicon-plus")
-      table.table.table-striped.table-condensed.table-hover
-        thead
-          tr
-            .input-append
-              input(type="text" class="input-lg text-center" ng-model="sortingOrder" placeholder=t("customer.enterName"))
-              span.add-on
-                i.icon-search
-          tr.input-lg.text-center
-            th=t("config.name")
-              a(ng-click='sort_by(\'name\')')
-                i(class="glyphicon glyphicon-sort")
-            th=t("config.value")
-              a(ng-click='sort_by(\'description\')')
-                i(class="glyphicon glyphicon-sort")
-            th=t("config.status")
-              a(ng-click='sort_by(\'field3\')')
-            th
-        tbody
-          //- tr(ng-repeat='item in pagedItems[currentPage] | orderBy:sortingOrder:reverse')
-          tr.input-lg.text-left(ng-hide="editorEnabled" ng-repeat='item in list | filter:sortingOrder:reverse')
-            td {{item.name}}
-            td {{item.value}}
-            td.col-xs-1 
-                -if(true)
-                    span.label.label-success=t("actived")
-                -else
-                    span.label.label-danger=t("blocked")
-            td
-                p
-                    button(ng-click="edit(item._id)" type="button" class="btn btn-primary")
-                        span(class="glyphicon glyphicon-edit")
-                    span &nbsp;
-                    //- button(type="button" class="btn btn-danger")=t("button.delete")
+      form(name="editConfigForm" novalidate)
+        table.table.table-striped.table-condensed.table-hover
+          thead
+            tr
+              .input-append
+                input(type="text" class="input-lg text-center" ng-model="sortingOrder" placeholder=t("customer.enterName"))
+                span.add-on
+                  i.icon-search
+            tr.input-lg.text-center
+              th=t("config.name")
+                a(ng-click='sort_by(\'name\')')
+                  i(class="glyphicon glyphicon-sort")
+              th=t("config.value")
+                a(ng-click='sort_by(\'description\')')
+                  i(class="glyphicon glyphicon-sort")
+              th=t("config.status")
+                a(ng-click='sort_by(\'field3\')')
+              th
+          tbody
+            //- tr(ng-repeat='item in pagedItems[currentPage] | orderBy:sortingOrder:reverse')
+            tr.input-lg.text-left(ng-hide="editorEnabled" ng-repeat='item in list | filter:sortingOrder:reverse')
+              td {{item.name}}
+              td {{item.value}}
+              td.col-xs-1 
+                  -if(true)
+                      span.label.label-success=t("actived")
+                  -else
+                      span.label.label-danger=t("blocked")
+              td
+                  p
+                      button(ng-click="edit(item._id)" type="button" class="btn btn-primary")
+                          span(class="glyphicon glyphicon-edit")
+                      span &nbsp;
+                      //- button(type="button" class="btn btn-danger")=t("button.delete")
 
-          tr.input-lg.text-center(ng-show="editorEnabled")
-            td(class="col-xs-2")
-                label {{editConfig.name}}
-            td(class="col-xs-6")
-                textarea(class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="editConfig.value")
-            td(class="col-xs-1")
-                input(type="checkbox" text=t("config.status") checked="{{editConfig.status}}")
-            td(class="col-xs-3")
-                p
-                    button(type="button" class="btn btn-primary" ng-click="updateConfig(editConfig)")
-                        span(class="glyphicon glyphicon-ok")
-                    span &nbsp;
-                    button(type="button" class="btn btn-default" ng-click="cancel()")
-                        span(class="glyphicon glyphicon-remove")
+            tr.input-lg.text-center(ng-show="editorEnabled")
+              td(class="col-xs-2")
+                  label {{editConfig.name}}
+              td(class="col-xs-6")
+                  textarea(class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="editConfig.value")
+              td(class="col-xs-1")
+                  input(type="checkbox" text=t("config.status") checked="{{editConfig.status}}")
+              td(class="col-xs-3")
+                  p
+                      button(type="button" class="btn btn-primary" ng-click="updateConfig(editConfigForm, editConfig)")
+                          span(class="glyphicon glyphicon-ok")
+                      span &nbsp;
+                      button(type="button" class="btn btn-default" ng-click="cancel()")
+                          span(class="glyphicon glyphicon-remove")
       br
       hr
       form(name="configModelForm" novalidate)

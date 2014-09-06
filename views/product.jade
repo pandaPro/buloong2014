@@ -63,7 +63,7 @@ block content
                                     option(ng-repeat="type in types track by type.value" value="{{type.value}}") {{type.name}}
                             span(ng-show="product.type.$error.required")=t("validation.required")
                         td
-                            input(type="text" valid-number class="form-control input-lg text-center" placeholder=t("product.enterSalePrice") ng-model="editProduct.salePrice")
+                            input(type="number" valid-number class="form-control input-lg text-center" placeholder=t("product.enterSalePrice") ng-model="editProduct.salePrice")
                         td
                             input(type="checkbox" text=t("product.status") ng-model="editProduct.status" checked="{{editProduct.status}}")
                         td

@@ -42,7 +42,7 @@
 	var COL_FOOTER_VALUE_TEXT = 'value';
 
 	var COL_FOOTER_TOTALAMOUNT_TEXT = 'Tổng tiền';
-	var COL_FOOTER_DISCOUNT_TEXT = 'Triết khấu';
+	var COL_FOOTER_DISCOUNT_TEXT = 'Triết khấu %s%';
 	var COL_FOOTER_TOTAL_TEXT = 'Tổng cộng';
 	//---------------------------------//
 	var HEADER_ROWNUMBER = 1;
@@ -228,7 +228,7 @@ exports.reportInvoices = function(exportData, customerName, callback) {
 
 						setFooterItemStyle(sheet1, discountRowNumber);
 						// setFooterItemBorderStyle(sheet1, discountRowNumber);
-						sheet1.set(COL_FOOTER_TEXT, discountRowNumber, COL_FOOTER_DISCOUNT_TEXT);
+						sheet1.set(COL_FOOTER_TEXT, discountRowNumber, util.format(COL_FOOTER_DISCOUNT_TEXT, footer['discount']));
 						sheet1.set(COL_FOOTER_VALUE, discountRowNumber, commonFunctions.formatNumber(discountAmount));
 						setFooterItemStyle(sheet1, sumTotalRowNumber);
 						sheet1.set(COL_FOOTER_TEXT, sumTotalRowNumber, COL_FOOTER_TOTAL_TEXT);

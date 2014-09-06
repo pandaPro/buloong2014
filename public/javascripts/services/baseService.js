@@ -37,7 +37,7 @@ app.factory('baseService', function($q, $http) {
 
     return {
         actions: {"ALL": "all", "ADD": "add", "UPDATE": "update", "DELETE": "delete", 
-                "REMOVE": "remove", "FILTER": "filter", "EXPORT": "export"},
+                "REMOVE": "remove", "FILTER": "filter", "EXPORT": "export", "LIST": "list"},
         methods: {"GET": "GET", "POST": "POST", "PUT": "PUT", "DELETE": "DELETE"},
         asyncRequest: asyncRequest,
         syncRequest: syncRequest

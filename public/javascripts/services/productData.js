@@ -33,7 +33,12 @@ app.factory('productData', function($http, baseService) {
 
     var generateQuantitySuggestList = function(){
         var list = [];
+        var skipCount = 0;
         for (var i =1000; i <= 100000; i+=1000) {
+            if((i- skipCount)/1000 ===3 || (i- skipCount)/1000 ===8 ){
+                list.push(i-500);
+                skipCount +=5000;
+            }
             list.push(i);
         }
         return list;
@@ -55,6 +60,5 @@ app.factory('productData', function($http, baseService) {
         add: add,
         update: update,
         checkExistedCode: checkCode
-        // getProductByCode: checkCode
     };
 })

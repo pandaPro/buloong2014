@@ -37,7 +37,9 @@ app.factory('invoiceService', function ($http, baseService) {
         return baseService.syncRequest(baseService.methods.PUT, requestURI, filterData);
     }
 
-    var businessChartData = function(){
+    var businessChartData = function(filterData){
+        var requestURI = '/sales-summary';
+        return baseService.syncRequest(baseService.methods.PUT, requestURI, filterData);
 
     }
 
