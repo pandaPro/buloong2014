@@ -58,17 +58,29 @@ exports.report = function (query, sort, callback){
     })
 }
 
-exports.salesReportData = function (query, callback){
+exports.salesReportData = function (query, type, callback){
     try{
+        var groupId = "$customer.id";
+        if(type && type == 1)
+            groupId = "$orders.code";
+
         invoiceModel.aggregate([
-            {$match: query},
-            {$project: {_id:0, orders:1}},
-            {$unwind: "$orders"},
-            {
+            {$match: query}
+            ,{$project: {_id:0, customer:1, orders:1, createdDate: 1}}
+            ,{$unwind: "$orders"}
+            // {
+            //     $group: {
+            //         _id: "$customer.id",
+            //         quantity : { $sum: "$orders.quantity"}
+            //         // ,price: {$addToSet: "$orders.salePrice"}
+            //         ,amount : { $sum: { $multiply: ["$orders.quantity", "$orders.salePrice"]}}
+            //     }
+            // }
+
+            ,{
                 $group: {
-                    _id: "$orders.code",
-                    quantity : { $sum: "$orders.quantity"}
-                    // ,price: {$addToSet: "$orders.salePrice"}
+                    _id: groupId
+                    ,quantity : { $sum: "$orders.quantity"}
                     ,amount : { $sum: { $multiply: ["$orders.quantity", "$orders.salePrice"]}}
                 }
             }

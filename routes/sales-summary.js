@@ -13,7 +13,6 @@ router.get('/', function(req, res) {
 router.put('/', function(req, res) {
     try {
         var filter = req.body.filterObject;
-        var sort = {createdDate: 1};
         var customerJson = "";
         var queryString = {};
         var createdDateJson = {createdDate: {$gte: filter.fromDate , $lte: filter.toDate}};
@@ -22,13 +21,14 @@ router.put('/', function(req, res) {
         // }
         _.extend(queryString, createdDateJson);
         console.log(queryString);
-        api.list(queryString, sort, function(err, items) {
+        console.log(filter.type);
+        api.salesReportData(queryString, filter.type, function(err, items) {
             if (err) {
                 console.log("response err: " + err);
                 res.send(err);
             }
             else {
-                // console.log("response items: " + items);
+                console.log("summary report response items: " + items);
                 res.json({data: items});
             }
         });
