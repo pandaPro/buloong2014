@@ -12,10 +12,13 @@ function summaryController($scope, $http, $locale, productData, customerService,
     $scope.disabled = function(date, mode) {
         return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
     };
-    $scope.open = function($event) {
+    $scope.open = function($event, openedPicker) {
         $event.preventDefault();
         $event.stopPropagation();
-        $scope.opened = true;
+        if(openedPicker === 1)
+            $scope.filter.isOpenedFromDate = true;
+        else if(openedPicker === 2)
+            $scope.filter.isOpenedToDate = true;
     };
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -38,7 +41,7 @@ function summaryController($scope, $http, $locale, productData, customerService,
             fromDate: new Date(),
             toDate: new Date()
         };
-
+        $scope.filter.type = 0;
         $scope.list = $scope.filterMethod();
     };
 
@@ -94,5 +97,4 @@ function summaryController($scope, $http, $locale, productData, customerService,
             }
         });
     };
-
 }

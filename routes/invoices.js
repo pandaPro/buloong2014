@@ -5,6 +5,9 @@ var customerAPI = require('../controllers/customer-api.js');
 var _ = require('underscore');
 var exportXsl = require('../controllers/excel-builder.js');
 var mongoose = require('mongoose');
+var path = require('path');
+var mime = require('mime');
+var fs = require('fs');
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -270,7 +273,27 @@ router.put('/export', function(req, res) {
     }
 });
 
-router.put('/export/excel/', function(req, res){
+router.get('/export/excel', function(req, res){
+    res.render('export', { title: 'export report'});
+});
+
+router.put('/export/excel/:file', function(req, res){
+    // if(req.params.file){
+    //     var file = './export/' + req.params.file;
+
+    //     var filename = path.basename(file);
+    //     var mimetype = mime.lookup(file);
+
+    //     res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+    //     res.setHeader('Content-type', mimetype);
+
+    //     var filestream = fs.createReadStream(file);
+    //     filestream.pipe(res);
+    // }
+    // else{
+    //     //response selection message
+    //     res.send({message: "Please select a customer !!!"});
+    // }
     res.render('export', { title: 'export report'});
 });
 
