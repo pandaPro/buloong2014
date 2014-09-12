@@ -7,6 +7,7 @@ function summaryController($scope, $http, $locale, productData, customerService,
     $scope.quantity = 0;
     $scope.productCodePosition = productData.getPartsOrder;
     $scope.list = [];
+    $scope.customers = [];
     $scope.dataTypes = [{name: "customer", value:0}, {name: "product", value:1}];
     // Disable weekend selection
     $scope.disabled = function(date, mode) {
@@ -25,50 +26,51 @@ function summaryController($scope, $http, $locale, productData, customerService,
         startingDay: 1
     };
 
-    $scope.init = function(){
-        $scope.formats = productData.formats;
-        $scope.lengths = productData.lengths;
-        $scope.types = productData.types;
-
-        $scope.product = {
-            format: "",
-            length: "",
-            type: ""
-        };
-
-        $scope.filter = {
-            type: "",
-            fromDate: new Date(),
-            toDate: new Date()
-        };
-        $scope.filter.type = 0;
-        $scope.list = $scope.filterMethod();
-    };
-
+    // chart initialize
     $scope.type = "BarChart";
     var chart1 = {};
     chart1.type = $scope.type;
-    chart1.data = [
-       ['Component', 'cost'],
-       ['Software', 50000],
-       ['Hardware', 80000]
-      ];
-    chart1.data.push(['Services',20000]);
     chart1.options = {
+        isStacked: true,
+        fill: 20,
         displayExactValues: true,
-        width: 400,
-        height: 200,
+        width:1000,
+        height: 500,
         is3D: true,
-        chartArea: {left:10,top:10,bottom:0,height:"100%"}
+        chartArea: {left:"20%",top:"5%",bottom:"5%",height:"85%",width:"60%" }
     };
-
     chart1.formatters = {
       number : [{
         columnNum: 1,
         pattern: "#,##0"
       }]
-    };      
-    $scope.chart1 = chart1;
+    };
+
+    $scope.init = function(){
+        $scope.formats = productData.formats;
+        $scope.lengths = productData.lengths;
+        $scope.types = productData.types;
+        
+        console.log("before chart1");
+        $scope.chart1 = chart1;
+        $scope.chart1.data = {};
+        console.log("after chart1");
+
+        var promise = customerService.getActiveCustomers();
+        promise.then(function(res) {
+            if(res.data)
+                $scope.customers = res.data;
+        });
+
+        $scope.filter = {
+            type: 0,
+            fromDate: new Date(),
+            toDate: new Date()
+        };
+        // $scope.list = $scope.filterMethod();
+        console.log("end init");
+
+    };
 
     $scope.chartSelectionChange = function () {
         chart1.type = $scope.type;
@@ -84,7 +86,7 @@ function summaryController($scope, $http, $locale, productData, customerService,
 
     $scope.filterMethod = function() {
         // $event.preventDefault();
-        $scope.filter.fromDate = new Date(new Date($scope.filter.fromDate).setHours(0));
+        $scope.filter.fromDate = new Date($scope.filter.fromDate.setHours(0));
         var paramsJson = {filterObject: $scope.filter};
         var promise = invoiceService.businessChartData(paramsJson);
         // console.log(paramsJson);
@@ -94,7 +96,166 @@ function summaryController($scope, $http, $locale, productData, customerService,
             if(res.data)
             {
                 $scope.list = res.data.data;
+                $scope.transformFilterData($scope.list);
             }
         });
+
+        // var data = [{_id: '53e877e86bf26d00170daee7', quantity: 121323, amount: 6000000},
+        //     {_id: '53d69a42e365fef40252ce63', quantity: 121323, amount: 20000000},
+        //     {_id: '53f849c93999b1fc09ffdbfe', quantity: 121323, amount: 5566000},
+        //     {_id: '53e876aceb2530341bbb94ec', quantity: 121323, amount: 2000000},
+        //     {_id: '53ddf0acac43fcfc1cee72d8', quantity: 121323, amount: 3000000},
+        //     {_id: '53f84a0f3999b1fc09ffdc01', quantity: 121323, amount: 10000000},
+        //     {_id: '53e9a1628d1da3d005b62d86', quantity: 121323, amount: 500000},
+        //     {_id: '53f8494d3999b1fc09ffdbfb', quantity: 121323, amount: 2500000},
+        //     {_id: '53f84a963999b1fc09ffdc05', quantity: 121323, amount: 3000000}
+        // ];
+        // $scope.transformFilterData(data);
+    };
+
+    $scope.transformFilterData = function(data){
+        // sample response data : [{month: 8, year:2014, data: [{_id: 'customer id', quantity: 121323, amount: 1234567}, {_id: 'customer id', quantity: 121323, amount: 1234567}]},
+        //                          {month: 9, year:2014, data: [{_id: 'customer id', quantity: 45354, amount: 866543}, {_id: 'customer id', quantity: 121323, amount: 1234567}]}
+        // ]
+        console.log("begin transformFilterData");
+        var cols = [
+                {id: "t", label: "", type: "string"},
+                {id: "s", label: "", type: "number"}
+            ];
+        var rows = [];
+
+        angular.forEach(data, function(item) {
+            var itemData = {};
+            if($scope.filter.type == 0){
+                var customerName = getNameByList(item._id, $scope.customers);
+                itemData = {c: [{v: customerName}, {v: item.amount}]};
+            }
+            else{
+                // var customerName = getNameByList(item._id, $scope.customers);
+                itemData = {c: [{v: item._id}, {v: item.amount, f: item.quantity}]};
+            }
+            rows.push(itemData);
+        });
+
+        console.log(rows);
+        $scope.chart1.data = {"cols": cols, "rows": rows};
+
+        console.log("end transformFilterData");
+        // $scope.chart = {
+        //       "type": $scope.type,
+        //       "displayed": true,
+        //       "data": {
+        //         "cols": [
+        //           {
+        //             "id": "month",
+        //             "label": "Month",
+        //             "type": "string",
+        //             "p": {}
+        //           },
+        //           {
+        //             "id": "laptop-id",
+        //             "label": "Laptop",
+        //             "type": "number",
+        //             "p": {}
+        //           },
+        //           {
+        //             "id": "desktop-id",
+        //             "label": "Desktop",
+        //             "type": "number",
+        //             "p": {}
+        //           },
+        //           {
+        //             "id": "server-id",
+        //             "label": "Server",
+        //             "type": "number",
+        //             "p": {}
+        //           },
+        //           {
+        //             "id": "cost-id",
+        //             "label": "Shipping",
+        //             "type": "number"
+        //           }
+        //         ],
+        //         "rows": [
+        //           {
+        //             "c": [
+        //               {
+        //                 "v": "January"
+        //               },
+        //               {
+        //                 "v": 19,
+        //                 "f": "42 items"
+        //               },
+        //               {
+        //                 "v": 12,
+        //                 "f": "Ony 12 items"
+        //               },
+        //               {
+        //                 "v": 7,
+        //                 "f": "7 servers"
+        //               },
+        //               {
+        //                 "v": 4
+        //               }
+        //             ]
+        //           },
+        //           {
+        //             "c": [
+        //               {
+        //                 "v": "February"
+        //               },
+        //               {
+        //                 "v": 13
+        //               },
+        //               {
+        //                 "v": 1,
+        //                 "f": "1 unit (Out of stock this month)"
+        //               },
+        //               {
+        //                 "v": 12
+        //               },
+        //               {
+        //                 "v": 2
+        //               }
+        //             ]
+        //           },
+        //           {
+        //             "c": [
+        //               {
+        //                 "v": "March"
+        //               },
+        //               {
+        //                 "v": 24
+        //               },
+        //               {
+        //                 "v": 5
+        //               },
+        //               {
+        //                 "v": 11
+        //               },
+        //               {
+        //                 "v": 6
+        //               }
+        //             ]
+        //           }
+        //         ]
+        //       },
+        //       "options": {
+        //         "title": "Sales per month",
+        //         "isStacked": "true",
+        //         "fill": 20,
+        //         "displayExactValues": true,
+        //         "vAxis": {
+        //           "title": "Sales unit",
+        //           "gridlines": {
+        //             "count": 10
+        //           }
+        //         },
+        //         "hAxis": {
+        //           "title": "Value"
+        //         }
+        //       },
+        //       "formatters": {}
+        //     }
     };
 }

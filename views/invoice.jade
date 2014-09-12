@@ -29,15 +29,15 @@ block content
                     option(ng-repeat="c in customers" value="{{c._id}}") {{c.name}}
             .col-xs-3.col-md-2.text-center
                 p.input-group
-                    input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.fromDate', is-open='opened', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
+                    input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.fromDate', is-open='filter.isOpenedFromDate', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
                     span.input-group-btn
-                        button.btn.btn-lg(type='button', ng-click='open($event)')
+                        button.btn.btn-lg(type='button', ng-click='open($event, 1)')
                             i.glyphicon.glyphicon-calendar
             .col-xs-3.col-md-2.text-center
                 p.input-group
-                    input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.toDate', is-open='opened', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
+                    input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.toDate', is-open='filter.isOpenedToDate', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
                     span.input-group-btn
-                        button.btn.btn-lg(type='button', ng-click='open($event)')
+                        button.btn.btn-lg(type='button', ng-click='open($event, 2)')
                             i.glyphicon.glyphicon-calendar
             .col-xs-1.col-md-2
                 p.input-group
@@ -157,10 +157,10 @@ block content
                                             span(class="glyphicon glyphicon-remove")
 
         //- hr
-        //- //- .row
-        //- //-     .col-xs-8.col-md-8.text-right
-        //- //-     .col-xs-4.col-md-2.text-left
-        //- //-         strong {{ invoiceTotal | number}}
+        //- .row
+        //-     .col-xs-8.col-md-8.text-right
+        //-     .col-xs-4.col-md-2.text-left
+        //-         strong {{ invoiceTotal | number}}
         hr
         form(name="invoiceModelForm" novalidate)
          #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -173,14 +173,6 @@ block content
                     fieldset
                         legend
                             .form-group
-                                //- .dropdown
-                                //-     a#dropdown2.dropdown-toggle(role='button', data-toggle='dropdown', data-target='#', href='#')
-                                //-         .input-group
-                                //-             input.form-control.input-lg.text-center(type='text' required value='{{newInvoice.createdDate | date:\'dd-MM-yyyy\'}}')
-                                //-             span.input-group-addon
-                                //-                 i.glyphicon.glyphicon-calendar
-                                //-     ul.dropdown-menu(role='menu', aria-labelledby='dLabel')
-                                //-         <datetimepicker data-ng-model="newInvoice.createdDate" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day' }" />
                                 p.input-group
                                     input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='newInvoice.createdDate', is-open='opened', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"),, ng-disabled='true')
                                     span.input-group-btn

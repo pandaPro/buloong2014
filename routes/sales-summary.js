@@ -15,7 +15,7 @@ router.put('/', function(req, res) {
         var filter = req.body.filterObject;
         var customerJson = "";
         var queryString = {};
-        var createdDateJson = {createdDate: {$gte: filter.fromDate , $lte: filter.toDate}};
+        var createdDateJson = {createdDate: {$gte: new Date(filter.fromDate) , $lte: new Date(filter.toDate) }};
         // if(filter.customer.id){
         //     customerJson = {"customer.id": filter.customer.id};
         // }

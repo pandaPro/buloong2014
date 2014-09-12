@@ -14,11 +14,19 @@ function invoiceController($scope, $http, $locale, productData, customerService,
     $scope.disabled = function(date, mode) {
         return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
     };
-    $scope.open = function($event) {
+    $scope.open = function($event, datePickerControl) {
         $event.preventDefault();
         $event.stopPropagation();
-        $scope.opened = true;
+        if(datePickerControl){
+            if(datePickerControl === 2)
+                $scope.filter.isOpenedToDate = true;
+            else if(datePickerControl === 1)
+                $scope.filter.isOpenedFromDate = true;
+        }
+        else
+            $scope.opened = true;
     };
+
     $scope.dateOptions = {
         formatYear: 'yy',
         startingDay: 1
@@ -63,11 +71,22 @@ function invoiceController($scope, $http, $locale, productData, customerService,
         $scope.filter = {
             customer: "",
             fromDate: new Date(),
+            isOpenedFromDate: false,
+            isOpenedToDate: false,
             toDate: new Date()
         };
 
-        $scope.list = $scope.filterMethod();
+        $scope.filterMethod();
     };
+
+    // $scope.filterTotal = function(){
+    //     var invoiceTotal = 0;
+    //     console.log($scope.list);
+    //     angular.forEach($scope.list, function(item) {
+    //         invoiceTotal += total(item.orders);
+    //     });
+    //     return invoiceTotal;
+    // };
 
     $scope.verifyProductCode = function(productObject, newInvoiceOrderDetail){
         var orderProductCode = $scope.newInvoiceCode(productObject);
@@ -97,18 +116,12 @@ function invoiceController($scope, $http, $locale, productData, customerService,
         return product.type + product.format + pad(product.length, 2);
     };
 
-    $scope.$watch($scope.total, function() {
-        if(!$scope.revenue) $scope.revenue = 0;
-        $scope.revenue += $scope.total;
-    });
-
     $scope.total = function(orders) {
-        var total = 0;
+        var orderTotal = 0;
         angular.forEach(orders, function(item) {
-            total += item.quantity * item.salePrice;
+            orderTotal += item.quantity * item.salePrice;
         })
-        // $scope.invoiceTotal += total;
-        return total;
+        return orderTotal;
     }
 
     // when submitting the add form, send the text to the node API
@@ -231,13 +244,14 @@ function invoiceController($scope, $http, $locale, productData, customerService,
     
     $scope.filterMethod = function() {
         //get filter scope data
+        // var dataList = {};
         $scope.filter.fromDate = new Date(new Date($scope.filter.fromDate).setHours(0));
         var paramsJson = {filterObject: $scope.filter};
         var promise = invoiceService.getInvoicesByFilter(paramsJson);
         // console.log(paramsJson);
         // console.log("============");
         promise.then(function(res) {
-            console.log(res.data);
+            console.log("filterMethod=" + res.data);
             if(res.data)
             {
                 $scope.list = res.data.data;
