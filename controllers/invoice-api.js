@@ -9,7 +9,10 @@ var invoiceModel = require('../models/invoice-model.js');
 
 exports.getInvoiceObject = function (obj) {
     var newInvoice = new invoiceModel(obj);
-    newInvoice.createdDate = new Date(newInvoice.createdDate);
+    // newInvoice.createdDate = new Date(newInvoice.createdDate);
+    // newInvoice.createdDate.setMinutes(newInvoice.createdDate.getMinutes() + 10);
+    // newInvoice.createdDate.setMilliseconds(newInvoice.createdDate.getMilliseconds() + 100);
+    console.log("createdDate=" + newInvoice.createdDate);
     return( newInvoice );
 }
 
@@ -22,29 +25,6 @@ exports.list = function (query, sort, callback){
             callback("", invoices);
         }
     })
-}
-
-exports.testReport = function (query, sort, callback){
-    invoiceModel.aggregate([
-        {$match: query},
-        {$project: {_id:0, orders:1, customer:1, createdDate: 1}},
-        {$unwind: "$orders"},
-        {
-            $group: {
-                _id: {customer: "$customer.id"},
-                orders: {$push: "$orders"}
-            }
-        }
-        ,{$sort: {_id: 1}}
-    ])
-    // .exec(function (err, invoices) {
-    //     if(err){
-    //         console.log("sales report error: " + err);
-    //         callback(err);
-    //     }else{
-    //         callback("", invoices);
-    //     }
-    // })
 }
 
 exports.report = function (query, sort, callback){
@@ -60,23 +40,22 @@ exports.report = function (query, sort, callback){
 
 exports.salesReportData = function (query, type, callback){
     try{
-        var groupId = "$customer.id";
-        // var groupId = "$createdDate";
-        if(type && type == 1)
-            groupId = "$orders.code";
-
+        var groupIdField = "$customer.id";
+        if(type && type == 1){
+            groupIdField = "$orders.code";
+        }
         invoiceModel.aggregate([
-            {$match: query}
-            ,{$project: {_id:0, customer:1, orders:1, createdDate: 1}}
-            ,{$unwind: "$orders"}
-            ,{
+            {$match: query},
+            {$project: {_id:0, orders:1, customer:1, createdDate:1}},
+            {$unwind: "$orders"},
+            {
                 $group: {
-                    _id: groupId
+                    _id: groupIdField
                     ,quantity : { $sum: "$orders.quantity"}
                     ,amount : { $sum: { $multiply: ["$orders.quantity", "$orders.salePrice"]}}
                 }
             }
-            ,{$sort: {amount: -1}}
+            ,{$sort: {amount: 1}}
         ])
         .exec(function (err, invoices) {
             if(err){
@@ -139,7 +118,7 @@ exports.updateOrder = function(invoiceId, setJson, callback) {
     console.log("Update order");
     var query = {"_id": invoiceId, "orders.id": setJson.id};
     var setData = { $set: {
-        "orders": [setJson]
+        "orders.$": setJson
     }};
     updateOrder(query, setData, callback);
 }

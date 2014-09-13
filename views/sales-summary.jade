@@ -22,20 +22,20 @@ block content
         form(name="filterForm")
           .row
             .col-xs-1.col-md-1
-            .col-xs-2.col-md-1.text-center
-                select(ng-model="filter.customer.id" name="filterCustomer" class="form-control input-lg text-center")
+            .col-xs-2.col-md-2.text-center
+                select(ng-model="filter.type" name="filterCustomer" class="form-control input-lg text-center")
                     option(ng-repeat="c in dataTypes" value="{{c.value}}") {{c.name}}
             .col-xs-3.col-md-2.text-center
                 p.input-group
-                    input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.fromDate', is-open='opened', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
+                    input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.fromDate', is-open='filter.isOpenedFromDate', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
                     span.input-group-btn
-                        button.btn.btn-lg(type='button', ng-click='open($event)')
+                        button.btn.btn-lg(type='button', ng-click='open($event, 1)')
                             i.glyphicon.glyphicon-calendar
             .col-xs-3.col-md-2.text-center
                 p.input-group
-                    input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.toDate', is-open='opened', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
+                    input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.toDate', is-open='filter.isOpenedToDate', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
                     span.input-group-btn
-                        button.btn.btn-lg(type='button', ng-click='open($event)')
+                        button.btn.btn-lg(type='button', ng-click='open($event, 2)')
                             i.glyphicon.glyphicon-calendar
             .col-xs-1.col-md-2
                 p.input-group
@@ -52,6 +52,9 @@ block content
                   option(value='LineChart') LineChart
                   option(value='Table') Table
                   option(value='BarChart') BarChart
+            .col-xs-1.col-md-1
+                .pull-right.badge {{list.length}}
+
         br
         .row
             .col-xs-1.col-md-1
