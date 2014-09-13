@@ -61,6 +61,7 @@ exports.report = function (query, sort, callback){
 exports.salesReportData = function (query, type, callback){
     try{
         var groupId = "$customer.id";
+        // var groupId = "$createdDate";
         if(type && type == 1)
             groupId = "$orders.code";
 
@@ -68,15 +69,6 @@ exports.salesReportData = function (query, type, callback){
             {$match: query}
             ,{$project: {_id:0, customer:1, orders:1, createdDate: 1}}
             ,{$unwind: "$orders"}
-            // {
-            //     $group: {
-            //         _id: "$customer.id",
-            //         quantity : { $sum: "$orders.quantity"}
-            //         // ,price: {$addToSet: "$orders.salePrice"}
-            //         ,amount : { $sum: { $multiply: ["$orders.quantity", "$orders.salePrice"]}}
-            //     }
-            // }
-
             ,{
                 $group: {
                     _id: groupId
@@ -84,7 +76,7 @@ exports.salesReportData = function (query, type, callback){
                     ,amount : { $sum: { $multiply: ["$orders.quantity", "$orders.salePrice"]}}
                 }
             }
-            ,{$sort: {_id: 1}}
+            ,{$sort: {amount: -1}}
         ])
         .exec(function (err, invoices) {
             if(err){
