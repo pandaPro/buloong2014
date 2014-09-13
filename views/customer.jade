@@ -35,10 +35,14 @@ block content
                         td {{customer.name}}
                         td {{customer.address}}
                         td {{customer.phone}}
-                        td {{customer.discount}}
                         td
-                            span {{customer.status}}
-                            
+                            span(ng-if='customer.discount')
+                                {{customer.discount}}%
+                        td
+                            div(ng-if='customer.status && customer.status == true')
+                                span.label.label-success=t("actived")
+                            div(ng-if='!customer.status && customer.status == false')
+                                span.label.label-danger=t("blocked")
                         td
                             p
                                 button(ng-click="edit(customer._id)" type="button" class="btn btn-primary")

@@ -127,7 +127,7 @@ function summaryController($scope, $http, $locale, productData, customerService,
             else if($scope.filter.type == 1){
                 var code = item._id;
                 var product = getNameByList(extractProductByCode(item._id, 0), $scope.types);
-                itemData = {c: [{v: String(product + " " + code.substr(1, code.length-1)}, {"v": item.amount, "f": item.quantity}]};
+                itemData = {c: [{v: String(product + " " + code.substr(1, code.length-1))}, {"v": item.amount, "f": item.quantity}]};
             }
             rows.push(itemData);
         });

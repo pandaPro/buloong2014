@@ -46,7 +46,7 @@ app.factory('productData', function($http, baseService) {
 
     return {
         getPartsOrder: {format: 1, length: 2, type: 0},
-        formats:[{name: "6.3", value:63}, {name: "6", value:6}, {name: "5", value:5}],
+        formats:[{name: "6", value:6}, {name: "5", value:5}, {name: "6.3", value:63}],
         types:[{name: "Xi", value:"X"}, {name: "Đầu Bông", value:"B"}, {name: "Đen", value:"D"}
             , {name: "Mỏng", value:"M"}, {name: "Mỏng Xi", value:"Z"}],
         lengths: 

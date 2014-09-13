@@ -38,10 +38,10 @@ block content
             tr.input-lg.text-left(ng-hide="editorEnabled" ng-repeat='item in list | filter:sortingOrder:reverse')
               td {{item.name}}
               td {{item.value}}
-              td.col-xs-1 
-                  -if(true)
+              td.col-xs-1
+                  div(ng-if='item.status && item.status == true')
                       span.label.label-success=t("actived")
-                  -else
+                  div(ng-if='!item.status && item.status == false')
                       span.label.label-danger=t("blocked")
               td
                   p
@@ -56,7 +56,7 @@ block content
               td(class="col-xs-6")
                   textarea(class="form-control input-lg text-center" required placeholder=t("config.enterValue") ng-model="editConfig.value")
               td(class="col-xs-1")
-                  input(type="checkbox" text=t("config.status") checked="{{editConfig.status}}")
+                  input(type="checkbox" ng-model="editConfig.status" text=t("config.status") checked="{{editConfig.status}}")
               td(class="col-xs-3")
                   p
                       button(type="button" class="btn btn-primary" ng-click="updateConfig(editConfigForm, editConfig)")
