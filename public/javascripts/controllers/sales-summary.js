@@ -102,12 +102,6 @@ function summaryController($scope, $http, $locale, productData, customerService,
 
         // var data = [{_id: '53e877e86bf26d00170daee7', quantity: 121323, amount: 6000000},
         //     {_id: '53d69a42e365fef40252ce63', quantity: 121323, amount: 20000000},
-        //     {_id: '53f849c93999b1fc09ffdbfe', quantity: 121323, amount: 5566000},
-        //     {_id: '53e876aceb2530341bbb94ec', quantity: 121323, amount: 2000000},
-        //     {_id: '53ddf0acac43fcfc1cee72d8', quantity: 121323, amount: 3000000},
-        //     {_id: '53f84a0f3999b1fc09ffdc01', quantity: 121323, amount: 10000000},
-        //     {_id: '53e9a1628d1da3d005b62d86', quantity: 121323, amount: 500000},
-        //     {_id: '53f8494d3999b1fc09ffdbfb', quantity: 121323, amount: 2500000},
         //     {_id: '53f84a963999b1fc09ffdc05', quantity: 121323, amount: 3000000}
         // ];
         // $scope.transformFilterData(data);
@@ -119,8 +113,8 @@ function summaryController($scope, $http, $locale, productData, customerService,
         // ]
         console.log("begin transformFilterData");
         var cols = [
-                {id: "t", label: "", type: "string"},
-                {id: "s", label: "", type: "number"}
+                {id: "t", label: "", type: "string",},
+                {id: "s", label: "", type: "number", "p": {}}
             ];
         var rows = [];
 
@@ -130,9 +124,10 @@ function summaryController($scope, $http, $locale, productData, customerService,
                 var customerName = getNameByList(item._id, $scope.customers);
                 itemData = {c: [{v: customerName}, {v: item.amount}]};
             }
-            else{
-                // var customerName = getNameByList(item._id, $scope.customers);
-                itemData = {c: [{v: item._id}, {v: item.amount, f: item.quantity}]};
+            else if($scope.filter.type == 1){
+                var code = item._id;
+                var product = getNameByList(extractProductByCode(item._id, 0), $scope.types);
+                itemData = {c: [{v: String(product + " " + code.substr(1, code.length-1)}, {"v": item.amount, "f": item.quantity}]};
             }
             rows.push(itemData);
         });

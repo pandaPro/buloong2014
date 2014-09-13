@@ -27,29 +27,6 @@ exports.list = function (query, sort, callback){
     })
 }
 
-exports.testReport = function (query, sort, callback){
-    // invoiceModel.aggregate([
-    //     {$match: query},
-    //     {$project: {_id:0, orders:1, customer:1, createdDate: 1}},
-    //     {$unwind: "$orders"},
-    //     {
-    //         $group: {
-    //             _id: {customer: "$customer.id"},
-    //             orders: {$push: "$orders"}
-    //         }
-    //     }
-    //     ,{$sort: {_id: 1}}
-    // ])
-    // .exec(function (err, invoices) {
-    //     if(err){
-    //         console.log("sales report error: " + err);
-    //         callback(err);
-    //     }else{
-    //         callback("", invoices);
-    //     }
-    // })
-}
-
 exports.report = function (query, sort, callback){
     invoiceModel.find(query).sort(sort).select('createdDate orders').exec(function (err, invoices) {
         if(err){
@@ -78,7 +55,7 @@ exports.salesReportData = function (query, type, callback){
                     ,amount : { $sum: { $multiply: ["$orders.quantity", "$orders.salePrice"]}}
                 }
             }
-            ,{$sort: {_id: -1}}
+            ,{$sort: {amount: 1}}
         ])
         .exec(function (err, invoices) {
             if(err){
