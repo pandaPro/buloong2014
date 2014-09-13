@@ -143,11 +143,10 @@ function invoiceController($scope, $http, $locale, productData, customerService,
                     }
                     console.log('----------------------');
                     // reset control
-                    $scope.newInvoiceOrder = {};
-                    $scope.product = {};
+                    $scope.newInvoiceOrder.quantity = "";
                     $scope.newInvoice.orders = [];
                     // close modal
-
+                    $('#myModal').modal('hide');
                 }
             })
         }
@@ -245,7 +244,7 @@ function invoiceController($scope, $http, $locale, productData, customerService,
     $scope.filterMethod = function() {
         //get filter scope data
         // var dataList = {};
-        $scope.filter.fromDate = new Date(new Date($scope.filter.fromDate).setHours(0));
+        $scope.filter.fromDate = new Date($scope.filter.fromDate.setHours(0));
         var paramsJson = {filterObject: $scope.filter};
         var promise = invoiceService.getInvoicesByFilter(paramsJson);
         // console.log(paramsJson);
@@ -263,8 +262,8 @@ function invoiceController($scope, $http, $locale, productData, customerService,
         // alert("EXPORT");
         var selectedCustomer = $scope.filter.customer;
         if(selectedCustomer){
-            $scope.filter.fromDate = new Date(new Date($scope.filter.fromDate).setHours(0));
-            $scope.filter.toDate = new Date(new Date($scope.filter.toDate).setHours(11));
+            $scope.filter.fromDate = new Date($scope.filter.fromDate.setHours(0));
+            $scope.filter.toDate = new Date($scope.filter.toDate.setHours(11));
             var paramsJson = {filterObject: $scope.filter};
             var promise = invoiceService.exportData(paramsJson);
             // console.log(paramsJson);
