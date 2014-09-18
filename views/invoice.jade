@@ -43,7 +43,7 @@ block content
                 p.input-group
                     button.btn.btn-primary.btn-lg(ng-click='filterMethod()' ng-disabled='filterForm.$valid && filterForm.$pristine')
                         span(class="glyphicon glyphicon-search")
-            .col-xs-1.col-md-1
+            .col-xs-1.col-md-1(ng-if="filter.customer.id")
                 p.input-group
                     button.btn.btn-primary.btn-lg(ng-click="export()")
                         span(class="glyphicon glyphicon-file")
@@ -53,14 +53,21 @@ block content
                     .row
                         .col-xs-1.col-md-1.text-center
                             i.glyphicon(ng-class='{\'glyphicon-chevron-up\': status.open, \'glyphicon-chevron-down\': !status.open}')
-                        .col-xs-2.col-md-1
+                        .col-xs-2.col-md-2
                             strong {{getNameFromList(invoice.customer.id, customers)}}
-                        .col-xs-3.col-md-5
+                        .col-xs-3.col-md-2
                             strong {{invoice.createdDate | date: dd-MM-yyyy}}
-                        .col-xs-5.col-md-3.text-center
-                            strong {{(total(invoice.orders)) | number}}
+                        .col-xs-3.col-md-2
+                            //- span=t('customer.discount')
+                            span &nbsp;
+                            strong.badge.pull-right {{(invoiceDiscount) | number}}
+                        .col-xs-3.col-md-2.text-center
+                            span=t('invoice.total')
+                            strong {{(total(invoice.orders, invoice.customer)) | number}}
+                        .col-xs-2.col-md-2.text-center
+                            span=t('app.rowCount')
                             .pull-right.badge {{invoice.orders.length}}
-                        .col-xs-1.col-md-2.text-center
+                        .col-xs-2.col-md-1.text-center
                             button.close(ng-click="removeInvoice(invoice)" type='button') ×
                 .table-responsive
                   form(name="orderModelForm")
@@ -156,11 +163,11 @@ block content
                                         button(type="button" class="btn btn-default" ng-click="cancel()")
                                             span(class="glyphicon glyphicon-remove")
 
-        //- hr
-        //- .row
-        //-     .col-xs-8.col-md-8.text-right
-        //-     .col-xs-4.col-md-2.text-left
-        //-         strong {{ invoiceTotal | number}}
+        hr
+        footer.row
+            .col-xs-8.col-md-8.text-right
+            .col-xs-4.col-md-2.text-left
+                strong {{ invoiceTotal | number}}
         hr
         form(name="invoiceModelForm" novalidate)
          #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')

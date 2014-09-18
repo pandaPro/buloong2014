@@ -2,7 +2,7 @@
 var app = angular.module('myApp', ['ui.bootstrap', 'googlechart']);
 function summaryController($scope, $http, $locale, productData, customerService, invoiceService)
 {
-    $scope.totalAmount = 0;
+    $scope.totalRevenue = 0;
     $scope.saleprice = 0;
     $scope.quantity = 0;
     $scope.productCodePosition = productData.getPartsOrder;
@@ -117,18 +117,24 @@ function summaryController($scope, $http, $locale, productData, customerService,
                 {id: "s", label: "", type: "number", "p": {}}
             ];
         var rows = [];
-
+        $scope.totalRevenue = 0;
+        $scope.totalQuantity = 0;
         angular.forEach(data, function(item) {
             var itemData = {};
             if($scope.filter.type == 0){
-                var customerName = getNameByList(item._id, $scope.customers);
-                itemData = {c: [{v: customerName}, {v: item.amount}]};
+                var customer = getObjectDataById(item._id, $scope.customers);
+                var amount = item.amount;
+                if(customer.discount)
+                    amount -= (customer.discount/100 * item.amount);
+                itemData = {c: [{v: customer.name}, {v: amount}]};
+                $scope.totalRevenue += amount;
             }
             else if($scope.filter.type == 1){
                 var code = item._id;
                 var product = getNameByList(extractProductByCode(item._id, 0), $scope.types);
                 itemData = {c: [{v: String(product + " " + code.substr(1, code.length-1))}, {"v": item.amount, "f": item.quantity}]};
             }
+            $scope.totalQuantity += item.quantity;
             rows.push(itemData);
         });
 

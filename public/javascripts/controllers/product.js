@@ -12,6 +12,7 @@ function productController($scope, $http, $locale, productData, baseService, $sc
     $scope.orderProp = "name";
     $scope.showModal = false;
     $scope.selectedId = "";
+    $scope.productStatus = false;
 
     $scope.init = function(){
         var promise = productData.getAll();
@@ -47,6 +48,7 @@ function productController($scope, $http, $locale, productData, baseService, $sc
                     var salePrice = $scope.list[i].salePrice;
                     elementReturn = $sce.trustAsHtml("<label class='text-center input-product-price'>"+salePrice+"</label>");
                     isExisted = true;
+                    $scope.productStatus = $scope.list[i].status;
                     $scope.selectedId = angular.copy($scope.list[i]._id);
                     $scope.tempProducts.splice(i, 1);
                     break;

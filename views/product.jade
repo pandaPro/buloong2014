@@ -19,14 +19,13 @@ block content
                     thead
                         th
                         th(ng-repeat='type in types') {{type.name}}
-                    tbody
-                        tr(ng-repeat='length in lengths')
+                    tbody(ng-repeat='length in lengths')
+                        tr
                             td.col-xs-2.col-md-1 {{format.name}} X {{length.name}}
                             td.col-xs-1.col-md-1(ng-repeat='type in types')
                                 div(ng-hide='getProductFormatHeader(type.value, format.value, length.value)')
                                 div(ng-if='isInList === true')
-                                    //- div(ng-bind-html='getProductFormatHeader(type.value, format.value, length.value)')
-                                    //- input(type='number', ng-model='name', ng-model-onblur='ng-model-onblur', ng-change='updateProduct()')
+
                                     p
                                         span(ng-bind-html='htmlString')
                                         span 

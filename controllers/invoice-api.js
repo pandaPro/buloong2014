@@ -9,9 +9,6 @@ var invoiceModel = require('../models/invoice-model.js');
 
 exports.getInvoiceObject = function (obj) {
     var newInvoice = new invoiceModel(obj);
-    // newInvoice.createdDate = new Date(newInvoice.createdDate);
-    // newInvoice.createdDate.setMinutes(newInvoice.createdDate.getMinutes() + 10);
-    // newInvoice.createdDate.setMilliseconds(newInvoice.createdDate.getMilliseconds() + 100);
     console.log("createdDate=" + newInvoice.createdDate);
     return( newInvoice );
 }
@@ -36,6 +33,41 @@ exports.report = function (query, sort, callback){
             callback("", invoices);
         }
     })
+}
+
+exports.testReport = function (query, type, callback){
+    try{
+        var groupIdField = "$customer.id";
+        if(type && type == 1){
+            groupIdField = "$orders.code";
+        }
+        //by day
+        //by month
+        invoiceModel.aggregate([
+            {$match: query},
+            {$project: {_id:0, orders:1, customer:1, createdDate:1}},
+            {$unwind: "$orders"},
+            {
+                $group: {
+                    _id: groupIdField
+                    // ,quantity : { $sum: "$orders.quantity"}
+                    ,amount : { $sum: { $multiply: ["$orders.quantity", "$orders.salePrice"]}}
+                }
+            }
+            ,{$sort: {amount: 1}}
+        ])
+        .exec(function (err, invoices) {
+            if(err){
+                console.log("sales report error: " + err);
+                callback(err);
+            }else{
+                callback("", invoices);
+            }
+        })
+    }
+    catch(err){
+
+    }
 }
 
 exports.salesReportData = function (query, type, callback){

@@ -7,7 +7,9 @@
     "inactived": "Inactived",
     "blocked": "Blocked",
     "selectOption": "-- Select an option --",
-    "all": "All"
+    "all": "All",
+    "rowCount": "Rows count",
+    "currency": "Currency"
   },
   "menu": {
     "home": "Home",
@@ -33,7 +35,8 @@
         "name": "Customer name",
         "address": "Address",
         "phone": "Contact number",
-        "status": "Status"
+        "status": "Status",
+        "discount": "Discount"
   },
   "config": {
         "configInfo": "Config Info",
@@ -53,7 +56,8 @@
         "length": "Length",
         "type": "Type",
         "saleprice": "Sale price",
-        "status": "Status"
+        "status": "Status",
+        "unit": "Unit"
   },
   "invoice":{
         "invoiceInfo": "Invoice Info",
@@ -75,7 +79,7 @@
         "saleprice": "Sale price",
         "quantity": "Quantity",
         "amount": "Amount",
-        "total": "Total",
+        "total": "Total ",
         "status": "Status"
   },
   "validation": {
@@ -94,5 +98,13 @@
         "cancel": "Cancel",
         "save": "Save",
         "close": "Close"
-    }
+    },
+  "chart":{
+        "pie": "Pie chart",
+        "bar": "Bar chart",
+        "area": "Area chart",
+        "column": "Column chart",
+        "table": "Table chart",
+        "line": "Line chart"
+  }
 }

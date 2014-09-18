@@ -18,7 +18,7 @@ router.get('/list', function(req, res) {
 
 router.get('/activeList', function(req, res) {
     var sort = {name: 0};
-    api.customerlist({status: "true"}, '_id name', sort, function(err, data){
+    api.customerlist({status: "true"}, '_id name discount', sort, function(err, data){
         if (err)
             res.send(err);
         res.json(data);

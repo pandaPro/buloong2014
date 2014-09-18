@@ -7,19 +7,15 @@ module.exports = function(app, passport, localStrategy) {
     var product = require('../routes/products');
     var invoice = require('../routes/invoices');
     var user = require('../routes/user');
-    var profile = require('../routes/profile');
-	var salesSummary = require('../routes/sales-summary');
+    var salesSummary = require('../routes/sales-summary');
 
     app.use('/', routes);
     app.use('/customer', customers);
     app.use('/config', config);
     app.use('/product', product);
-    app.use('/login', user);
-    app.use('/profile', profile);
+    app.use('/user', user);
     app.use('/invoice', invoice);
     app.use('/sales-summary', salesSummary);
-    // app.get('/logout', about);
-    // app.get('/about', about);
     
 	// // =====================================
 	// // HOME PAGE (with login links) ========

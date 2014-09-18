@@ -75,8 +75,10 @@ function invoiceController($scope, $http, $locale, productData, customerService,
             isOpenedToDate: false,
             toDate: new Date()
         };
-
-        $scope.filterMethod();
+        $scope.invoiceTotal = 0;
+        setTimeout(function () {
+            $scope.filterMethod();
+        }, 1000);
     };
 
     // $scope.filterTotal = function(){
@@ -100,6 +102,10 @@ function invoiceController($scope, $http, $locale, productData, customerService,
                 {
                     newInvoiceOrderDetail.salePrice = res.data.item.salePrice;
                 }
+                else
+                {
+                    newInvoiceOrderDetail.salePrice = "";
+                }
             });
         }
     };
@@ -116,11 +122,16 @@ function invoiceController($scope, $http, $locale, productData, customerService,
         return product.type + product.format + pad(product.length, 2);
     };
 
-    $scope.total = function(orders) {
+    $scope.total = function(orders, invoiceCustomer) {
         var orderTotal = 0;
+        $scope.invoiceDiscount = 0;
         angular.forEach(orders, function(item) {
             orderTotal += item.quantity * item.salePrice;
-        })
+        });
+        var customer = getObjectDataById(invoiceCustomer.id, $scope.customers);
+        if(customer.discount)
+            $scope.invoiceDiscount = (-customer.discount/100 * orderTotal);
+        // $scope.invoiceTotal += orderTotal;
         return orderTotal;
     }
 
