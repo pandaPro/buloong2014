@@ -1,6 +1,6 @@
 
 'use strict';
-function invoiceController($scope, $http, $locale, productData, customerService, invoiceService)
+function invoiceController($scope, $http, $locale, $window, toaster, productData, customerService, invoiceService)
 {
     $scope.oneAtATime = false;
     $scope.invoiceTotal = 0;
@@ -10,6 +10,9 @@ function invoiceController($scope, $http, $locale, productData, customerService,
     $scope.list = [];
     $scope.revenue = 0;
 
+    $scope.pop = function(type, title, messageText){
+        toaster.pop(type, title, messageText, 3000);
+    };
     // Disable weekend selection
     $scope.disabled = function(date, mode) {
         return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
@@ -182,6 +185,8 @@ function invoiceController($scope, $http, $locale, productData, customerService,
                         selectedInvoice.orders.push(angular.copy(res.data.item));
                         // reset order model and product
                         orderModel.quantity = "";
+
+                        $scope.pop('success', "title", res.data.item.message);
                     }
                 });
                 productScope = {};
@@ -261,7 +266,7 @@ function invoiceController($scope, $http, $locale, productData, customerService,
         // console.log(paramsJson);
         // console.log("============");
         promise.then(function(res) {
-            console.log("filterMethod=" + res.data);
+            // console.log("filterMethod=" + res.data);
             if(res.data)
             {
                 $scope.list = res.data.data;

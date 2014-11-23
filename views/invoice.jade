@@ -18,6 +18,7 @@ block js
 
 block content
     div(ng-controller="invoiceController" ng-init="init()")
+        toaster-container(toaster-options='{\'position-class\': \'toast-top-right\'}')
         form(name="filterForm")
           .row
             .col-xs-1.col-md-1
@@ -43,8 +44,8 @@ block content
                 p.input-group
                     button.btn.btn-primary.btn-lg(ng-click='filterMethod()' ng-disabled='filterForm.$valid && filterForm.$pristine')
                         span(class="glyphicon glyphicon-search")
-            .col-xs-1.col-md-1(ng-if="filter.customer.id")
-                p.input-group
+            .col-xs-1.col-md-1
+                p.input-group(ng-if="filter.customer.id")
                     button.btn.btn-primary.btn-lg(ng-click="export()")
                         span(class="glyphicon glyphicon-file")
         accordion(close-others='oneAtATime' ng-repeat="invoice in list track by $index | filter: filter.customer.value")
