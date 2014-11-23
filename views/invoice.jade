@@ -26,7 +26,7 @@ block content
             .col-xs-2.col-md-1.text-center
                 select(ng-model="filter.customer.id" name="filterCustomer" class="form-control input-lg text-center")
                     option(value="")=t("app.all")
-                    option(ng-repeat="c in customers" value="{{c._id}}") {{c.name}}
+                    option(ng-repeat="c in customers | orderBy:'name':false" value="{{c._id}}") {{c.name}}
             .col-xs-3.col-md-2.text-center
                 p.input-group
                     input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.fromDate', is-open='filter.isOpenedFromDate', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
@@ -56,16 +56,25 @@ block content
                         .col-xs-2.col-md-2
                             strong {{getNameFromList(invoice.customer.id, customers)}}
                         .col-xs-3.col-md-2
-                            strong {{invoice.createdDate | date: dd-MM-yyyy}}
+                            strong {{invoice.createdDate | date: 'dd-MM-yyyy'}}
                         .col-xs-3.col-md-2
+                        .col-xs-3.col-md-2.text-center(ng-init="totalAmount = {{total(invoice.orders, invoice.customer)}}")
+                            span=t('invoice.total')
+                            span &nbsp;
+                            span(ng-if='invoiceDiscount')
+                                del {{total(invoice.orders, invoice.customer) | number}}
+                                span &nbsp;
+                                strong
+                                    span {{(total(invoice.orders, invoice.customer) + invoiceDiscount) | number}}
+                            span(ng-if='!invoiceDiscount')
+                                strong {{(total(invoice.orders, invoice.customer)) | number}}
+                        .col-xs-2.col-md-1
                             //- span=t('customer.discount')
                             span &nbsp;
-                            strong.badge.pull-right {{(invoiceDiscount) | number}}
-                        .col-xs-3.col-md-2.text-center
-                            span=t('invoice.total')
-                            strong {{(total(invoice.orders, invoice.customer)) | number}}
-                        .col-xs-2.col-md-2.text-center
-                            span=t('app.rowCount')
+                            span(ng-if='invoiceDiscount')
+                                strong.badge.pull-right {{(invoiceDiscount) | number}}
+                        .col-xs-2.col-md-1
+                            //- span=t('app.rowCount')
                             .pull-right.badge {{invoice.orders.length}}
                         .col-xs-2.col-md-1.text-center
                             button.close(ng-click="removeInvoice(invoice)" type='button') ×
@@ -188,7 +197,7 @@ block content
                             .form-group
                                 select(ng-model="newInvoice.customer.id" name="customer" class="form-control input-lg text-center" required)
                                     option(value="")=t("app.selectOption")
-                                    option(ng-repeat="c in customers" value="{{c._id}}") {{c.name}}
+                                    option(ng-repeat="c in customers | orderBy:'name':false" value="{{c._id}}") {{c.name}}
                             .form-group
                                 select(ng-model="product.format" name="format" class="form-control input-lg text-center" required ng-change="verifyProductCode(product, newInvoiceOrder)")
                                     option(value="")=t("app.selectOption")

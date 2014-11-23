@@ -31,13 +31,13 @@ block content
                         th= t("customer.status")
                         th
                 tbody
-                    tr(ng-hide="editorEnabled" ng-repeat="customer in list | filter:searchText")
+                    tr(ng-hide="editorEnabled" ng-repeat="customer in list | filter:searchText| orderBy: 'discount':true")
                         td {{customer.name}}
                         td {{customer.address}}
                         td {{customer.phone}}
                         td
                             span(ng-if='customer.discount')
-                                {{customer.discount}}%
+                                strong {{customer.discount}} %
                         td
                             div(ng-if='customer.status && customer.status == true')
                                 span.label.label-success=t("actived")

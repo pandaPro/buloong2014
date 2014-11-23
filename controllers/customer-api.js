@@ -18,7 +18,7 @@ exports.getCustomerList = function () {
 }
 
 exports.customerlist = function (query, returnFields, sort, callback){
-    customerModel.find(query).sort(sort).select(returnFields).exec(function (err, customers) {
+    customerModel.find(query).select(returnFields).exec(function (err, customers) {
         if(err){
             console.log("customerlist: " + err);
             callback(err);
