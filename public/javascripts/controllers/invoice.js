@@ -1,6 +1,6 @@
 
 'use strict';
-function invoiceController($scope, $http, $locale, $window, toaster, productData, customerService, invoiceService)
+function invoiceController($scope, $http, $locale, $window, productData, customerService, invoiceService)
 {
     $scope.oneAtATime = false;
     $scope.invoiceTotal = 0;
@@ -10,9 +10,7 @@ function invoiceController($scope, $http, $locale, $window, toaster, productData
     $scope.list = [];
     $scope.revenue = 0;
 
-    $scope.pop = function(type, title, messageText){
-        toaster.pop(type, title, messageText, 3000);
-    };
+
     // Disable weekend selection
     $scope.disabled = function(date, mode) {
         return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );

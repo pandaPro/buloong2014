@@ -1,30 +1,35 @@
 var url = "/user/";
-app.controller("userController",
-    function userController($scope, $http)
-    {
-        $scope.user = {
-            username: "",
-            password: ""
-        };
-        
-        $scope.init = function() {
-            alert();
-        }
+function userController($scope, $location, $window, userService, authenticationService)
+{
+    $scope.user = {
+        username: "",
+        password: ""
+    };
 
-        $scope.login = function(){
-            $http.post('/login', { userObject: $scope.user })
-                .success(function(data) {
-                    // $scope.customerModel = {}; // clear the form so our user is ready to enter another
-                    // $scope.newCustomer = {};
-                    // $scope.list.push(data.item);
-                    // $scope.message = data.message;
-                    console.log(data);
-                })
-                .error(function(data) {
-                    $scope.message = data.error;
-                    alert(data);
-                    console.log('Error: ' + data);
+    //Admin User Controller (login, logout)
+    $scope.logIn = function logIn(modelObject, loginForm) {
+        console.log(loginForm.$valid);
+        if (loginForm.$valid) {
+            var promise = userService.logIn(modelObject.username, modelObject.password);
+            promise.then(function(res){
+                console.log(res.data);
+                if(res.data && res.result === true){
+                    authenticationService.isLog = true;
+                    // $window.sessionStorage.token = data.token;
+                    $location.path("/profile");
+                }
+                else{
+                    console.log(res);
+                }
             });
         }
     }
-)
+
+    $scope.logout = function logout() {
+        if (authenticationService.isLogged) {
+            authenticationService.isLogged = false;
+            // delete $window.sessionStorage.token;
+            $location.path("/");
+        }
+    }
+}
