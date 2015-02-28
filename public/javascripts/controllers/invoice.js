@@ -286,8 +286,8 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
                 console.log(res.data);
                 if(res.data)
                 {
-                    // redirect a new window to exported file 
-                    var popupWindow = window.open(res.data);
+                    // redirect a new window to exported file
+                    var popupWindow = window.open(res.data.url);
                 }
             });
         }

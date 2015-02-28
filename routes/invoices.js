@@ -6,7 +6,6 @@ var _ = require('underscore');
 var exportXsl = require('../controllers/excel-builder.js');
 var mongoose = require('mongoose');
 var path = require('path');
-var mime = require('mime');
 var fs = require('fs');
 
 /* GET home page. */
@@ -247,13 +246,8 @@ router.put('/export', function(req, res) {
                                     console.log("===export callback===");
                                     var redirectUrl = fullUrl + callback.fname;
                                     console.log(redirectUrl);
-                                    res.writeHead(301,
-                                        {Location: redirectUrl}
-                                    );
-                                    res.end();
-                                    
-                                    //call back url
-                                    //redirect to exported file
+                                    // res.writeHead( 301, {Location: redirectUrl});
+                                    res.send({ url: redirectUrl});
                                 }
                             });
                         }
@@ -277,24 +271,17 @@ router.get('/export/excel', function(req, res){
     res.render('export', { title: 'export report'});
 });
 
-router.put('/export/excel/:file', function(req, res){
-    // if(req.params.file){
-    //     var file = './export/' + req.params.file;
+router.get('/export/excel/:file', function(req, res){
+    if(req.params.file){
+        var file = './export/' + req.params.file;
+        var filename = path.basename(file);
+        res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+        res.setHeader('Content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
-    //     var filename = path.basename(file);
-    //     var mimetype = mime.lookup(file);
-
-    //     res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-    //     res.setHeader('Content-type', mimetype);
-
-    //     var filestream = fs.createReadStream(file);
-    //     filestream.pipe(res);
-    // }
-    // else{
-    //     //response selection message
-    //     res.send({message: "Please select a customer !!!"});
-    // }
-    res.render('export', { title: 'export report'});
+        var filestream = fs.createReadStream(file);
+        console.log("after init read stream file.");
+        filestream.pipe(res);
+    }
 });
 
 module.exports = router;
