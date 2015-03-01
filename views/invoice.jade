@@ -59,7 +59,7 @@ block content
                         .col-xs-3.col-md-2
                             strong {{invoice.createdDate | date: 'dd-MM-yyyy'}}
                         .col-xs-3.col-md-2
-                        .col-xs-3.col-md-2.text-center(ng-init="totalAmount = {{total(invoice.orders, invoice.customer)}}")
+                        .col-xs-3.col-md-2.text-center(ng-init="totalAmount = total(invoice.orders, invoice.customer)")
                             span=t('invoice.total')
                             span &nbsp;
                             span(ng-if='invoiceDiscount')
@@ -104,7 +104,7 @@ block content
                                     strong {{order.salePrice * order.quantity | number}}
                                 td.col-xs-4.col-md-2
                                     p
-                                        button(ng-click="editOrder(invoice._id, order)" type="button" class="btn btn-primary")
+                                        button(ng-click="editOrderItem(invoice._id, order)" type="button" class="btn btn-primary")
                                             span(class="glyphicon glyphicon-edit")
                                         span &nbsp;
                                         button(ng-click="removeOrder(invoice, order)" type="button" class="btn btn-danger")
@@ -174,10 +174,11 @@ block content
                                             span(class="glyphicon glyphicon-remove")
 
         hr
-        footer.row
-            .col-xs-8.col-md-8.text-right
-            .col-xs-4.col-md-2.text-left
-                strong {{ invoiceTotal | number}}
+        footer.row.panel-title
+            .col-xs-8.col-md-7.text-right
+            .col-xs-4.col-md-2.text-center
+                strong
+                    span {{ filterTotal() | number}}
         hr
         form(name="invoiceModelForm" novalidate)
          #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')

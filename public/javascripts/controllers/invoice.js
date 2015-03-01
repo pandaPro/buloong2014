@@ -76,20 +76,20 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
             isOpenedToDate: false,
             toDate: new Date()
         };
-        $scope.invoiceTotal = 0;
-        setTimeout(function () {
-            $scope.filterMethod();
-        }, 1000);
+        // $scope.invoiceTotal = 0;
+        // setTimeout(function () {
+        //     $scope.filterMethod();
+        // }, 1000);
     };
 
-    // $scope.filterTotal = function(){
-    //     var invoiceTotal = 0;
-    //     console.log($scope.list);
-    //     angular.forEach($scope.list, function(item) {
-    //         invoiceTotal += total(item.orders);
-    //     });
-    //     return invoiceTotal;
-    // };
+    $scope.filterTotal = function(){
+        var invoiceTotal = 0;
+        // console.log($scope.list);
+        angular.forEach($scope.list, function(item) {
+            invoiceTotal += $scope.total(item.orders, item.customer);
+        });
+        return invoiceTotal;
+    };
 
     $scope.verifyProductCode = function(productObject, newInvoiceOrderDetail){
         var orderProductCode = $scope.newInvoiceCode(productObject);
@@ -184,7 +184,7 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
                         // reset order model and product
                         orderModel.quantity = "";
 
-                        $scope.pop('success', "title", res.data.item.message);
+                        //$scope.pop('success', "title", res.data.item.message);
                     }
                 });
                 productScope = {};
@@ -192,13 +192,12 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
             console.log(selectedInvoice);
     };
 
-    //
-    $scope.editOrder = function (invoiceId, order) {
-        console.log("invoiceId:%s, order=%s", invoiceId, order);
+    $scope.editOrderItem = function (invoiceId, orderItem) {
+        console.log("invoiceId:%s, orderItem=%s", invoiceId, orderItem);
         var selectedInvoice = getObjectDataById(invoiceId, $scope.list);
         if(selectedInvoice){
-            var selectedOrder = getObjectDataById(order.id, selectedInvoice.orders);
-            console.log("selectedOrder=" + selectedOrder);
+            var selectedOrder = getObjectDataById(orderItem.id, selectedInvoice.orders);
+            console.log("orderItem.id=" + orderItem.id);
             if (selectedOrder) {
                 $scope.editOrder = angular.copy(selectedOrder);
                 $scope.product.format = extractProductByCode($scope.editOrder.code, $scope.productCodePosition.format);
@@ -280,8 +279,6 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
             $scope.filter.toDate = new Date($scope.filter.toDate.setHours(11));
             var paramsJson = {filterObject: $scope.filter};
             var promise = invoiceService.exportData(paramsJson);
-            // console.log(paramsJson);
-            // console.log("============");
             promise.then(function(res) {
                 console.log(res.data);
                 if(res.data)
