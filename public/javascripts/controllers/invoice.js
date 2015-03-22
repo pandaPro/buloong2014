@@ -76,20 +76,19 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
             isOpenedToDate: false,
             toDate: new Date()
         };
-        // $scope.invoiceTotal = 0;
-        // setTimeout(function () {
-        //     $scope.filterMethod();
-        // }, 1000);
+        $scope.filterTotal = null;
+        $scope.invoiceDiscount = null;
+        $scope.totalDiscount = null;
     };
 
-    $scope.filterTotal = function(){
-        var invoiceTotal = 0;
-        // console.log($scope.list);
-        angular.forEach($scope.list, function(item) {
-            invoiceTotal += $scope.total(item.orders, item.customer);
-        });
-        return invoiceTotal;
-    };
+    // $scope.filterTotal = function(){
+    //     var invoiceTotal = 0;
+    //     // console.log($scope.list);
+    //     angular.forEach($scope.list, function(item) {
+    //         //invoiceTotal += $scope.total(item.orders, item.customer);
+    //     });
+    //     return invoiceTotal;
+    // };
 
     $scope.verifyProductCode = function(productObject, newInvoiceOrderDetail){
         var orderProductCode = $scope.newInvoiceCode(productObject);
@@ -125,15 +124,21 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
 
     $scope.total = function(orders, invoiceCustomer) {
         var orderTotal = 0;
-        $scope.invoiceDiscount = 0;
         angular.forEach(orders, function(item) {
             orderTotal += item.quantity * item.salePrice;
         });
-        var customer = getObjectDataById(invoiceCustomer.id, $scope.customers);
-        if(customer.discount)
-            $scope.invoiceDiscount = (-customer.discount/100 * orderTotal);
-        // $scope.invoiceTotal += orderTotal;
+        $scope.filterTotal += orderTotal;
         return orderTotal;
+    }
+
+    $scope.discount = function(amount, invoiceCustomer) {
+        $scope.invoiceDiscount = '';
+        var customer = getObjectDataById(invoiceCustomer.id, $scope.customers);
+        if(customer.discount && customer.discount > 0)
+            $scope.invoiceDiscount = (-customer.discount/100 * amount);
+        //console.log("name=" + customer.name + " orderTotal=" + amount);
+        //$scope.totalDiscount += $scope.invoiceDiscount;
+        return $scope.invoiceDiscount;
     }
 
     // when submitting the add form, send the text to the node API
@@ -264,9 +269,11 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
         // console.log("============");
         promise.then(function(res) {
             // console.log("filterMethod=" + res.data);
-            if(res.data)
+            if(res.data && res.data.data != $scope.list)
             {
                 $scope.list = res.data.data;
+                $scope.filterTotal = 0;
+                $scope.totalDiscount  = 0;
             }
         });
     };

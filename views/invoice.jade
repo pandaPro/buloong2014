@@ -61,16 +61,15 @@ block content
                         .col-xs-3.col-md-2
                         .col-xs-3.col-md-2.text-center(ng-init="totalAmount = total(invoice.orders, invoice.customer)")
                             span=t('invoice.total')
-                            span &nbsp;
+                            span(ng-hide="discount(totalAmount, invoice.customer)")&nbsp;
                             span(ng-if='invoiceDiscount')
-                                del {{total(invoice.orders, invoice.customer) | number}}
+                                del {{totalAmount | number}}
                                 span &nbsp;
                                 strong
-                                    span {{(total(invoice.orders, invoice.customer) + invoiceDiscount) | number}}
+                                    span {{(totalAmount + invoiceDiscount) | number}}
                             span(ng-if='!invoiceDiscount')
-                                strong {{(total(invoice.orders, invoice.customer)) | number}}
+                                strong {{(totalAmount) | number}}
                         .col-xs-2.col-md-1
-                            //- span=t('customer.discount')
                             span &nbsp;
                             span(ng-if='invoiceDiscount')
                                 strong.badge.pull-right {{(invoiceDiscount) | number}}
@@ -174,11 +173,12 @@ block content
                                             span(class="glyphicon glyphicon-remove")
 
         hr
-        footer.row.panel-title
-            .col-xs-8.col-md-7.text-right
+        footer.row.panel-title.footer-total
+            .col-xs-6.col-md-7.text-right
             .col-xs-4.col-md-2.text-center
                 strong
-                    span {{ filterTotal() | number}}
+                    span {{ filterTotal | number}}
+            .col-xs-2.col-md-3
         hr
         form(name="invoiceModelForm" novalidate)
          #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')

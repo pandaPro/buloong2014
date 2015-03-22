@@ -1,22 +1,19 @@
 mixin menu(selectedPage)
   #menu
-    nav(class="navbar navbar-default navbar-fixed-top" role="navigation")
-      div(class="container-fluid")
-        div(class="navbar-header")
-          button(type="button" class="navbar-toggle" data-toggle="collapse" data-target="#profile-navbar-collapse")
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
-          a.navbar-brand(href="#")=t("app.name")
-        div(class="collapse navbar-collapse " id="profile-navbar-collapse")
-          ul(class="nav navbar-nav")
-            each val, index in {0:'menu.sales-summary', 1:'menu.invoice',2:'menu.customer',3: 'menu.product',5: 'menu.config'}
-              -if(selectedPage == val)
-                li.active
-                  a(href=t(val))=t(val)
-              -else
-                li
-                  a(href=t(val))=t(val)
-          ul(class="nav navbar-nav navbar-right")
+    button#menu-toggle(type="button" class="btn btn-default") Toggle Menu
+      span.icon-bar
+      span.icon-bar
+      span.icon-bar
+  #sidebar-wrapper
+      ul.sidebar-nav
+        li.sidebar-brand
+          a(href='#')=t("app.name")
+        each val, index in {0:'menu.sales-summary', 1:'menu.invoice',2:'menu.customer',3: 'menu.product',5: 'menu.config'}
+          -if(selectedPage == val)
+            li.active
+              a(href=t(val))=t(val)
+          -else
             li
-              a(href="/logout")=t("app.logout")
+              a(href=t(val))=t(val)
+        li
+          a(href="/logout")=t("app.logout")
