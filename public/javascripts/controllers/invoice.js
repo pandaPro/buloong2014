@@ -78,17 +78,8 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
         };
         $scope.filterTotal = null;
         $scope.invoiceDiscount = null;
-        $scope.totalDiscount = null;
+        $scope.totalDiscount = 0;
     };
-
-    // $scope.filterTotal = function(){
-    //     var invoiceTotal = 0;
-    //     // console.log($scope.list);
-    //     angular.forEach($scope.list, function(item) {
-    //         //invoiceTotal += $scope.total(item.orders, item.customer);
-    //     });
-    //     return invoiceTotal;
-    // };
 
     $scope.verifyProductCode = function(productObject, newInvoiceOrderDetail){
         var orderProductCode = $scope.newInvoiceCode(productObject);
@@ -122,22 +113,40 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
         return product.type + product.format + pad(product.length, 2);
     };
 
-    $scope.total = function(orders, invoiceCustomer) {
+    $scope.total = function() {
         var orderTotal = 0;
-        angular.forEach(orders, function(item) {
+        var data = $scope.list;
+        $scope.invoiceDiscount = 0;
+        angular.forEach(data, function(orderItems) {
+            // console.log(orderItems.orders);
+            angular.forEach(orderItems.orders, function(item) {
+                orderTotal += item.quantity * item.salePrice;
+            });
+            // $scope.invoiceDiscount += discount(orderTotal, orderItems.customer);
+        //     orderTotal += invoiceTotal(orderItems);
+        });
+        // console.log("total=" + orderTotal);
+        return orderTotal;
+    }
+
+    $scope.invoiceTotal = function(order) {
+        var orderTotal = 0;
+        angular.forEach(order, function(item) {
             orderTotal += item.quantity * item.salePrice;
         });
-        $scope.filterTotal += orderTotal;
+        // $scope.filterTotal += orderTotal;
+        // console.log("filterTotal=" + $scope.filterTotal);
         return orderTotal;
     }
 
     $scope.discount = function(amount, invoiceCustomer) {
-        $scope.invoiceDiscount = '';
+        $scope.invoiceDiscount = 0;
         var customer = getObjectDataById(invoiceCustomer.id, $scope.customers);
         if(customer.discount && customer.discount > 0)
             $scope.invoiceDiscount = (-customer.discount/100 * amount);
         //console.log("name=" + customer.name + " orderTotal=" + amount);
-        //$scope.totalDiscount += $scope.invoiceDiscount;
+        $scope.totalDiscount += $scope.invoiceDiscount;
+        //console.log("invoiceDiscount=" + $scope.invoiceDiscount);
         return $scope.invoiceDiscount;
     }
 
@@ -271,6 +280,7 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
             // console.log("filterMethod=" + res.data);
             if(res.data && res.data.data != $scope.list)
             {
+                $scope.list = null;
                 $scope.list = res.data.data;
                 $scope.filterTotal = 0;
                 $scope.totalDiscount  = 0;

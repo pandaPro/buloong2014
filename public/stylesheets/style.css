@@ -110,7 +110,7 @@ a {
 #page-content-wrapper {
     width: 100%;
     position: absolute;
-    padding: 15px;
+    /*padding: 15px;*/
 }
 
 #wrapper.toggled #page-content-wrapper {
@@ -184,7 +184,7 @@ a {
     }
 
     #page-content-wrapper {
-        padding: 20px;
+        padding: 2%;
         position: relative;
     }
 
