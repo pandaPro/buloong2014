@@ -1,0 +1,110 @@
+{
+  "app": {
+    "name": "Buloong A.Tỷ",
+    "login": "Log in",
+    "logout": "Logout",
+    "actived": "Actived",
+    "inactived": "Inactived",
+    "blocked": "Blocked",
+    "selectOption": "-- Select an option --",
+    "all": "All",
+    "rowCount": "Rows count",
+    "currency": "Currency"
+  },
+  "menu": {
+    "home": "Home",
+    "contact": "Contact",
+    "about": "About",
+    "customer": "Customer",
+    "config": "Config",
+    "product": "Product",
+    "invoice": "Invoice",
+    "sales-summary": "Sales-Summary"
+  },
+  "user": {
+    "loginTitle": "Please log in",
+    "rememberMe": "Remember me",
+    "enterUsername": "Enter your username",
+    "enterPassword": "Enter your password"
+  },
+  "customer": {
+        "customerInfo": "Customer Info",
+        "enterName": "Enter customer's name",
+        "enterAddress": "Enter customer's address",
+        "enterPhone": "Enter customer's contact phone number",
+        "name": "Customer name",
+        "address": "Address",
+        "phone": "Contact number",
+        "status": "Status",
+        "discount": "Discount"
+  },
+  "config": {
+        "configInfo": "Config Info",
+        "enterName": "Enter config's name",
+        "enterValue": "Enter config's value",
+        "name": "Config name",
+        "value": "Value",
+        "status": "Status"
+  },
+  "product":{
+        "productInfo": "Product Info",
+        "selectProductType": "Select product's type",
+        "selectProductLength": "Select product's length",
+        "selectProductFormat": "Select product's format",
+        "enterSalePrice": "Enter product's price",
+        "format": "Format",
+        "length": "Length",
+        "type": "Type",
+        "saleprice": "Sale price",
+        "status": "Status",
+        "unit": "Unit"
+  },
+  "invoice":{
+        "invoiceInfo": "Invoice Info",
+        "invoiceDetail": "Invoice detail",
+        "selectCustomer": "Choose a customer",
+        "selectInvoiceDate": "Select invoice's date",
+        "selectProductType": "Select product's type",
+        "selectProductLength": "Select product's length",
+        "selectProductFormat": "Select product's format",
+        "enterSalePrice": "Enter product's price",
+
+        "dayRevenue":"Revenue of the day",
+        "invoiceTotal":"Total of Invoice",
+        "date":"Date",
+        "customer":"Customer",
+        "format": "Format",
+        "length": "Length",
+        "type": "Type",
+        "saleprice": "Sale price",
+        "quantity": "Quantity",
+        "amount": "Amount",
+        "total": "Total ",
+        "status": "Status"
+  },
+  "validation": {
+        "required": "Required field!",
+        "number": "Enter number only!",
+        "removeConfirmMessage": "Are you sure want to remove this item?",
+        "success": "Successful",
+        "error": "Error !"
+  },
+  "button":{
+        "add": "Add",
+        "update": "Update",
+        "edit": "Edit",
+        "delete": "Delete",
+        "remove": "Remove",
+        "cancel": "Cancel",
+        "save": "Save",
+        "close": "Close"
+  },
+  "chart":{
+        "pie": "Pie chart",
+        "bar": "Bar chart",
+        "area": "Area chart",
+        "column": "Column chart",
+        "table": "Table chart",
+        "line": "Line chart"
+  }
+}

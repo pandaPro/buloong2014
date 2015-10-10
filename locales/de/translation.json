@@ -1,0 +1,13 @@
+{
+  "app": {
+    "name": "i18next"
+  },
+  "menu": {
+    "home": "Home",
+    "contact": "Contact"
+  },
+  "creator": {
+    "firstname": "Jan",
+    "lastname": "Mühlemann"
+  }
+}

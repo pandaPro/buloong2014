@@ -1,0 +1,32 @@
+extends layout
+
+block css
+    link(rel='stylesheet', href='/stylesheets/signin.css')
+
+block js
+    script(src='/javascripts/ui-bootstrap-tpls-0.11.0.min.js')
+    script(src='/javascripts/app.js')
+    script(src='/javascripts/controllers/user.js')
+    script(src='/javascripts/services/baseService.js')
+    script(src='/javascripts/services/authenticationService.js')
+
+block content
+    div.container(ng-controller="userController")
+        .form-group
+            form.form-signin(novalidate name="loginForm" accept-charset="UTF-8")
+              //- .alert.alert-danger {{message}}
+              legend=t("user.loginTitle")
+              .input-group
+                span.input-group-addon
+                  i.glyphicon.glyphicon-user
+                input.form-control.input-lg(type='text', required, ng-model="user.username", name='username', placeholder=t("user.enterUsername"))
+                span(class="help-block" ng-show="user.username.$error.required")=t("validation.required")
+              .input-group
+                span.input-group-addon
+                  i.glyphicon.glyphicon-lock
+                input.form-control.input-lg(type='password', required ng-model="user.password", name='password', placeholder=t("user.enterPassword"))
+                span(class="help-block" ng-show="user.password.$error.required")=t("validation.required")
+              //- .col-xs-12.col-sm-6
+              //-   label.checkbox=t("user.rememberMe")
+              //-     input(type='checkbox', value='remember-me')
+              button.btn.btn-lg.btn-primary.btn-block(type='submit' ng-click="logIn(user, loginForm)" ng-disabled="loginForm.$invalid")=t("app.login")

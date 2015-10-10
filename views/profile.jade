@@ -1,0 +1,21 @@
+extends layout
+
+block footer
+    include includes/footer
+
+block content
+  br/
+  .container
+    div.row
+      div(class="col-xs-6 col-md-3")
+        a.thumbnail(href="/invoice")
+          img(alt=t("menu.invoice") data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="")
+      div(class="col-xs-6 col-md-3")
+        a.thumbnail(href="/customer")
+          img(alt=t("menu.customer") data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="")
+      div(class="col-xs-6 col-md-3")
+        a.thumbnail(href="/product")
+          img(alt=t("menu.product") data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="")
+      div(class="col-xs-6 col-md-3")
+        a.thumbnail(href="/config")
+          img(alt=t("menu.config") data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="")

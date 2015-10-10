@@ -1,0 +1,231 @@
+extends layout
+
+block menu
+    include includes/profile-menu
+    +menu('menu.invoice')
+block css
+
+block js
+    script(src='/javascripts/ui-bootstrap-tpls-0.11.0.min.js')
+    script(src='/javascripts/app.js')
+    script(src='/javascripts/services/baseService.js')
+    script(src='/javascripts/services/customerService.js')
+    script(src='/javascripts/services/invoiceService.js')
+    script(src='/javascripts/services/productData.js')
+    script(src='/javascripts/controllers/invoice.js')
+    script(src='/javascripts/common-directives.js')
+    script(src='/javascripts/common-functions.js')
+
+block content
+    div(ng-controller="invoiceController" ng-init="init()")
+        toaster-container(toaster-options='{\'position-class\': \'toast-top-right\'}')
+        form(name="filterForm")
+          .row
+            .col-xs-1.col-md-1
+                button.btn.btn-primary.btn-lg.pull-right(data-toggle='modal', data-target='#myModal')
+                    span(class="glyphicon glyphicon-plus")
+            .col-xs-2.col-md-2.text-center
+                select(ng-model="filter.customer.id" name="filterCustomer" class="form-control input-lg text-center")
+                    option(value="")=t("app.all")
+                    option(ng-repeat="c in customers | orderBy:'name':false" value="{{c._id}}") {{c.name}}
+            .col-xs-3.col-md-3.text-center
+                p.input-group
+                    input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.fromDate', is-open='filter.isOpenedFromDate', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
+                    span.input-group-btn
+                        button.btn.btn-lg(type='button', ng-click='open($event, 1)')
+                            i.glyphicon.glyphicon-calendar
+            .col-xs-3.col-md-3.text-center
+                p.input-group
+                    input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='filter.toDate', is-open='filter.isOpenedToDate', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"), ng-disabled='true')
+                    span.input-group-btn
+                        button.btn.btn-lg(type='button', ng-click='open($event, 2)')
+                            i.glyphicon.glyphicon-calendar
+            .col-xs-2.col-md-2
+                p.input-group
+                    button.btn.btn-primary.btn-lg(ng-click='filterMethod()' ng-disabled='filterForm.$valid && filterForm.$pristine')
+                        span(class="glyphicon glyphicon-search")
+            .col-xs-1.col-md-1
+                p.input-group(ng-if="filter.customer.id")
+                    button.btn.btn-primary.btn-lg(ng-click="export()")
+                        span(class="glyphicon glyphicon-file")
+        accordion(close-others='oneAtATime' ng-repeat="invoice in list track by $index | filter: filter.customer.value")
+            accordion-group(is-open='status.open')
+                accordion-heading
+                    .row
+                        .col-xs-1.col-md-1.text-center
+                            i.glyphicon(ng-class='{\'glyphicon-chevron-up\': status.open, \'glyphicon-chevron-down\': !status.open}')
+                        .col-xs-2.col-md-2
+                            strong {{getNameFromList(invoice.customer.id, customers)}}
+                        .col-xs-3.col-md-2
+                            strong {{invoice.createdDate | date: 'dd-MM-yyyy'}}
+
+                        .col-xs-3.col-md-2.text-center
+                            span=t('invoice.total')
+                            span(ng-hide="totalAmount = invoiceTotal(invoice.orders)") &nbsp;
+                            span(ng-hide="discount(totalAmount, invoice.customer)") &nbsp;
+                            span(ng-if='invoiceDiscount')
+                                del {{totalAmount | number}}
+                                span &nbsp;
+                                strong.badge.pull-center {{(invoiceDiscount) | number}}
+                                strong
+                                    span {{(totalAmount + invoiceDiscount) | number}}
+                                
+                            span(ng-if='!invoiceDiscount')
+                                strong {{(totalAmount) | number}}
+                        .col-xs-2.col-md-1
+                        .col-xs-2.col-md-3
+                            //- span=t('app.rowCount')
+                            .pull-left.badge {{invoice.orders.length}}
+                            .text-right
+                                button.close(ng-click="removeInvoice(invoice)" type='button') ×
+                .table-responsive
+                  form(name="orderModelForm")
+                    table.input-lg(class="table table-striped table-bordered" ng-hide="editorEnabled")
+                        thead
+                            tr
+                                th=t("invoice.format")
+                                th=t("invoice.type")
+                                th=t("invoice.quantity")
+                                th=t("invoice.saleprice")
+                                th=t("invoice.amount")
+                                th
+                        tbody
+                            tr(ng-repeat="order in invoice.orders track by $index")
+                                td.col-xs-2.col-md-3.text-center
+                                    span {{getProductExtractPart(order.code, productCodePosition.format, formats)}} x {{getProductExtractPart(order.code, productCodePosition.length, lengths)}}
+                                td.col-xs-2.col-md-2.text-center
+                                    span {{getProductExtractPart(order.code, productCodePosition.type, types)}}
+                                td.col-xs-2.col-md-2.text-right
+                                    span {{order.quantity | number}}
+                                td.col-xs-1.col-md-1.text-center
+                                    span {{order.salePrice | number}}
+                                td.col-xs-2.col-md-2.text-right
+                                    strong {{order.salePrice * order.quantity | number}}
+                                td.col-xs-3.col-md-2
+                                    p
+                                        button(ng-click="editOrderItem(invoice._id, order)" type="button" class="btn btn-primary")
+                                            span(class="glyphicon glyphicon-edit")
+                                        span &nbsp;
+                                        button(ng-click="removeOrder(invoice, order)" type="button" class="btn btn-danger")
+                                            span(class="glyphicon glyphicon-trash")
+                            tr
+                                td
+                                    p.input-group
+                                        select(ng-model="product.format" name="format" class="form-control  text-left input-lg" required style="width:80px" ng-change="verifyProductCode(product, newOrder)")
+                                            option(value="")
+                                            option(ng-repeat="format in formats" value="{{format.value}}") {{format.name}}
+                                        span(class="help-block" ng-show="orderModel.format.$error.required")=t("validation.required")
+                                        span x
+                                        select(name="length" ng-model="product.length" class="form-control text-left pull-right input-lg" required style="width:80px" ng-change="verifyProductCode(product, newOrder)")
+                                            option(value="")
+                                            option(ng-repeat="length in lengths" value="{{length.value}}") {{length.name}}
+                                        span(class="help-block" ng-show="orderModel.length.$error.required")=t("validation.required")
+                                td
+                                    select(name="type" ng-model="product.type" class="form-control text-center input-lg" required ng-change="verifyProductCode(product, newOrder)")
+                                        option(value="")
+                                        option(ng-repeat="type in types" value="{{type.value}}") {{type.name}}
+                                    span(class="help-block" ng-show="orderModel.type.$error.required")=t("validation.required")
+                                td
+                                    input(type="number" min="1" max="1000000" name="quantity" required class="form-control text-center input-lg" ng-model="newOrder.quantity" typeahead="quantity for quantity in quantitySuggestionList | filter:$viewValue | limitTo:10")
+                                    span(class="help-block" ng-show="orderModel.quantity.$error.required")=t("validation.required")
+                                td
+                                    input(style="width:90px" type="number" min="1" max="5000" name="salePrice" required class="form-control text-center input-lg" ng-model="newOrder.salePrice")
+                                    span(class="help-block" ng-show="orderModel.salePrice.$error.required")=t("validation.required")
+                                td.col-xs-2.col-md-2.text-right
+                                    label {{newOrder.quantity * newOrder.salePrice | number}}
+                                td.col-xs-2.col-md-1
+                                    input(type="button" class="btn btn-primary" text=t("button.add") ng-click="createOrder(invoice._id, newOrder, product)" ng-disabled="orderModelForm.$invalid" value=t("button.add"))
+                table.input-lg(class="table table-striped table-bordered" ng-show="editorEnabled")
+                        tbody
+                            tr
+                                td.col-xs-3.col-md-2
+                                    p.input-group
+                                        select(ng-model="product.format" name="format" class="form-control  text-center input-lg" required style="width:80px" ng-change="verifyProductCode(product, editOrder)")
+                                            option(value="")
+                                            option(ng-repeat="format in formats" value="{{format.value}}") {{format.name}}
+                                        span(class="help-block" ng-show="orderModel.format.$error.required")=t("validation.required")
+                                        span x
+                                        select(name="length" ng-model="product.length" class="form-control text-center pull-right input-lg" required style="width:80px" ng-change="verifyProductCode(product, editOrder)")
+                                            option(value="")
+                                            option(ng-repeat="length in lengths" value="{{length.value}}") {{length.name}}
+                                        span(class="help-block" ng-show="orderModel.length.$error.required")=t("validation.required")
+                                td.col-xs-2.col-md-1
+                                    select(name="type" ng-model="product.type" class="form-control text-center input-lg" required ng-change="verifyProductCode(product, editOrder)")
+                                        option(value="")
+                                        option(ng-repeat="type in types" value="{{type.value}}") {{type.name}}
+                                    span(class="help-block" ng-show="orderModel.type.$error.required")=t("validation.required")
+                                td.col-xs-2.col-md-1
+                                    .form-group(ng-class="{ 'has-error' : product.format.$invalid && !product.format.$pristine }")
+                                        input(type="number" min="1" max="1000000" name="quantity" required class="form-control text-center input-lg" ng-model="editOrder.quantity" typeahead="quantity for quantity in quantitySuggestionList | filter:$viewValue | limitTo:10")
+                                        span(class="help-block" ng-show="orderModel.quantity.$error.required")=t("validation.required")
+                                td.col-xs-1.col-md-1
+                                    .form-group(ng-class="{ 'has-error' : product.format.$invalid && !product.format.$pristine }")
+                                        input(style="width:90px" type="number" min="1" max="5000" name="salePrice" required class="form-control text-center input-lg" ng-model="editOrder.salePrice")
+                                        span(class="help-block" ng-show="orderModel.salePrice.$error.required")=t("validation.required")
+                                td.col-xs-2.col-md-1.text-right
+                                    label {{editOrder.quantity * editOrder.salePrice | number}}
+                                td.col-xs-2.col-md-2
+                                    p
+                                        button(type="button" class="btn btn-primary" ng-click="updateOrder(invoice, editOrder)" ng-disabled="editProductForm.$invalid")
+                                            span(class="glyphicon glyphicon-edit")
+                                        span &nbsp;
+                                        button(type="button" class="btn btn-default" ng-click="cancel()")
+                                            span(class="glyphicon glyphicon-remove")
+
+        hr
+        footer.row.panel-title.footer-total
+            .col-xs-6.col-md-5.text-right
+            .col-xs-4.col-md-2.text-center
+                strong
+                    span  {{total() | number}}
+            .col-xs-1.col-md-1
+                strong.badge.pull-right {{0 | number}}
+            .col-xs-1.col-md-2
+
+        hr
+        form(name="invoiceModelForm" novalidate)
+         #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                h3=t("invoice.invoiceInfo")
+              .modal-body
+                    fieldset
+                        legend
+                            .form-group
+                                p.input-group
+                                    input(class="form-control input-lg text-center" type='text', datepicker-popup='dd/MM/yyyy', ng-model='newInvoice.createdDate', is-open='opened', datepicker-options='dateOptions', ng-required='true', close-text=t("button.close"),, ng-disabled='true')
+                                    span.input-group-btn
+                                        button.btn.btn-lg(type='button', ng-click='open($event)')
+                                            i.glyphicon.glyphicon-calendar
+                            .form-group
+                                select(ng-model="newInvoice.customer.id" name="customer" class="form-control input-lg text-center" required)
+                                    option(value="")=t("app.selectOption")
+                                    option(ng-repeat="c in customers | orderBy:'name':false" value="{{c._id}}") {{c.name}}
+                            .form-group
+                                select(ng-model="product.format" name="format" class="form-control input-lg text-center" required ng-change="verifyProductCode(product, newInvoiceOrder)")
+                                    option(value="")=t("app.selectOption")
+                                    option(ng-repeat="format in formats" value="{{format.value}}") {{format.name}}
+                                span(class="help-block" ng-show="invoiceModel.format.$error.required")=t("validation.required")
+                            .form-group
+                                select(name="length" ng-model="product.length" class="form-control input-lg text-center" required ng-change="verifyProductCode(product, newInvoiceOrder)")
+                                    option(value="")=t("app.selectOption")
+                                    option(ng-repeat="length in lengths" value="{{length.value}}") {{length.name}}
+                                span(class="help-block" ng-show="invoiceModel.length.$error.required")=t("validation.required")
+                            .form-group(ng-class="{ 'has-error' : invoiceModel.type.$invalid && !invoiceModel.type.$pristine }")
+                                select(name="type" ng-model="product.type" class="form-control input-lg text-center" required ng-change="verifyProductCode(product, newInvoiceOrder)")
+                                    option(value="")=t("app.selectOption")
+                                    option(ng-repeat="type in types" value="{{type.value}}") {{type.name}}
+                                span(class="help-block" ng-show="invoiceModel.type.$error.required")=t("validation.required")
+                            .form-group
+                                input(type="number" min="1" max="1000000" name="quantity" required class="form-control input-lg text-center" placeholder=t("invoice.enterQuantity") ng-model="newInvoiceOrder.quantity" typeahead="quantity for quantity in quantitySuggestionList | filter:$viewValue | limitTo:10")
+                                span(class="help-block" ng-show="invoiceModel.quantity.$error.required")=t("validation.required")
+                            .form-group
+                                input(type="number" min="1" max="5000" name="salePrice" required class="form-control input-lg text-center" placeholder=t("invoice.enterSalePrice") ng-model="newInvoiceOrder.salePrice")
+                                span(class="help-block" ng-show="invoiceModel.salePrice.$error.required")=t("validation.required")
+
+              .modal-footer
+                button.btn.btn-default(type='button' class="btn btn-default btn-lg" data-dismiss='modal')=t("button.close")
+                //- button.btn.btn-default(type='button' class="btn btn-default btn-lg" data-dismiss='modal')=t("button.continue")
+                input(type="submit" class="btn btn-primary btn-lg" text=t("button.add") ng-click="createInvoice(invoiceModel, invoiceModelForm)" ng-disabled="invoiceModelForm.$invalid" value=t("button.add"))
