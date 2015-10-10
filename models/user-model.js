@@ -10,7 +10,7 @@ var mongoose = require('mongoose'),
 var UserSchema = new Schema({
     username: { type: String, required: true, index: { unique: true } },
     password: { type: String, required: true },
-    loginAttempts: { type: Number, required: true, default: 0 },
+    loginAttempts: { type: Number, required: false, default: 0 },
     lockUntil: { type: Number }
 });
 
@@ -21,18 +21,16 @@ UserSchema.virtual('isLocked').get(function() {
 
 UserSchema.pre('save', function(next) {
     var user = this;
-
     // only hash the password if it has been modified (or is new)
     if (!user.isModified('password')) return next();
-
     // generate a salt
+    console.log("before generate pass");
     bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
         if (err) return next(err);
-
         // hash the password using our new salt
+        console.log("before hash pass");
         bcrypt.hash(user.password, salt, function (err, hash) {
             if (err) return next(err);
-
             // set the hashed password back on our user document
             user.password = hash;
             next();
@@ -128,4 +126,4 @@ UserSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.local.password);
 };
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('users', UserSchema);
