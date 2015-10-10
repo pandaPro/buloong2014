@@ -4,16 +4,16 @@ mixin menu(selectedPage)
       span.icon-bar
       span.icon-bar
       span.icon-bar
-  #sidebar-wrapper
-      ul.sidebar-nav
-        li.sidebar-brand
-          a(href='#')=t("app.name")
-        each val, index in {0:'menu.sales-summary', 1:'menu.invoice',2:'menu.customer',3: 'menu.product',5: 'menu.config'}
-          -if(selectedPage == val)
-            li.active
-              a(href=t(val))=t(val)
-          -else
-            li
-              a(href=t(val))=t(val)
-        li
-          a(href="/logout")=t("app.logout")
+#sidebar-wrapper
+    ul.sidebar-nav
+      li.sidebar-brand
+        a(href='#')=t("app.name")
+      each val, index in {0:'menu.sales-summary', 1:'menu.invoice',2:'menu.customer',3: 'menu.product',5: 'menu.config'}
+        -if(selectedPage == val)
+          li.active
+            a(href=t(val))=t(val)
+        -else
+          li
+            a(href=t(val))=t(val)
+      li
+        a(href="/logout")=t("app.logout")

@@ -18,11 +18,35 @@ exports.getConfigObject = function (obj) {
 //     return( new configList);
 // }
 
+// exports.syncList = function (){
+//     var items = ConfigModel.find("{}", function (err, configs) {
+//         if(err){
+//             console.log("configlist: " + err);
+//             items = err;
+//         }else{
+//             items = configs;
+//         }
+//     });
+//     return items;
+// }
 
 exports.list = function (callback){
     ConfigModel.find("{}", function (err, configs) {
         if(err){
             console.log("configlist: " + err);
+            callback(err);
+        }else{
+            console.log(err);
+            callback("", configs);
+        }
+    })
+}
+
+exports.find = function (query, callback){
+    ConfigModel.find(query, function (err, configs) {
+        if(err){
+            console.log("find configlist: " + err);
+            callback(err);
         }else{
             console.log(err);
             callback("", configs);
