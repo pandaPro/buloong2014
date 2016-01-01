@@ -193,11 +193,10 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
                 var promise = invoiceService.addOrder(invoiceId, orderData);
                 promise.then(function(res){
                     if(res.status === 200 && res.data.item){
-                        console.log(res);
-                        selectedInvoice.orders.push(angular.copy(res.data.item));
+                        console.log(res.data.item);
+                        selectedInvoice.orders.push(angular.copy(orderModel));
                         // reset order model and product
                         orderModel.quantity = "";
-
                         //$scope.pop('success', "title", res.data.item.message);
                     }
                 });
@@ -207,7 +206,7 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
     };
 
     $scope.editOrderItem = function (invoiceId, orderItem) {
-        console.log("invoiceId:%s, orderItem=%s", invoiceId, orderItem);
+        console.log("invoiceId:%s, orderItem=%s", invoiceId, orderItem.code);
         var selectedInvoice = getObjectDataById(invoiceId, $scope.list);
         if(selectedInvoice){
             var selectedOrder = getObjectDataById(orderItem.id, selectedInvoice.orders);
@@ -240,8 +239,8 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
         console.log("======order======");
         // console.log(order);
         promise.then(function(res) {
-            console.log(res.data);
-            if(res.data && res.data.result === 1)
+            console.log(res.data.result);
+            if(res.data && res.data.result.ok === 1)
             {
                 removeJsonInList(order, invoice.orders);
             }
@@ -256,7 +255,7 @@ function invoiceController($scope, $http, $locale, $window, productData, custome
         var promise = invoiceService.updateOrder(invoice._id, updateData);
         promise.then(function(res) {
             console.log(res.data);
-            if(res.data && res.data.result === 1)
+            if(res.data && res.data.result.ok === 1)
             {
                 setObjectDataToList(order, invoice.orders);
                 $scope.editorEnabled = false;
