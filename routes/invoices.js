@@ -275,7 +275,7 @@ router.get('/export/excel/:file', function(req, res){
     if(req.params.file){
         var file = './export/' + req.params.file;
         var filename = path.basename(file);
-        res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+        //res.setHeader('Content-disposition', 'attachment; filename=' + filename);
         res.setHeader('Content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
         var filestream = fs.createReadStream(file);
