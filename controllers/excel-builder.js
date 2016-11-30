@@ -42,7 +42,7 @@
 	var COL_FOOTER_VALUE_TEXT = 'value';
 
 	var COL_FOOTER_TOTALAMOUNT_TEXT = 'Tổng tiền';
-	var COL_FOOTER_DISCOUNT_TEXT = 'Triết khấu %s%';
+	var COL_FOOTER_DISCOUNT_TEXT = 'Chiết khấu %s%';
 	var COL_FOOTER_TOTAL_TEXT = 'Tổng cộng';
 	//---------------------------------//
 	var HEADER_ROWNUMBER = 1;
@@ -242,7 +242,7 @@ exports.reportInvoices = function(exportData, customerName, callback) {
 		console.log("===BEGIN save workbook===");
 		workbook.save(function(err) {
 			if (err){
-				console.log("===save workbook ERROR===");
+				console.log("===save workbook ERROR. please check export folder===");
 				console.log(err);
 				workbook.cancel();
 				callback(err);
