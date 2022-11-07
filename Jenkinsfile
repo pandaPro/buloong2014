@@ -17,12 +17,12 @@ pipeline {
             }
         }
         stage('Code Convention') {
-              steps {
+            steps {
                    script {
                     FAILED_STAGE=env.STAGE_NAME
                 }
                 sh 'flake8 .'
-              }
+            }
         }
         stage('Test') {
             steps {
