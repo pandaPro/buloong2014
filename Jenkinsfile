@@ -23,6 +23,7 @@ pipeline {
                 }
                 sh 'flake8 .'
               }
+        }
         stage('Test') {
             steps {
                 echo 'Testing..'
